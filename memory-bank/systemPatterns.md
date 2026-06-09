@@ -112,3 +112,15 @@ Docker dev should optimize for repeatable local startup and low-friction rebuild
 4. persist `.venv` and `node_modules` in named volumes so bind mounts do not erase installed dependencies
 5. expose infra ports through environment-overridable host-port variables because `5432`, `9000`, and `9001` frequently collide with other local services
 6. verify service readiness with healthchecks and container-internal HTTP calls when host localhost access is constrained by the agent environment
+
+## Docker Production Pattern
+
+Docker production should differ from dev in explicit, auditable ways:
+
+1. use multi-stage Dockerfiles with separate `dev` and `prod` targets
+2. do not mount source code in production compose
+3. run backend with a non-reload server command
+4. build frontend static assets ahead of runtime instead of serving Vite dev server
+5. place reverse-proxy routing in `docker/nginx/` and keep `/api/*` to backend, `/` to frontend
+6. do not publish Postgres or MinIO ports publicly in production scaffold unless a later requirement explicitly needs it
+7. keep the public entrypoint isolated to a single proxy port that is environment-overridable

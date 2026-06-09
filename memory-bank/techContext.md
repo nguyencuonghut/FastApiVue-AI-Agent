@@ -43,6 +43,22 @@
   - minio API `59000`
   - minio console `59001`
 - Verified `.env.example` exposes `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `POSTGRES_HOST_PORT`, `MINIO_API_HOST_PORT`, `MINIO_CONSOLE_HOST_PORT`
+- Verified Docker production scaffold exists in project root:
+  - `docker-compose.prod.yml`
+  - `docker/nginx/prod.conf`
+  - `docker/frontend/nginx.default.conf`
+  - multi-stage `docker/backend/Dockerfile`
+  - multi-stage `docker/frontend/Dockerfile`
+- Verified Docker production checks on 2026-06-09:
+  - `docker compose -f docker-compose.prod.yml config`
+  - `docker compose -f docker-compose.prod.yml build backend frontend`
+- Verified Docker production architecture:
+  - `backend` target `prod` runs `uvicorn` without reload
+  - `frontend` target `prod` builds static assets with `VITE_API_BASE_URL=/api/v1`
+  - `reverse-proxy` Nginx routes `/api/*` and `/health` to backend, `/` to frontend
+  - production compose does not mount source code
+  - production compose does not publish Postgres or MinIO ports
+  - public production entrypoint defaults to `PROXY_HOST_PORT=8080`
 
 ## Planned Stack
 
@@ -58,12 +74,13 @@
 
 ## Unverified
 
-- Docker Compose production and test variants have not been created yet.
+- Docker Compose test variant has not been created yet.
 - Real database migrations and MinIO bucket bootstrap have not been exercised yet.
 - Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
+- Full production runtime startup via `docker compose -f docker-compose.prod.yml up` has not been exercised yet; only config validity and production image builds were verified in this step.
 
 ## Important Note
 
-Backend, frontend, and Docker dev scaffolds are now implemented and verified. Production/test compose variants and real service bootstrap remain the next major gaps.
+Backend, frontend, Docker dev, and Docker production scaffolds are now implemented and verified at config/build level. Docker test profile and real production runtime bootstrap remain the next major gaps.
 
 Any agent that later creates or verifies the real stack from code should update this file immediately.

@@ -57,6 +57,26 @@ Các host port có thể đổi qua `.env`:
 - `MINIO_API_HOST_PORT`
 - `MINIO_CONSOLE_HOST_PORT`
 
+## Kiểm tra cấu hình production Docker
+
+```bash
+docker compose -f docker-compose.prod.yml config
+```
+
+Production scaffold hiện có:
+
+- backend image target `prod`
+- frontend static build target `prod`
+- `reverse-proxy` Nginx route `/api/*` về backend và `/` về frontend
+- không mount source code
+- không public `postgres` hoặc `minio`
+
+Port public mặc định của production scaffold:
+
+- Reverse proxy: `http://127.0.0.1:8080`
+
+Có thể đổi qua biến `PROXY_HOST_PORT`.
+
 ## Lưu ý
 
 - Không commit file `.env`

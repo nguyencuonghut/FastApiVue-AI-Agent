@@ -66,3 +66,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Hoan thanh Phase 1 Step 4 Docker dev
 - Tom tat: Them docker-compose dev, Dockerfile cho backend/frontend, root .dockerignore, host port co the cau hinh, sua tag MinIO da verify, doi backend dev command sang uvicorn --reload, va verify stack bang docker compose ps cung HTTP check tu ben trong container.
+
+## 2026-06-09 06:32:11Z - codex
+
+- Tieu de: Hoan thanh Phase 1 Step 5 Docker production
+- Tom tat: Them docker-compose.prod.yml, chuyen Dockerfile backend/frontend sang multi-stage dev/prod, them frontend static build va Nginx reverse proxy, bo mount source code o production, an Postgres/MinIO khoi public ports, va verify production config cung image build bang docker compose.

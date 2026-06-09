@@ -15,9 +15,10 @@ The repository has been prepared with:
 9. a repository rule that Vue SFC must not use style blocks, with automatic lint enforcement in `frontend/scripts/check-no-scoped-style.mjs`
 10. a centralized frontend style architecture in `frontend/src/styles/**/*.scss` covering tokens, base, vendors, layouts, components, and pages
 11. a verified Docker dev scaffold with `docker-compose.yml`, backend/frontend Dockerfiles, Postgres, MinIO, customizable host ports, and reduced build context via root `.dockerignore`
+12. a verified Docker production scaffold with multi-stage backend/frontend Dockerfiles, frontend static build, Nginx reverse proxy config, and `docker-compose.prod.yml` without source mounts or public Postgres/MinIO ports
 
 ## Next Useful Steps
 
-1. Implement the next Phase 1 scaffold step after Docker dev, likely production/test compose variants or the first real domain module.
+1. Implement Phase 1 Step 6 Docker test profile with `docker-compose.test.yml` and dedicated backend/frontend/e2e test runners.
 2. Populate bug history when the first real defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

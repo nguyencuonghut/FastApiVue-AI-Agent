@@ -3,21 +3,21 @@ services:
     build:
       context: .
       dockerfile: docker/backend/Dockerfile
-      target: dev
-    command: >
-      sh -lc "uv sync &&
-      uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+      target: prod
+    env_file:
+      - .env.example
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      POSTGRES_HOST: postgres
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
+      MINIO_ENDPOINT: minio:9000
+      CORS_ORIGINS: http://127.0.0.1:${PROXY_HOST_PORT:-8080},http://localhost:${PROXY_HOST_PORT:-8080}
     depends_on:
       postgres:
         condition: service_healthy
       minio:
         condition: service_healthy
-    env_file:
-      - .env.example
-    environment:
-      POSTGRES_HOST: postgres
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
-      MINIO_ENDPOINT: minio:9000
     healthcheck:
       test:
         - CMD
@@ -30,41 +30,50 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
-    ports:
-      - "${BACKEND_HOST_PORT:-8000}:8000"
-    volumes:
-      - ./backend:/app
-      - backend_venv:/app/.venv
 
   frontend:
     build:
       context: .
       dockerfile: docker/frontend/Dockerfile
-      target: dev
-    command: sh -lc "npm install && npm run dev"
-    depends_on:
-      backend:
-        condition: service_healthy
-    environment:
-      VITE_API_BASE_URL: http://127.0.0.1:8000/api/v1
+      target: prod
+      args:
+        VITE_API_BASE_URL: /api/v1
     healthcheck:
       test:
         - CMD
-        - node
-        - -e
-        - |
-          fetch("http://127.0.0.1:5173").then((response) => {
-            if (!response.ok) process.exit(1);
-          }).catch(() => process.exit(1))
+        - wget
+        - -q
+        - -O
+        - /dev/null
+        - http://127.0.0.1/
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 10s
+
+  reverse-proxy:
+    image: nginx:1.28-alpine
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     ports:
-      - "${FRONTEND_HOST_PORT:-5173}:5173"
+      - "${PROXY_HOST_PORT:-8080}:80"
     volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
+      - ./docker/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -q
+        - -O
+        - /dev/null
+        - http://127.0.0.1/health
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   postgres:
     image: postgres:16-bookworm
@@ -80,10 +89,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    ports:
-      - "${POSTGRES_HOST_PORT:-55432}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_prod_data:/var/lib/postgresql/data
 
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
@@ -101,14 +108,9 @@ services:
       timeout: 5s
       retries: 10
       start_period: 15s
-    ports:
-      - "${MINIO_API_HOST_PORT:-59000}:9000"
-      - "${MINIO_CONSOLE_HOST_PORT:-59001}:9001"
     volumes:
-      - minio_data:/data
+      - minio_prod_data:/data
 
 volumes:
-  backend_venv:
-  frontend_node_modules:
-  postgres_data:
-  minio_data:
+  postgres_prod_data:
+  minio_prod_data:
