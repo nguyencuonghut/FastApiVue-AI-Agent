@@ -61,3 +61,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Refactor frontend style sang src/styles scss tap trung
 - Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da cai Sass, chuyen toan bo style frontend sang frontend/src/styles/**/*.scss, bo het style block khoi Vue SFC, sua guardrail de cam moi the <style> trong .vue, va cap nhat docs/memory theo kien truc style tap trung. Da xac minh bang npm run format, npm run typecheck, npm run lint, npm run test:unit, npm run test:e2e va npm run build; van con canh bao chunk lon do PrimeVue nhung khong block.
+
+## 2026-06-09 06:21:07Z - codex
+
+- Tieu de: Hoan thanh Phase 1 Step 4 Docker dev
+- Tom tat: Them docker-compose dev, Dockerfile cho backend/frontend, root .dockerignore, host port co the cau hinh, sua tag MinIO da verify, doi backend dev command sang uvicorn --reload, va verify stack bang docker compose ps cung HTTP check tu ben trong container.

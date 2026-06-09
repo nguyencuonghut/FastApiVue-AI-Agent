@@ -35,6 +35,28 @@ Tiếp theo sẽ triển khai `Phase 1: Scaffold`:
 - Postgres và MinIO
 - lint, typecheck, test framework
 
+## Chạy môi trường dev bằng Docker
+
+```bash
+docker compose up --build
+```
+
+Services mặc định:
+
+- Backend: `http://127.0.0.1:8000`
+- Frontend: `http://127.0.0.1:5173`
+- Postgres: `127.0.0.1:55432`
+- MinIO API: `http://127.0.0.1:59000`
+- MinIO Console: `http://127.0.0.1:59001`
+
+Các host port có thể đổi qua `.env`:
+
+- `BACKEND_HOST_PORT`
+- `FRONTEND_HOST_PORT`
+- `POSTGRES_HOST_PORT`
+- `MINIO_API_HOST_PORT`
+- `MINIO_CONSOLE_HOST_PORT`
+
 ## Lưu ý
 
 - Không commit file `.env`

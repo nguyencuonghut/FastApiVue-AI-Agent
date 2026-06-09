@@ -20,6 +20,29 @@
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
 - Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using a `<style>` block
 - Verified frontend style architecture: `frontend/src/styles/**/*.scss` is now the centralized style tree for tokens, base styles, vendors, layouts, components, and pages
+- Verified Docker dev scaffold exists in project root:
+  - `docker-compose.yml`
+  - `docker/backend/Dockerfile`
+  - `docker/frontend/Dockerfile`
+  - root `.dockerignore`
+- Verified Docker dev services on 2026-06-09:
+  - `backend` image based on `ghcr.io/astral-sh/uv:python3.12-bookworm-slim`
+  - `frontend` image based on `node:22-bookworm-slim`
+  - `postgres` image `postgres:16-bookworm`
+  - `minio` image `minio/minio:RELEASE.2025-09-07T16-13-09Z`
+- Verified Docker Compose checks on 2026-06-09:
+  - `docker compose config`
+  - `docker compose up --build -d`
+  - `docker compose ps`
+  - `docker compose exec backend` health call to `http://127.0.0.1:8000/health`
+  - `docker compose exec frontend` fetch to `http://127.0.0.1:5173`
+- Verified host port defaults for Docker dev:
+  - backend `8000`
+  - frontend `5173`
+  - postgres `55432`
+  - minio API `59000`
+  - minio console `59001`
+- Verified `.env.example` exposes `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `POSTGRES_HOST_PORT`, `MINIO_API_HOST_PORT`, `MINIO_CONSOLE_HOST_PORT`
 
 ## Planned Stack
 
@@ -35,12 +58,12 @@
 
 ## Unverified
 
-- Docker Compose dev/prod/test files have not been created yet.
-- Database connectivity and MinIO connectivity are scaffolded but not exercised against running services yet.
-- Frontend runtime integration to a live backend endpoint has not been exercised yet.
+- Docker Compose production and test variants have not been created yet.
+- Real database migrations and MinIO bucket bootstrap have not been exercised yet.
+- Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
 
 ## Important Note
 
-Backend and frontend scaffolds are now implemented and verified. Container orchestration and live service integration remain the next major gap.
+Backend, frontend, and Docker dev scaffolds are now implemented and verified. Production/test compose variants and real service bootstrap remain the next major gaps.
 
 Any agent that later creates or verifies the real stack from code should update this file immediately.

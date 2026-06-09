@@ -101,3 +101,14 @@ The frontend lint pipeline should fail if any `.vue` file contains a `<style>` b
 Vitest unit tests must not scan Playwright specs. Keep `tests/unit` and `tests/e2e` separated and constrain Vitest `include` patterns explicitly.
 
 PrimeVue is configured with a custom preset and `darkModeSelector` bound to `.app-dark` so manual theme switching stays consistent across shared components.
+
+## Docker Dev Pattern
+
+Docker dev should optimize for repeatable local startup and low-friction rebuilds:
+
+1. keep dedicated Dockerfiles under `docker/`
+2. use a root `.dockerignore` so build context excludes docs, memory, vendor mirrors, caches, and local artifacts
+3. keep source bind-mounted for backend/frontend dev loops
+4. persist `.venv` and `node_modules` in named volumes so bind mounts do not erase installed dependencies
+5. expose infra ports through environment-overridable host-port variables because `5432`, `9000`, and `9001` frequently collide with other local services
+6. verify service readiness with healthchecks and container-internal HTTP calls when host localhost access is constrained by the agent environment
