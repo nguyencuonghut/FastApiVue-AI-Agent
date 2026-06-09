@@ -1,6 +1,7 @@
 FROM node:22-bookworm-slim AS base
 
 WORKDIR /app
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 
 FROM base AS dev
 

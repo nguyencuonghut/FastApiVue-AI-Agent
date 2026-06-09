@@ -86,3 +86,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Add mobile responsive requirement
 - Tom tat: Marked mobile responsive behavior as a mandatory frontend requirement in agent rules, fullstack design, Phase 1 scaffold plan, and Memory Bank so future UI work must target mobile, tablet, and desktop from the start.
+
+## 2026-06-09 07:22:23Z - codex
+
+- Tieu de: Remove deprecated glob Docker warning
+- Tom tat: Verified the deprecated glob warning came from @vue/test-utils -> js-beautify -> glob, forced transitive glob to 13.0.6 with npm overrides, regenerated the frontend lockfile, and reverified lint, typecheck, unit tests, and Docker frontend install/build paths without the old glob warning.
+
+## 2026-06-09 07:25:27Z - codex
+
+- Tieu de: Suppress npm update notice in Docker builds
+- Tom tat: Set NPM_CONFIG_UPDATE_NOTIFIER=false in the frontend Docker base stage so npm install and npm ci no longer emit the red major-version notice during Docker builds, and reverified the frontend Docker build logs.

@@ -80,6 +80,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: When browser tests target a Vite dev server through Docker service DNS, verify the hostname is explicitly allowed and rerun the Docker E2E smoke test after any compose or hostname change.
 - Related files: `frontend/vite.config.ts`, `docker-compose.test.yml`, `frontend/playwright.docker.config.ts`
 
+### 2026-06-09: Docker frontend build emitted deprecated `glob@10.5.0` warning
+
+- Area: Frontend dependency graph and Docker build output
+- Trigger: `npm install`/`npm ci` during frontend Docker builds warned that `glob@10.5.0` is deprecated.
+- Root cause: Latest `@vue/test-utils@2.4.11` still depends on `js-beautify@1.15.4`, which in turn depends on `glob ^10.4.2`; the resolved lockfile version was `10.5.0`.
+- Fix: Add an `overrides` entry in `frontend/package.json` to force transitive `glob` to `13.0.6`, then regenerate `frontend/package-lock.json`.
+- Regression guard: Re-check `npm ls glob` and at least one Docker frontend build path after dependency updates, because upstream latest packages may still carry deprecated transitives.
+- Related files: `frontend/package.json`, `frontend/package-lock.json`, `docker/frontend/Dockerfile`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
