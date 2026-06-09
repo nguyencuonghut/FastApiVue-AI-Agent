@@ -1,6 +1,9 @@
 .dashboard-page {
   display: grid;
   gap: 1.5rem;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .dashboard-page__hero {
@@ -17,6 +20,9 @@
     var(--app-surface-panel)
   );
   box-shadow: var(--app-shadow-sm);
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .dashboard-page__eyebrow {
@@ -45,6 +51,9 @@
   display: grid;
   grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
   gap: 1.5rem;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width: 1200px) {
@@ -54,7 +63,26 @@
 }
 
 @media (max-width: 768px) {
+  .dashboard-page {
+    gap: 1rem;
+  }
+
   .dashboard-page__hero {
     flex-direction: column;
+    padding: 1.25rem;
+  }
+
+  .dashboard-page__hero,
+  .dashboard-page__body {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dashboard-page__headline {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .dashboard-page__lead {
+    line-height: 1.6;
   }
 }

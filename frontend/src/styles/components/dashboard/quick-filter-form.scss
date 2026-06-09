@@ -3,6 +3,9 @@
   background: var(--app-surface-panel);
   border: 1px solid var(--app-border-soft);
   box-shadow: var(--app-shadow-sm);
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .quick-filter__title-row {

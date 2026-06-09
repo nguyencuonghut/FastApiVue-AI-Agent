@@ -24,6 +24,8 @@
 - Completed Phase 1 Step 5 Docker production: converted backend/frontend Dockerfiles to multi-stage `dev`/`prod`, added `docker-compose.prod.yml`, added Nginx reverse-proxy config, ensured production compose does not mount source code or expose Postgres/MinIO publicly, and verified `docker compose -f docker-compose.prod.yml config` plus production image builds
 - Completed Phase 1 Step 6 Docker test profile: added `docker-compose.test.yml`, isolated test Postgres/MinIO volumes, verified `backend-test`, `frontend-test`, and `e2e-test`, and fixed Vite host allowlisting for Docker browser tests
 - Completed Phase 1 Step 7 Quality gates: added a root `Makefile` with canonical backend/frontend/local/Docker commands, documented the workflow in `README.md`, and verified `make check` plus Docker browser E2E
+- Fixed the mobile admin shell: moved small-screen sidebar behavior to an off-canvas overlay with backdrop, added viewport-aware layout state, tightened mobile spacing, and re-verified Docker browser E2E
+- Fixed mobile shell width drift: topbar, page header, content wrapper, and dashboard cards now use symmetric mobile gutters with full-width constraints and clipped horizontal overflow
 
 ## Open
 

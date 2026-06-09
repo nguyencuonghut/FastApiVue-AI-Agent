@@ -2,6 +2,9 @@
   display: grid;
   grid-template-columns: 17.5rem minmax(0, 1fr);
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background:
     radial-gradient(
       circle at top left,
@@ -17,38 +20,74 @@
   color: var(--app-text-primary);
 }
 
+.admin-layout__backdrop {
+  display: none;
+}
+
 .admin-layout--sidebar-collapsed {
   grid-template-columns: 5.5rem minmax(0, 1fr);
 }
 
 .admin-layout__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   border-right: 1px solid var(--app-border-strong);
   background: var(--app-surface-panel);
   padding: 1.5rem 1rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-layout__sidebar-header {
+  display: block;
 }
 
 .admin-layout__brand {
   display: flex;
   align-items: center;
   gap: 0.875rem;
-  padding: 0.5rem;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
 }
 
-.admin-layout__brand-mark {
+.admin-layout__brand-logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.95rem;
-  background: var(--app-accent);
-  color: var(--app-accent-contrast);
-  font-weight: 700;
+  flex: 0 0 auto;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0.15rem;
+  border-radius: 1.35rem;
+  background: linear-gradient(
+    145deg,
+    rgba(43, 138, 117, 0.14),
+    rgba(43, 138, 117, 0.04)
+  );
+  box-shadow: 0 0.7rem 1.8rem rgba(19, 51, 44, 0.14);
+}
+
+.admin-layout__brand-logo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.admin-layout__brand-copy {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .admin-layout__brand-title,
 .admin-layout__page-title {
   margin: 0;
+}
+
+.admin-layout__brand-title {
+  white-space: nowrap;
 }
 
 .admin-layout__eyebrow {
@@ -62,17 +101,33 @@
 .admin-layout__nav {
   display: grid;
   gap: 0.5rem;
-  margin-top: 2rem;
 }
 
 .admin-layout__nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-width: 0;
   padding: 0.9rem 1rem;
   border-radius: 1rem;
   color: var(--app-text-primary);
   text-decoration: none;
   background: var(--app-surface-muted);
   border: 1px solid transparent;
+}
+
+.admin-layout__nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.admin-layout__nav-label {
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .admin-layout__nav-link.router-link-active {
@@ -82,7 +137,11 @@
 }
 
 .admin-layout__surface {
+  position: relative;
   min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .admin-layout__topbar {
@@ -90,13 +149,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
   border-bottom: 1px solid var(--app-border-soft);
   backdrop-filter: blur(12px);
   background: var(--app-surface-overlay);
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-layout__topbar-start {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .admin-layout__toolbar {
@@ -105,28 +172,140 @@
   gap: 0.75rem;
 }
 
+.admin-layout__sidebar-toggle {
+  justify-self: end;
+  flex: 0 0 auto;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: var(--app-text-secondary);
+  border: 1px solid var(--app-border-soft);
+  background: var(--app-surface-muted);
+}
+
+.admin-layout__page-header {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.5rem 2rem 0;
+  width: 100%;
+  max-width: 100%;
+}
+
 .admin-layout__content {
-  padding: 2rem;
+  padding: 1.5rem 2rem 2rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.admin-layout--sidebar-collapsed {
+  .admin-layout__brand {
+    justify-content: center;
+    width: 100%;
+    padding-inline: 0;
+  }
+
+  .admin-layout__brand-copy,
+  .admin-layout__nav-label {
+    width: 0;
+    display: none;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .admin-layout__nav-link {
+    width: 3.35rem;
+    height: 3.35rem;
+    align-self: center;
+    gap: 0;
+    justify-content: center;
+    padding: 0;
+    border-radius: 1.1rem;
+  }
+
+  .admin-layout__nav-icon {
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 1024px) {
   .admin-layout,
   .admin-layout--sidebar-collapsed {
-    grid-template-columns: 1fr;
+    display: block;
   }
 
   .admin-layout__sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--app-border-soft);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 40;
+    width: min(18rem, calc(100vw - 3rem));
+    padding: 1.25rem 1rem;
+    border-right: 1px solid var(--app-border-strong);
+    border-bottom: none;
+    box-shadow: 0 1.25rem 2.5rem rgba(8, 20, 17, 0.32);
+    transform: translateX(-110%);
+    transition: transform 180ms ease;
+  }
+
+  .admin-layout--mobile-sidebar-open .admin-layout__sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-layout__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    display: block;
+    border: 0;
+    padding: 0;
+    background: rgba(8, 20, 17, 0.48);
   }
 
   .admin-layout__topbar,
+  .admin-layout__page-header,
   .admin-layout__content {
-    padding: 1.25rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-inline: 1rem;
   }
 
   .admin-layout__topbar {
-    align-items: flex-start;
-    flex-direction: column;
+    padding-top: 1rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .admin-layout__page-header {
+    gap: 0.25rem;
+    padding-top: 1rem;
+  }
+
+  .admin-layout__content {
+    padding-top: 1rem;
+  }
+
+  .admin-layout--sidebar-collapsed {
+    .admin-layout__brand {
+      justify-content: flex-start;
+      padding-inline: 0.5rem;
+    }
+
+    .admin-layout__brand-copy,
+    .admin-layout__nav-label {
+      width: auto;
+      opacity: 1;
+      overflow: visible;
+      pointer-events: auto;
+    }
+
+    .admin-layout__nav-link {
+      justify-content: flex-start;
+      padding-inline: 1rem;
+      width: auto;
+      height: auto;
+      gap: 0.875rem;
+    }
   }
 }

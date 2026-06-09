@@ -96,3 +96,23 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Suppress npm update notice in Docker builds
 - Tom tat: Set NPM_CONFIG_UPDATE_NOTIFIER=false in the frontend Docker base stage so npm install and npm ci no longer emit the red major-version notice during Docker builds, and reverified the frontend Docker build logs.
+
+## 2026-06-09 07:36:30Z - codex
+
+- Tieu de: Refine admin shell controls and branding
+- Tom tat: Simplified the theme control to an icon button, moved the sidebar hamburger toggle into the sidebar header, added a richer sidebar logo lockup, and fixed collapsed sidebar overflow by hiding brand and nav labels in the collapsed desktop state while keeping mobile responsive behavior intact.
+
+## 2026-06-09 09:32:23Z - codex
+
+- Tieu de: Refactor shell to Sakai-style topbar and page header
+- Tom tat: Moved the sidebar toggle into the topbar, kept theme mode as a topbar global action, split page title/context into a dedicated page-header below the topbar, and updated memory so the admin shell now follows a Sakai-like separation of concerns.
+
+## 2026-06-09 09:50:37Z - codex
+
+- Tieu de: Fix mobile responsive admin shell
+- Tom tat: Converted the mobile admin shell from in-flow sidebar stacking to an off-canvas overlay with backdrop, added viewport-aware layout state, tightened mobile spacing, and verified Docker Playwright E2E still passes.
+
+## 2026-06-09 10:00:14Z - codex
+
+- Tieu de: Fix mobile content gutters
+- Tom tat: Constrained the mobile admin shell and dashboard sections to full-width responsive boxes, clipped horizontal overflow, and fixed asymmetric left/right gutters affecting the topbar, page header, and dashboard cards.

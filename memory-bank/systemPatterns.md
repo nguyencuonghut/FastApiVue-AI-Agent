@@ -118,6 +118,13 @@ Vitest unit tests must not scan Playwright specs. Keep `tests/unit` and `tests/e
 
 PrimeVue is configured with a custom preset and `darkModeSelector` bound to `.app-dark` so manual theme switching stays consistent across shared components.
 
+Admin shell should follow a Sakai-like separation of concerns:
+
+1. topbar owns global controls such as sidebar toggle, theme mode, notifications, profile, and logout
+2. page context such as section label and page title should live in a dedicated page-header area below the topbar, not inside the topbar itself
+3. collapsed desktop sidebar must switch nav to icon-first rendering and hide text labels instead of letting them overflow
+4. mobile sidebar must not stay in normal page flow; it should open as an off-canvas overlay with a backdrop so the topbar and content remain vertically ordered
+
 ## Docker Dev Pattern
 
 Docker dev should optimize for repeatable local startup and low-friction rebuilds:

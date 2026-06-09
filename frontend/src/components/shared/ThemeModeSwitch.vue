@@ -1,18 +1,18 @@
 <template>
-  <div class="theme-switch">
-    <span class="theme-switch__label">
-      {{ themeStore.isDark ? 'Dark mode' : 'Light mode' }}
-    </span>
-    <ToggleSwitch
-      :model-value="themeStore.isDark"
-      input-id="theme-mode-toggle"
-      @update:model-value="themeStore.toggleMode"
-    />
-  </div>
+  <Button
+    :aria-label="themeStore.isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    :icon="themeStore.isDark ? 'pi pi-sun' : 'pi pi-moon'"
+    class="theme-switch"
+    rounded
+    severity="secondary"
+    type="button"
+    variant="outlined"
+    @click="themeStore.toggleMode"
+  />
 </template>
 
 <script setup lang="ts">
-import ToggleSwitch from 'primevue/toggleswitch'
+import Button from 'primevue/button'
 
 import { useThemeStore } from '@/stores/theme.store'
 

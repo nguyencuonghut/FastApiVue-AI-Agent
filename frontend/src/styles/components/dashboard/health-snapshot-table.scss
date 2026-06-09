@@ -4,6 +4,10 @@
   border: 1px solid var(--app-border-soft);
   box-shadow: var(--app-shadow-sm);
   padding: 1.5rem;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .health-table__header {

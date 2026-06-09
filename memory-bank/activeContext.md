@@ -19,6 +19,7 @@ The repository has been prepared with:
 13. a fully verified Docker test scaffold exists with `docker-compose.test.yml`, isolated test data volumes, dedicated backend/frontend/e2e runners, and a Playwright-specific Docker path that passes after allowing the `frontend-e2e` Vite hostname
 14. a root `Makefile` now provides the canonical local and Docker quality-gate commands for backend, frontend, aggregate checks, and browser E2E
 15. mobile responsive behavior is now a mandatory frontend requirement alongside dark/light consistency, not an optional later enhancement
+16. the admin shell now uses a responsive split behavior: collapsed icon-first sidebar on desktop and off-canvas sidebar with backdrop on mobile so topbar/page-header/content keep Sakai-like ordering
 
 ## Next Useful Steps
 
