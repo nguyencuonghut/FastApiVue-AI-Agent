@@ -1,0 +1,22 @@
+# Local cloned reference repositories.
+/vendor/
+
+# Local environment and secrets.
+.env
+.env.*
+!.env.example
+
+# Runtime/cache output.
+__pycache__/
+*.py[cod]
+node_modules/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage/
+
+# Agent-memory runtime queue.
+/.agent-memory/inbox/*.json

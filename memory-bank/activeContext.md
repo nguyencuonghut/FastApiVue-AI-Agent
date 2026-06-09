@@ -7,9 +7,12 @@ The repository has been prepared with:
 1. local skills from `mattpocock/skills`
 2. a project-local memory workflow based on `axiomhq/agent-memory`
 3. mandatory startup rules in `AGENTS.md`
+4. a fullstack boilerplate design targeting FastAPI, Docker, MinIO, Postgres, Vue 3, TypeScript, Pinia, PrimeVue v4, and Sakai-inspired admin UI
+5. enterprise requirements for User import/export, large DataTable performance, heavy file processing, and security baseline
+6. production readiness requirements for observability, backup/restore, secret management, SLO, and compliance gates
 
 ## Next Useful Steps
 
-1. Populate bug history when the first real defects are fixed.
-2. Verify the actual application stack from source code when that code is available in the workspace.
+1. Scaffold `backend/`, `frontend/`, Docker Compose, Postgres, and MinIO according to `docs/fullstack-boilerplate-design.md`.
+2. Populate bug history when the first real defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

@@ -56,3 +56,27 @@ Technical claims should be backed by:
 - command output
 - tests
 - linked upstream sources
+
+## Rule 9: Keep Dark/Light Theme Consistent
+
+Dark/light mode is a system-wide style contract.
+
+Buttons, menus, headers, data tables, form inputs, dialogs, cards, tabs, and notifications must use shared theme tokens and remain visually consistent across all pages.
+
+Do not hardcode colors in page/component code. Add or reuse semantic tokens/classes instead.
+
+Any UI change that affects shared components must be checked in both dark and light mode before completion.
+
+## Rule 10: Enterprise Performance And Security
+
+The boilerplate must be designed at enterprise level.
+
+Do not load tens of thousands of rows into a normal API response or frontend store. Use server-side pagination/filter/sort, cursor pagination for large datasets, and virtual scrolling only where appropriate.
+
+Heavy import/export must use async jobs, chunk/stream processing, progress tracking, audit log, error report, and permissions.
+
+Security-sensitive endpoints must include RBAC, validation, rate limit where appropriate, audit logging, and tests.
+
+Secrets must never be committed. Database access must use ORM/query builder safely or parameterized queries. Production must enforce HTTPS, secure headers, CORS by environment, and dependency/container scanning.
+
+Production deployment is not acceptable without observability, backup/restore runbooks, secret management, SLO/alerts, and passing compliance gates or approved waivers.

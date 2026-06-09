@@ -8,3 +8,8 @@
 - `bugPatterns.md`
 - `activeContext.md`
 - `progress.md`
+- `session-log.md`
+
+Related design docs:
+
+- `docs/fullstack-boilerplate-design.md`

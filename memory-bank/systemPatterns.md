@@ -22,3 +22,46 @@ If code and docs disagree:
 1. verify with code or commands
 2. fix the docs
 3. record any recurring mismatch as a bug pattern
+
+## Theme Consistency Pattern
+
+Frontend theme must be centralized.
+
+Use shared semantic tokens/classes for:
+
+- button
+- menu/sidebar
+- topbar/header
+- datatable
+- form input
+- dialog
+- notification
+
+Dark/light mode must change the whole application consistently. Page-level color overrides are only allowed when they are backed by reusable semantic tokens.
+
+## Enterprise Data Pattern
+
+Large data flows must be server-driven.
+
+DataTable implementations use server-side pagination, filtering, and sorting. Frontend state stores query/selection state, not entire large datasets.
+
+Import/export flows use asynchronous jobs:
+
+1. upload or create request
+2. create job
+3. process by worker in chunks
+4. expose progress/status
+5. write output or error report to MinIO
+6. audit the operation
+
+## Production Readiness Pattern
+
+Production readiness is part of the architecture, not a deployment afterthought.
+
+Every production service must have:
+
+- observability: logs, metrics, traces, request/correlation id
+- backup/restore: scheduled backups, retention, restore drill
+- secret management: environment-specific secret source, no committed secrets
+- SLO: explicit availability, latency, error-rate targets
+- compliance gates: lint, tests, security scans, image scans, migration checks, backup health
