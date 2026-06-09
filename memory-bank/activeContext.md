@@ -18,6 +18,7 @@ The repository has been prepared with:
 12. a verified Docker production scaffold with multi-stage backend/frontend Dockerfiles, frontend static build, Nginx reverse proxy config, and `docker-compose.prod.yml` without source mounts or public Postgres/MinIO ports
 13. a fully verified Docker test scaffold exists with `docker-compose.test.yml`, isolated test data volumes, dedicated backend/frontend/e2e runners, and a Playwright-specific Docker path that passes after allowing the `frontend-e2e` Vite hostname
 14. a root `Makefile` now provides the canonical local and Docker quality-gate commands for backend, frontend, aggregate checks, and browser E2E
+15. mobile responsive behavior is now a mandatory frontend requirement alongside dark/light consistency, not an optional later enhancement
 
 ## Next Useful Steps
 

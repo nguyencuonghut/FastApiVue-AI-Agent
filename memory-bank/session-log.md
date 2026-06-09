@@ -81,3 +81,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Phase 1 Step 7 quality gates
 - Tom tat: Added root Makefile quality gates for backend/frontend/local/Docker, documented the workflow in README, verified make check, and fixed Docker E2E by allowing Vite host frontend-e2e.
+
+## 2026-06-09 07:12:44Z - codex
+
+- Tieu de: Add mobile responsive requirement
+- Tom tat: Marked mobile responsive behavior as a mandatory frontend requirement in agent rules, fullstack design, Phase 1 scaffold plan, and Memory Bank so future UI work must target mobile, tablet, and desktop from the start.

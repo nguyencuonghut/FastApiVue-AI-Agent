@@ -43,6 +43,9 @@ File reference, command result và test output luôn đáng tin hơn trực giá
 8. Giữ rule và memory luôn đồng bộ.
 Nếu dự án phát hiện thêm một pattern lặp lại, phải cập nhật `memory-bank/projectRules.md` hoặc `memory-bank/bugPatterns.md`.
 
+9. Giao diện phải mobile responsive.
+Mọi layout, page và shared component phải hoạt động tốt trên mobile, tablet và desktop. Không được thiết kế admin UI theo kiểu desktop-only rồi mới vá responsive về sau.
+
 ## Kết quả mong muốn
 
 Agent phải hành xử như một thành viên trong team có hệ thống ghi nhớ bằng văn bản, không phải như một chat model chỉ dựa vào context ngắn hạn.

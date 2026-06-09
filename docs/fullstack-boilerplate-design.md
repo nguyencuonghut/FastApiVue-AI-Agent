@@ -18,6 +18,7 @@ Boilerplate phải có:
 - MinIO làm object storage.
 - Auto test framework cho cả backend và frontend.
 - Linter, formatter, typecheck cho cả backend và frontend.
+- Giao diện phải mobile responsive, không chỉ tối ưu cho desktop admin.
 
 ## Nguồn tham khảo đã xác minh
 
@@ -71,6 +72,7 @@ Boilerplate phải có:
 - Vitest + Vue Test Utils: unit/component test.
 - Playwright: E2E test.
 - MSW hoặc API mock layer: test frontend không phụ thuộc backend thật khi cần.
+- Responsive-first layout behavior cho mobile, tablet và desktop.
 
 ### Infrastructure
 
@@ -282,6 +284,20 @@ Các page ban đầu:
 - Profile
 - Forbidden
 - Not found
+
+### Mobile Responsive
+
+Boilerplate không được xem admin dashboard là giao diện desktop-only.
+
+Yêu cầu bắt buộc:
+
+- Layout phải dùng responsive breakpoints rõ ràng cho mobile, tablet và desktop.
+- Sidebar/topbar/menu phải có hành vi phù hợp trên màn hình nhỏ, ví dụ overlay drawer thay vì luôn cố định.
+- DataTable, form, dialog, card grid và action bar phải usable trên mobile mà không vỡ layout.
+- Không được phụ thuộc vào hover-only interaction cho các hành vi quan trọng.
+- Spacing, typography, hit area và overflow phải được kiểm tra trên viewport nhỏ.
+
+Responsive phải là system behavior dùng chung, không xử lý chắp vá theo từng page.
 
 ### Dark/Light Mode
 

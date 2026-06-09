@@ -15,6 +15,7 @@ Kết thúc phase này, repository phải có:
 - Linter, formatter, typecheck cho backend/frontend.
 - Test framework tự động cho backend/frontend.
 - Cấu trúc sẵn sàng mở rộng sang auth, RBAC, dashboard và import/export ở các phase sau.
+- Frontend foundation phải mobile responsive ngay từ scaffold.
 
 ## Phạm vi
 
@@ -53,6 +54,7 @@ Những phần ngoài scope chỉ cần scaffold/config đủ để phase sau m�
 8. Dark/light theme phải đi qua token/class dùng chung.
 9. Test framework phải chạy được trong local và Docker test profile.
 10. File config phải có `.env.example`, không commit `.env`.
+11. Layout và shared UI phải responsive cho mobile, tablet và desktop.
 
 ## Deliverables
 
@@ -141,6 +143,7 @@ Frontend tối thiểu:
 - Health/smoke page tối thiểu.
 - Dark/light mode token layer ban đầu.
 - Không dùng style block trong `.vue`.
+- Responsive layout scaffold ban đầu cho mobile/tablet/desktop.
 
 Quy tắc `.vue`:
 
@@ -238,6 +241,7 @@ Kết quả:
 6. Cấu hình Playwright smoke test.
 7. Tạo layout/smoke page tối thiểu.
 8. Tạo theme token layer và dark/light toggle scaffold.
+9. Đảm bảo admin layout và smoke page responsive trên mobile.
 
 Kết quả:
 
@@ -245,6 +249,7 @@ Kết quả:
 - Unit test pass.
 - Typecheck pass.
 - E2E smoke test có thể chạy.
+- Layout không vỡ ở viewport mobile cơ bản.
 
 ### Bước 4: Docker dev
 

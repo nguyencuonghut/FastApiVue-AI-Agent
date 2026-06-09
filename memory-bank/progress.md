@@ -11,6 +11,7 @@
 - Added fullstack boilerplate design doc in `docs/fullstack-boilerplate-design.md`
 - Added requirements for Docker dev/prod/test and automatic test frameworks for backend/frontend
 - Added system-wide dark/light theme consistency requirement for buttons, menus, headers, data tables, form inputs, and shared UI components
+- Added a mandatory mobile-responsive requirement for frontend layout and shared UI
 - Upgraded design requirements to enterprise level: User import/export, large DataTable performance, heavy file import/export jobs, and stronger security baseline
 - Added production readiness requirements: observability, backup/restore, secret management, SLO, and compliance gates
 - Added Phase 1 scaffold implementation plan in `docs/phase-1-scaffold-implementation-plan.md`

@@ -39,6 +39,22 @@ Use shared semantic tokens/classes for:
 
 Dark/light mode must change the whole application consistently. Page-level color overrides are only allowed when they are backed by reusable semantic tokens.
 
+## Responsive UI Pattern
+
+Frontend layout must be responsive by default.
+
+Use shared responsive rules for:
+
+- sidebar/menu behavior
+- topbar actions
+- page spacing
+- card grids
+- forms
+- datatable wrappers
+- dialog sizing
+
+Do not rely on page-by-page fixes for mobile. Responsive behavior should come from centralized layout/component styles and tested breakpoints.
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.

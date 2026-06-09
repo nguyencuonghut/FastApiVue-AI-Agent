@@ -86,3 +86,11 @@ Security-sensitive endpoints must include RBAC, validation, rate limit where app
 Secrets must never be committed. Database access must use ORM/query builder safely or parameterized queries. Production must enforce HTTPS, secure headers, CORS by environment, and dependency/container scanning.
 
 Production deployment is not acceptable without observability, backup/restore runbooks, secret management, SLO/alerts, and passing compliance gates or approved waivers.
+
+## Rule 11: Mobile Responsive Is Mandatory
+
+Admin UI must work on mobile, tablet, and desktop.
+
+Shared layout pieces such as sidebar, topbar, breadcrumb, tables, forms, dialogs, cards, and action bars must degrade gracefully on smaller viewports.
+
+Do not treat responsive behavior as a later polish task. It is part of the base acceptance criteria for frontend work.
