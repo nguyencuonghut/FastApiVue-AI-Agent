@@ -59,6 +59,18 @@
   - production compose does not mount source code
   - production compose does not publish Postgres or MinIO ports
   - public production entrypoint defaults to `PROXY_HOST_PORT=8080`
+- Verified Docker test scaffold exists in project root:
+  - `docker-compose.test.yml`
+  - `frontend/playwright.docker.config.ts`
+- Verified Docker test checks on 2026-06-09:
+  - `docker compose -f docker-compose.test.yml config`
+  - `docker compose -f docker-compose.test.yml run --rm backend-test`
+  - `docker compose -f docker-compose.test.yml run --rm frontend-test`
+- Verified Docker test architecture:
+  - `backend-test` uses isolated Postgres/MinIO services and runs `pytest`, `ruff`, `mypy`, `bandit`
+  - `frontend-test` runs `lint`, `typecheck`, `test:unit`
+  - `backend-e2e` and `frontend-e2e` provide network targets for browser tests
+  - `e2e-test` has a dedicated Playwright Docker path via the `e2e` target in `docker/frontend/Dockerfile`
 
 ## Planned Stack
 
@@ -74,13 +86,13 @@
 
 ## Unverified
 
-- Docker Compose test variant has not been created yet.
 - Real database migrations and MinIO bucket bootstrap have not been exercised yet.
 - Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
 - Full production runtime startup via `docker compose -f docker-compose.prod.yml up` has not been exercised yet; only config validity and production image builds were verified in this step.
+- The latest `e2e-test` Docker path has not yet been re-verified end-to-end after moving Playwright dependencies into the dedicated `e2e` build target.
 
 ## Important Note
 
-Backend, frontend, Docker dev, and Docker production scaffolds are now implemented and verified at config/build level. Docker test profile and real production runtime bootstrap remain the next major gaps.
+Backend, frontend, Docker dev, and Docker production scaffolds are implemented. Docker test profile is mostly in place, with `backend-test` and `frontend-test` verified and the latest `e2e-test` path still awaiting its final pass.
 
 Any agent that later creates or verifies the real stack from code should update this file immediately.

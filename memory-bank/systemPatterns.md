@@ -124,3 +124,13 @@ Docker production should differ from dev in explicit, auditable ways:
 5. place reverse-proxy routing in `docker/nginx/` and keep `/api/*` to backend, `/` to frontend
 6. do not publish Postgres or MinIO ports publicly in production scaffold unless a later requirement explicitly needs it
 7. keep the public entrypoint isolated to a single proxy port that is environment-overridable
+
+## Docker Test Pattern
+
+Docker test should separate runner responsibilities:
+
+1. keep `backend-test`, `frontend-test`, and `e2e-test` as explicit services
+2. give test infra its own Postgres/MinIO services and volumes
+3. set `PYTHONPATH=/app` explicitly for backend test containers when the package layout requires it
+4. point browser E2E at internal service DNS names like `frontend-e2e` and `backend-e2e`
+5. prefer a dedicated Docker build path for Playwright dependencies instead of relying on host-installed browsers

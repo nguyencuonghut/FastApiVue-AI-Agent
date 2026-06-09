@@ -21,9 +21,10 @@
 - Refactored frontend styles into centralized `src/styles/**/*.scss`, removed all `<style>` blocks from Vue SFC files, and verified lint/test/build with Sass enabled
 - Completed Phase 1 Step 4 Docker dev: added `docker-compose.yml`, backend/frontend Dockerfiles, root `.dockerignore`, customizable host port mapping, verified container health for backend/frontend/postgres/minio, and verified backend/frontend HTTP responses from inside containers
 - Completed Phase 1 Step 5 Docker production: converted backend/frontend Dockerfiles to multi-stage `dev`/`prod`, added `docker-compose.prod.yml`, added Nginx reverse-proxy config, ensured production compose does not mount source code or expose Postgres/MinIO publicly, and verified `docker compose -f docker-compose.prod.yml config` plus production image builds
+- Implemented most of Phase 1 Step 6 Docker test profile: added `docker-compose.test.yml`, isolated test Postgres/MinIO volumes, verified `backend-test` and `frontend-test`, and added a dedicated Playwright Docker path for `e2e-test`
 
 ## Open
 
 - Start recording real bug history
-- Implement Phase 1 Step 6 Docker test profile from `docs/phase-1-scaffold-implementation-plan.md`
+- Finish the final verification pass for `e2e-test` in `docker-compose.test.yml`
 - Optionally install Bun and run the upstream `agent-memory` CLI locally

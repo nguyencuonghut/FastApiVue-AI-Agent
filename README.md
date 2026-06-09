@@ -77,6 +77,21 @@ Port public mặc định của production scaffold:
 
 Có thể đổi qua biến `PROXY_HOST_PORT`.
 
+## Chạy test bằng Docker
+
+```bash
+docker compose -f docker-compose.test.yml run --rm backend-test
+docker compose -f docker-compose.test.yml run --rm frontend-test
+docker compose -f docker-compose.test.yml run --rm e2e-test
+```
+
+Test profile hiện có:
+
+- `backend-test`: `pytest`, `ruff`, `mypy`, `bandit`
+- `frontend-test`: `lint`, `typecheck`, `test:unit`
+- `e2e-test`: Playwright smoke test qua service `frontend-e2e`
+- `postgres-test` và `minio-test` dùng volume riêng, tách khỏi dev data
+
 ## Lưu ý
 
 - Không commit file `.env`

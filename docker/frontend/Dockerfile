@@ -24,6 +24,13 @@ RUN npm ci
 COPY frontend /app
 RUN npm run build
 
+FROM base AS e2e
+
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci && npx playwright install --with-deps chromium
+
+COPY frontend /app
+
 FROM nginx:1.28-alpine AS prod
 
 COPY docker/frontend/nginx.default.conf /etc/nginx/conf.d/default.conf

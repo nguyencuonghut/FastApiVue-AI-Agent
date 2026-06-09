@@ -71,3 +71,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Hoan thanh Phase 1 Step 5 Docker production
 - Tom tat: Them docker-compose.prod.yml, chuyen Dockerfile backend/frontend sang multi-stage dev/prod, them frontend static build va Nginx reverse proxy, bo mount source code o production, an Postgres/MinIO khoi public ports, va verify production config cung image build bang docker compose.
+
+## 2026-06-09 06:50:54Z - codex
+
+- Tieu de: Trien khai Phase 1 Step 6 Docker test profile
+- Tom tat: Them docker-compose.test.yml voi backend-test, frontend-test, backend-e2e, frontend-e2e, e2e-test va volume test rieng; verify duoc backend-test va frontend-test; da debug Playwright Docker path, cap nhat smoke spec va chuyen sang e2e build path, nhung can mot luot verify cuoi cho e2e-test sau thay doi Dockerfile moi nhat.

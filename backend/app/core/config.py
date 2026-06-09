@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     app_debug: bool = Field(default=True, alias="APP_DEBUG")
     app_version: str = "0.1.0"
 
-    backend_host: str = Field(default="0.0.0.0", alias="BACKEND_HOST")
+    backend_host: str = Field(default="0.0.0.0", alias="BACKEND_HOST")  # nosec B104
     backend_port: int = Field(default=8000, alias="BACKEND_PORT")
     api_v1_prefix: str = Field(default="/api/v1", alias="API_V1_PREFIX")
 

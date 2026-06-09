@@ -53,6 +53,24 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: When choosing container startup commands, verify that the required dependency extras are actually installed, or prefer the directly installed ASGI server command.
 - Related files: `docker/backend/Dockerfile`, `docker-compose.yml`, `backend/pyproject.toml`
 
+### 2026-06-09: Backend test container could not import `app`
+
+- Area: Docker test profile for backend
+- Trigger: `docker compose -f docker-compose.test.yml run --rm backend-test` failed with `ModuleNotFoundError: No module named 'app'` even though the package existed under `/app/app`.
+- Root cause: The backend test runner inside the container did not reliably include `/app` on `sys.path` for this scaffold layout.
+- Fix: Set `PYTHONPATH=/app` for backend test services in `docker-compose.test.yml`.
+- Regression guard: When containerizing Python tests for a flat `/app/app` layout, verify imports inside the actual runner environment rather than assuming local behavior carries over.
+- Related files: `docker-compose.test.yml`, `backend/tests/conftest.py`
+
+### 2026-06-09: Frontend E2E smoke spec drifted from scaffold UI
+
+- Area: Frontend Playwright smoke test
+- Trigger: The browser-backed Docker E2E run reached the app, but the assertion for the old heading/text failed.
+- Root cause: The Playwright smoke spec was not updated after the dashboard scaffold copy changed.
+- Fix: Update `frontend/tests/e2e/smoke.spec.ts` to assert the current `Frontend Smoke Dashboard` heading and `Vue 3 + PrimeVue v4 scaffold` text.
+- Regression guard: Re-run both the unit spec and Playwright smoke spec whenever scaffold copy or page structure changes.
+- Related files: `frontend/tests/e2e/smoke.spec.ts`, `frontend/tests/unit/dashboard.page.spec.ts`, `frontend/src/pages/DashboardPage.vue`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
