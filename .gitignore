@@ -17,6 +17,7 @@ build/
 .mypy_cache/
 .coverage
 coverage/
+.venv/
 
 # Agent-memory runtime queue.
 /.agent-memory/inbox/*.json

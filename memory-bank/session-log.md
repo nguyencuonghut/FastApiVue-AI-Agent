@@ -41,3 +41,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Hoan thanh Phase 1 Step 1 repository preparation
 - Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md theo startup contract. Da hoan thanh Phase 1 Step 1 bang viec xac nhan .gitignore, giu vendor/ o trang thai ignored, tao README.md mo ta repo, tao .env.example voi cac bien dev co ban, va cap nhat memory-bank/progress.md cung activeContext.md de chuyen sang Step 2 backend scaffold.
+
+## 2026-06-09 04:29:26Z - codex
+
+- Tieu de: Hoan thanh Phase 1 Step 2 backend scaffold
+- Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da scaffold backend/ voi FastAPI 0.136.3, pyproject.toml, uv.lock, app factory, health endpoints, typed settings, request-id middleware, SQLAlchemy async session skeleton, MinIO client scaffold, Alembic stub va tests. Da xac minh bang uv run pytest, uv run ruff check . va uv run mypy .

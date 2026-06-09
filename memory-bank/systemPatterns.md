@@ -65,3 +65,18 @@ Every production service must have:
 - secret management: environment-specific secret source, no committed secrets
 - SLO: explicit availability, latency, error-rate targets
 - compliance gates: lint, tests, security scans, image scans, migration checks, backup health
+
+## Backend Scaffold Pattern
+
+The backend uses a thin-entrypoint FastAPI structure:
+
+1. `app/main.py` exposes the ASGI app
+2. `app/core/application.py` owns app creation and middleware wiring
+3. `app/api/router.py` and `app/api/v1/router.py` compose routers by version
+4. `app/core/config.py` owns typed settings
+5. `app/db/session.py` owns SQLAlchemy async engine/session factory
+6. `app/storage/minio.py` owns MinIO client construction
+
+Health endpoints exist at both `/health` and `/api/v1/health`.
+
+Request correlation is centralized through middleware, not repeated inside route handlers.

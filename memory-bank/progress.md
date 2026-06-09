@@ -15,9 +15,10 @@
 - Added production readiness requirements: observability, backup/restore, secret management, SLO, and compliance gates
 - Added Phase 1 scaffold implementation plan in `docs/phase-1-scaffold-implementation-plan.md`
 - Completed Phase 1 Step 1 repository preparation: `.gitignore`, `README.md`, `.env.example`, and vendor Git isolation
+- Completed Phase 1 Step 2 backend scaffold: `backend/` app package, FastAPI `0.136.3`, typed settings, request-id middleware, SQLAlchemy async session skeleton, MinIO client scaffold, Alembic stub, `uv.lock`, and verified `pytest` + `ruff` + `mypy`
 
 ## Open
 
-- Implement Phase 1 Step 2 backend scaffold from `docs/phase-1-scaffold-implementation-plan.md`
+- Implement Phase 1 Step 3 frontend scaffold from `docs/phase-1-scaffold-implementation-plan.md`
 - Start recording real bug history
 - Optionally install Bun and run the upstream `agent-memory` CLI locally
