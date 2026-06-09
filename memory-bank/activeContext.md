@@ -16,10 +16,11 @@ The repository has been prepared with:
 10. a centralized frontend style architecture in `frontend/src/styles/**/*.scss` covering tokens, base, vendors, layouts, components, and pages
 11. a verified Docker dev scaffold with `docker-compose.yml`, backend/frontend Dockerfiles, Postgres, MinIO, customizable host ports, and reduced build context via root `.dockerignore`
 12. a verified Docker production scaffold with multi-stage backend/frontend Dockerfiles, frontend static build, Nginx reverse proxy config, and `docker-compose.prod.yml` without source mounts or public Postgres/MinIO ports
-13. a Docker test scaffold has been added with `docker-compose.test.yml`, isolated test data volumes, dedicated backend/frontend runners, and a Playwright-specific Docker path that still needs final pass verification
+13. a fully verified Docker test scaffold exists with `docker-compose.test.yml`, isolated test data volumes, dedicated backend/frontend/e2e runners, and a Playwright-specific Docker path that passes after allowing the `frontend-e2e` Vite hostname
+14. a root `Makefile` now provides the canonical local and Docker quality-gate commands for backend, frontend, aggregate checks, and browser E2E
 
 ## Next Useful Steps
 
-1. Finish the final verification pass for `docker compose -f docker-compose.test.yml run --rm e2e-test`.
-2. Populate bug history when the first real defects are fixed.
+1. Decide whether Phase 1 should stop at scaffold completion or continue into the next feature phase.
+2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

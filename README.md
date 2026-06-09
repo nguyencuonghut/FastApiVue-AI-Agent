@@ -92,6 +92,65 @@ Test profile hiện có:
 - `e2e-test`: Playwright smoke test qua service `frontend-e2e`
 - `postgres-test` và `minio-test` dùng volume riêng, tách khỏi dev data
 
+## Quality gates trước khi commit
+
+Root repo hiện có `Makefile` để gom toàn bộ quality gates:
+
+```bash
+make backend-check
+make frontend-check
+make check
+```
+
+Browser E2E được tách riêng:
+
+```bash
+make frontend-test-e2e
+make frontend-check-e2e
+```
+
+Các target chi tiết:
+
+```bash
+# Backend
+make backend-lint
+make backend-format-check
+make backend-typecheck
+make backend-test
+make backend-security
+
+# Frontend
+make frontend-lint
+make frontend-format-check
+make frontend-typecheck
+make frontend-test-unit
+make frontend-test-e2e
+```
+
+Target Docker tương ứng:
+
+```bash
+make docker-test-backend
+make docker-test-frontend
+make docker-test-e2e
+make docker-test
+```
+
+Gợi ý dùng hằng ngày:
+
+```bash
+make check
+make docker-test-e2e
+```
+
+Lý do: `make check` gom toàn bộ lint/format/typecheck/unit/security ổn định trên local, còn browser E2E phụ thuộc khả năng bind port của host nên có target riêng và có path Docker tương ứng.
+
+Nếu cần đổi cache cho `uv`, có thể truyền:
+
+```bash
+make backend-check UV_CACHE_DIR=/tmp/uv-cache
+```
+
 ## Lưu ý
 
 - Không commit file `.env`

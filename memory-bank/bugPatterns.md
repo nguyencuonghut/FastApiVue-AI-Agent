@@ -71,6 +71,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: Re-run both the unit spec and Playwright smoke spec whenever scaffold copy or page structure changes.
 - Related files: `frontend/tests/e2e/smoke.spec.ts`, `frontend/tests/unit/dashboard.page.spec.ts`, `frontend/src/pages/DashboardPage.vue`
 
+### 2026-06-09: Vite blocked Docker service hostname during E2E
+
+- Area: Frontend Docker E2E runtime
+- Trigger: `docker compose -f docker-compose.test.yml run --rm e2e-test` loaded the Vite app shell but Playwright only saw `Blocked request. This host ("frontend-e2e") is not allowed.`
+- Root cause: Vite dev server did not allow the internal Docker service hostname used by Playwright baseURL.
+- Fix: Add `server.allowedHosts = ['frontend-e2e']` in `frontend/vite.config.ts`.
+- Regression guard: When browser tests target a Vite dev server through Docker service DNS, verify the hostname is explicitly allowed and rerun the Docker E2E smoke test after any compose or hostname change.
+- Related files: `frontend/vite.config.ts`, `docker-compose.test.yml`, `frontend/playwright.docker.config.ts`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

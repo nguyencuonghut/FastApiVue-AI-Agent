@@ -66,11 +66,17 @@
   - `docker compose -f docker-compose.test.yml config`
   - `docker compose -f docker-compose.test.yml run --rm backend-test`
   - `docker compose -f docker-compose.test.yml run --rm frontend-test`
+  - `docker compose -f docker-compose.test.yml run --rm e2e-test`
 - Verified Docker test architecture:
   - `backend-test` uses isolated Postgres/MinIO services and runs `pytest`, `ruff`, `mypy`, `bandit`
   - `frontend-test` runs `lint`, `typecheck`, `test:unit`
   - `backend-e2e` and `frontend-e2e` provide network targets for browser tests
   - `e2e-test` has a dedicated Playwright Docker path via the `e2e` target in `docker/frontend/Dockerfile`
+  - `frontend/vite.config.ts` must allow the internal Docker hostname `frontend-e2e` for browser E2E to reach the Vite dev server
+- Verified root quality-gate entrypoint on 2026-06-09:
+  - `Makefile`
+  - `make check`
+  - `make docker-test-e2e`
 
 ## Planned Stack
 
@@ -89,10 +95,10 @@
 - Real database migrations and MinIO bucket bootstrap have not been exercised yet.
 - Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
 - Full production runtime startup via `docker compose -f docker-compose.prod.yml up` has not been exercised yet; only config validity and production image builds were verified in this step.
-- The latest `e2e-test` Docker path has not yet been re-verified end-to-end after moving Playwright dependencies into the dedicated `e2e` build target.
+- Local host-level browser E2E via `npm --prefix frontend run test:e2e` remains environment-sensitive in this agent session because the sandbox blocks opening a listening socket on `127.0.0.1:4173` with `EPERM`; the Docker E2E path is verified and should be treated as the reliable browser gate in sandboxed automation.
 
 ## Important Note
 
-Backend, frontend, Docker dev, and Docker production scaffolds are implemented. Docker test profile is mostly in place, with `backend-test` and `frontend-test` verified and the latest `e2e-test` path still awaiting its final pass.
+Backend, frontend, Docker dev, Docker production, Docker test profile, and root quality gates are implemented and verified at scaffold level.
 
 Any agent that later creates or verifies the real stack from code should update this file immediately.

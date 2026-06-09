@@ -76,3 +76,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Trien khai Phase 1 Step 6 Docker test profile
 - Tom tat: Them docker-compose.test.yml voi backend-test, frontend-test, backend-e2e, frontend-e2e, e2e-test va volume test rieng; verify duoc backend-test va frontend-test; da debug Playwright Docker path, cap nhat smoke spec va chuyen sang e2e build path, nhung can mot luot verify cuoi cho e2e-test sau thay doi Dockerfile moi nhat.
+
+## 2026-06-09 07:06:22Z - codex
+
+- Tieu de: Phase 1 Step 7 quality gates
+- Tom tat: Added root Makefile quality gates for backend/frontend/local/Docker, documented the workflow in README, verified make check, and fixed Docker E2E by allowing Vite host frontend-e2e.

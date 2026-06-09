@@ -134,3 +134,14 @@ Docker test should separate runner responsibilities:
 3. set `PYTHONPATH=/app` explicitly for backend test containers when the package layout requires it
 4. point browser E2E at internal service DNS names like `frontend-e2e` and `backend-e2e`
 5. prefer a dedicated Docker build path for Playwright dependencies instead of relying on host-installed browsers
+6. when browser tests hit a Vite dev server through Docker DNS, explicitly allow the service hostname in `server.allowedHosts`
+
+## Quality Gate Pattern
+
+The root `Makefile` is the canonical developer entrypoint for pre-commit checks:
+
+1. `make backend-check` runs backend lint, format-check, typecheck, tests, and Bandit
+2. `make frontend-check` runs frontend lint, format-check, typecheck, and unit tests
+3. `make frontend-test-e2e` is a separate local browser gate because host socket policies may differ by environment
+4. `make docker-test-e2e` is the reliable browser E2E gate for sandboxed or CI-like environments
+5. `make check` should stay stable and fast enough for routine local validation
