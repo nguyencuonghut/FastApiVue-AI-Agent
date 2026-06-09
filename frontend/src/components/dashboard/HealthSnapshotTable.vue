@@ -48,5 +48,3 @@ function statusSeverity(status: HealthRow['status']) {
   return tagSeverityMap[status]
 }
 </script>
-
-<style src="./HealthSnapshotTable.css"></style>

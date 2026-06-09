@@ -12,7 +12,8 @@ The repository has been prepared with:
 6. production readiness requirements for observability, backup/restore, secret management, SLO, and compliance gates
 7. a verified backend scaffold in `backend/` with FastAPI, typed settings, request-id middleware, SQLAlchemy async session skeleton, MinIO client scaffold, Alembic stub, and health endpoint tests
 8. a verified frontend scaffold in `frontend/` with Vue 3, TypeScript, Vite, Vue Router, Pinia, PrimeVue v4, VeeValidate + Zod, shared dark/light theme tokens, unit tests, Playwright smoke test, and successful production build
-9. a repository rule that Vue SFC must not use `scoped style`, with automatic lint enforcement in `frontend/scripts/check-no-scoped-style.mjs`
+9. a repository rule that Vue SFC must not use style blocks, with automatic lint enforcement in `frontend/scripts/check-no-scoped-style.mjs`
+10. a centralized frontend style architecture in `frontend/src/styles/**/*.scss` covering tokens, base, vendors, layouts, components, and pages
 
 ## Next Useful Steps
 

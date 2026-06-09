@@ -56,5 +56,3 @@ const {
   summaryCards,
 } = useDashboardSmokePage()
 </script>
-
-<style src="./DashboardPage.css"></style>

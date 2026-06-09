@@ -70,5 +70,3 @@ function onSubmit() {
   emit('submit')
 }
 </script>
-
-<style src="./QuickFilterForm.css"></style>

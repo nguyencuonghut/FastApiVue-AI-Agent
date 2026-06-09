@@ -18,6 +18,7 @@
 - Completed Phase 1 Step 2 backend scaffold: `backend/` app package, FastAPI `0.136.3`, typed settings, request-id middleware, SQLAlchemy async session skeleton, MinIO client scaffold, Alembic stub, `uv.lock`, and verified `pytest` + `ruff` + `mypy`
 - Completed Phase 1 Step 3 frontend scaffold: `frontend/` app package, Vue `3.5.x`, Vite `8`, Router, Pinia, PrimeVue `4.5.5`, VeeValidate `4.15.1`, Zod, shared dark/light token layer, unit tests, Playwright smoke test, and verified `typecheck` + `lint` + `build`
 - Tightened frontend implementation rule: no `scoped style` in Vue SFC, migrated Step 3 files off `scoped`, and added an automatic lint guard via `frontend/scripts/check-no-scoped-style.mjs`
+- Refactored frontend styles into centralized `src/styles/**/*.scss`, removed all `<style>` blocks from Vue SFC files, and verified lint/test/build with Sass enabled
 
 ## Open
 

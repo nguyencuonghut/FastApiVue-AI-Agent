@@ -61,5 +61,3 @@ defineProps<{
 
 const layoutStore = useLayoutStore()
 </script>
-
-<style src="./AdminLayout.css"></style>

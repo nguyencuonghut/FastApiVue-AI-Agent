@@ -20,6 +20,12 @@ npm run test:e2e
 - `src/pages/`: page-level SFC
 - `src/composables/`: logic tách khỏi page/component
 - `src/stores/`: Pinia stores
-- `src/styles/`: token theme và shared styling
+- `src/styles/`: hệ style tập trung bằng `scss` cho tokens, base, vendors, layouts, components, pages
 - `tests/unit/`: unit test
 - `tests/e2e/`: Playwright smoke test
+
+## Quy ước style
+
+- Không dùng `<style>` trong `.vue`
+- Không dùng `scoped style`
+- Toàn bộ style đi qua `src/styles/**/*.scss`

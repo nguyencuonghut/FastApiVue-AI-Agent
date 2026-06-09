@@ -5,7 +5,7 @@ import App from './App.vue'
 import { configurePrimeVue } from './plugins/primevue'
 import { router } from './router'
 import { useThemeStore } from './stores/theme.store'
-import './styles/main.css'
+import './styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()

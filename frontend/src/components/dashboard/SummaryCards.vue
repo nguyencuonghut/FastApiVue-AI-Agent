@@ -30,5 +30,3 @@ const severityMap = {
   warn: 'warn',
 } as const
 </script>
-
-<style src="./SummaryCards.css"></style>

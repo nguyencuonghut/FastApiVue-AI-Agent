@@ -16,9 +16,10 @@
 - Frontend package manager and runner: `npm`
 - Verified frontend dependency set from `frontend/package.json` and `frontend/package-lock.json`
 - Verified frontend app entrypoint: `frontend/src/main.ts`
-- Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
+- Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, Sass `1.100.0`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
-- Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using `<style scoped>`
+- Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using a `<style>` block
+- Verified frontend style architecture: `frontend/src/styles/**/*.scss` is now the centralized style tree for tokens, base styles, vendors, layouts, components, and pages
 
 ## Planned Stack
 

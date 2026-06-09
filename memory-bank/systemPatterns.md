@@ -91,11 +91,12 @@ The frontend uses a thin-SFC and external-logic pattern:
 4. `src/composables/` owns page logic and validation orchestration
 5. `src/layouts/` owns the admin shell
 6. `src/components/` owns reusable view blocks
-7. `src/styles/tokens.css` is the source of truth for dark/light theme tokens
+7. `src/styles/` is the source of truth for tokens, base styles, vendors, layouts, components, and pages
+8. `src/styles/main.scss` is the single style entrypoint imported by `src/main.ts`
 
-Vue SFCs must not use `scoped style`. Keep styles in adjacent CSS files and rely on explicit class namespaces per component/layout/page.
+Vue SFCs must not use style blocks. Keep styles in the centralized `src/styles/**/*.scss` tree and rely on explicit class namespaces per component/layout/page.
 
-The frontend lint pipeline should fail if any `.vue` file contains `<style scoped>`.
+The frontend lint pipeline should fail if any `.vue` file contains a `<style>` block.
 
 Vitest unit tests must not scan Playwright specs. Keep `tests/unit` and `tests/e2e` separated and constrain Vitest `include` patterns explicitly.
 

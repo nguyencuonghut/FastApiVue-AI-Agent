@@ -18,5 +18,3 @@ import { useThemeStore } from '@/stores/theme.store'
 
 const themeStore = useThemeStore()
 </script>
-
-<style src="./ThemeModeSwitch.css"></style>

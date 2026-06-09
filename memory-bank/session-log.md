@@ -56,3 +56,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Them rule cam scoped style va sua frontend Step 3
 - Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da bo sung rule khong dung scoped style trong Vue SFC vao docs va memory-bank, sua 6 file .vue o frontend de bo scoped, va them guardrail frontend/scripts/check-no-scoped-style.mjs vao npm run lint. Da xac minh bang rg khong con scoped style trong frontend/src, npm run lint, npm run test:unit va npm run build; e2e va build van on, build van con canh bao chunk lon do PrimeVue.
+
+## 2026-06-09 06:08:43Z - codex
+
+- Tieu de: Refactor frontend style sang src/styles scss tap trung
+- Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da cai Sass, chuyen toan bo style frontend sang frontend/src/styles/**/*.scss, bo het style block khoi Vue SFC, sua guardrail de cam moi the <style> trong .vue, va cap nhat docs/memory theo kien truc style tap trung. Da xac minh bang npm run format, npm run typecheck, npm run lint, npm run test:unit, npm run test:e2e va npm run build; van con canh bao chunk lon do PrimeVue nhung khong block.

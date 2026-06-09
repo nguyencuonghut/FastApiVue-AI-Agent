@@ -31,13 +31,13 @@ const violations = []
 for (const fileUrl of vueFiles) {
   const content = await readFile(fileUrl, 'utf8')
 
-  if (/<style\b[^>]*\bscoped\b/i.test(content)) {
+  if (/<style\b/i.test(content)) {
     violations.push(path.relative(process.cwd(), fileUrl.pathname))
   }
 }
 
 if (violations.length > 0) {
-  console.error('Do not use <style scoped> in Vue SFC files:')
+  console.error('Do not use <style> blocks in Vue SFC files:')
   for (const file of violations) {
     console.error(`- ${file}`)
   }
