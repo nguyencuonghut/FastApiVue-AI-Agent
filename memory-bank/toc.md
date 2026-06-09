@@ -13,3 +13,4 @@
 Related design docs:
 
 - `docs/fullstack-boilerplate-design.md`
+- `docs/phase-1-scaffold-implementation-plan.md`

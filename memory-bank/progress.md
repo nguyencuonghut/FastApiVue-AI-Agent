@@ -13,9 +13,10 @@
 - Added system-wide dark/light theme consistency requirement for buttons, menus, headers, data tables, form inputs, and shared UI components
 - Upgraded design requirements to enterprise level: User import/export, large DataTable performance, heavy file import/export jobs, and stronger security baseline
 - Added production readiness requirements: observability, backup/restore, secret management, SLO, and compliance gates
+- Added Phase 1 scaffold implementation plan in `docs/phase-1-scaffold-implementation-plan.md`
 
 ## Open
 
-- Implement the fullstack boilerplate source tree from `docs/fullstack-boilerplate-design.md`
+- Implement Phase 1 scaffold from `docs/phase-1-scaffold-implementation-plan.md`
 - Start recording real bug history
 - Optionally install Bun and run the upstream `agent-memory` CLI locally

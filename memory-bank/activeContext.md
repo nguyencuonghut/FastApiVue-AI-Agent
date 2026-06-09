@@ -13,6 +13,6 @@ The repository has been prepared with:
 
 ## Next Useful Steps
 
-1. Scaffold `backend/`, `frontend/`, Docker Compose, Postgres, and MinIO according to `docs/fullstack-boilerplate-design.md`.
+1. Scaffold `backend/`, `frontend/`, Docker Compose, Postgres, and MinIO according to `docs/phase-1-scaffold-implementation-plan.md`.
 2. Populate bug history when the first real defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.
