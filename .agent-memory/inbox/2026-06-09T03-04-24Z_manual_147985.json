@@ -1,0 +1,12 @@
+{
+  "version": "1",
+  "timestamp": "2026-06-09T03:04:24Z",
+  "harness": "manual",
+  "retrieval": {
+    "method": "file",
+    "content": "# kiem tra task close\n\nDa them wrapper startup va task-close dung chung cho Codex, Claude Code va Gemini trong VSCode.\n"
+  },
+  "context": {
+    "cwd": "/run/media/cuong/DATA/02_Project/206_FastAPI_Vue_Boilerplate/FastApiVueBoilerplate"
+  }
+}
