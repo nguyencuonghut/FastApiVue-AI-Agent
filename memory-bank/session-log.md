@@ -46,3 +46,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Hoan thanh Phase 1 Step 2 backend scaffold
 - Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da scaffold backend/ voi FastAPI 0.136.3, pyproject.toml, uv.lock, app factory, health endpoints, typed settings, request-id middleware, SQLAlchemy async session skeleton, MinIO client scaffold, Alembic stub va tests. Da xac minh bang uv run pytest, uv run ruff check . va uv run mypy .
+
+## 2026-06-09 04:48:06Z - codex
+
+- Tieu de: Hoan thanh Phase 1 Step 3 frontend scaffold
+- Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da scaffold frontend/ voi Vue 3, TypeScript, Vite, Vue Router, Pinia, PrimeVue 4.5.5, VeeValidate + Zod, dark/light token layer, unit test va Playwright smoke test. Da xac minh bang npm run typecheck, npm run lint, npm run test:unit, npm run test:e2e va npm run build; build co canh bao chunk lon do PrimeVue nhung khong block.
+
+## 2026-06-09 04:52:36Z - codex
+
+- Tieu de: Them rule cam scoped style va sua frontend Step 3
+- Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md truoc khi lam. Da bo sung rule khong dung scoped style trong Vue SFC vao docs va memory-bank, sua 6 file .vue o frontend de bo scoped, va them guardrail frontend/scripts/check-no-scoped-style.mjs vao npm run lint. Da xac minh bang rg khong con scoped style trong frontend/src, npm run lint, npm run test:unit va npm run build; e2e va build van on, build van con canh bao chunk lon do PrimeVue.

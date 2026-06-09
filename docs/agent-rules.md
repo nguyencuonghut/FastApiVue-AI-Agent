@@ -31,13 +31,16 @@ Sau khi sửa bug, phải ghi lại:
 4. Tuân thủ coding style đã có.
 Phải bám theo naming, cấu trúc, style validation và pattern test của codebase hiện tại.
 
-5. Chỉ tôn trọng tech stack đã được xác minh.
+5. Không dùng `scoped style` trong `.vue`.
+Style phải nằm ở CSS file riêng hoặc style block không `scoped`, với class naming rõ ràng để tránh xung đột.
+
+6. Chỉ tôn trọng tech stack đã được xác minh.
 `memory-bank/techContext.md` là nguồn sự thật. Nếu code chứng minh file này sai hoặc thiếu, phải cập nhật file thay vì tự ngầm giả định.
 
-6. Ưu tiên bằng chứng hơn sự tự tin.
+7. Ưu tiên bằng chứng hơn sự tự tin.
 File reference, command result và test output luôn đáng tin hơn trực giác.
 
-7. Giữ rule và memory luôn đồng bộ.
+8. Giữ rule và memory luôn đồng bộ.
 Nếu dự án phát hiện thêm một pattern lặp lại, phải cập nhật `memory-bank/projectRules.md` hoặc `memory-bank/bugPatterns.md`.
 
 ## Kết quả mong muốn

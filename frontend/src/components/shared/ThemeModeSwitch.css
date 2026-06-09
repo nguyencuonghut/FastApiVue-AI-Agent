@@ -1,0 +1,14 @@
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: var(--app-surface-muted);
+  border: 1px solid var(--app-border-soft);
+}
+
+.theme-switch__label {
+  font-size: 0.95rem;
+  color: var(--app-text-secondary);
+}

@@ -80,3 +80,23 @@ The backend uses a thin-entrypoint FastAPI structure:
 Health endpoints exist at both `/health` and `/api/v1/health`.
 
 Request correlation is centralized through middleware, not repeated inside route handlers.
+
+## Frontend Scaffold Pattern
+
+The frontend uses a thin-SFC and external-logic pattern:
+
+1. `src/main.ts` wires Pinia, Router, PrimeVue, and theme initialization
+2. `src/router/index.ts` owns route registration
+3. `src/stores/` owns cross-page UI state such as theme and layout
+4. `src/composables/` owns page logic and validation orchestration
+5. `src/layouts/` owns the admin shell
+6. `src/components/` owns reusable view blocks
+7. `src/styles/tokens.css` is the source of truth for dark/light theme tokens
+
+Vue SFCs must not use `scoped style`. Keep styles in adjacent CSS files and rely on explicit class namespaces per component/layout/page.
+
+The frontend lint pipeline should fail if any `.vue` file contains `<style scoped>`.
+
+Vitest unit tests must not scan Playwright specs. Keep `tests/unit` and `tests/e2e` separated and constrain Vitest `include` patterns explicitly.
+
+PrimeVue is configured with a custom preset and `darkModeSelector` bound to `.app-dark` so manual theme switching stays consistent across shared components.

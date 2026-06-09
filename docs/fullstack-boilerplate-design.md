@@ -325,6 +325,8 @@ Nếu một page cần màu đặc biệt theo domain, màu đó phải được
 
 Yêu cầu của project: không để business logic trong `.vue`, không dùng inline style, tách logic và template rõ ràng.
 
+Ngoài ra, không dùng `scoped style` trong `.vue`. Style phải nằm ở CSS file riêng hoặc shared stylesheet với class naming rõ ràng.
+
 Vì Vue `<script setup>` không hỗ trợ `src`, áp dụng quy ước sau:
 
 1. Với page hoặc component phức tạp, dùng external block:

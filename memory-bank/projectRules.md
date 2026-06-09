@@ -29,6 +29,12 @@ When code exists, follow its:
 
 Do not introduce a new style unless the user explicitly asks for it or the existing pattern is demonstrably broken.
 
+## Rule 4A: No Scoped Style In Vue SFC
+
+Do not use `<style scoped>` in `.vue` files.
+
+Frontend styles must live in dedicated CSS files or non-scoped style blocks with explicit class naming. Style isolation should come from structure and naming, not from Vue scoped-style attributes.
+
 ## Rule 5: Use Verified Tech Stack Only
 
 The source of truth is `memory-bank/techContext.md`.
