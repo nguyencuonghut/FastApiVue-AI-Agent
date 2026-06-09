@@ -36,3 +36,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Tao ke hoach trien khai Phase 1 Scaffold
 - Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md theo yeu cau. Da tao docs/phase-1-scaffold-implementation-plan.md voi muc tieu, scope, deliverables, thu tu trien khai, acceptance criteria, rui ro va ghi chu agent cho Phase 1 Scaffold. Da cap nhat memory-bank/toc.md, progress.md va activeContext.md.
+
+## 2026-06-09 04:05:52Z - codex
+
+- Tieu de: Hoan thanh Phase 1 Step 1 repository preparation
+- Tom tat: Da doc AGENTS.md, docs/agent-rules.md va memory-bank/*.md theo startup contract. Da hoan thanh Phase 1 Step 1 bang viec xac nhan .gitignore, giu vendor/ o trang thai ignored, tao README.md mo ta repo, tao .env.example voi cac bien dev co ban, va cap nhat memory-bank/progress.md cung activeContext.md de chuyen sang Step 2 backend scaffold.
