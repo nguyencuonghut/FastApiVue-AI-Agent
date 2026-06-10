@@ -33,9 +33,10 @@ The repository has been prepared with:
 27. Phase 2 audit-log foundation is now scaffolded in code: auth routes emit baseline audit events for login success/failure, session refresh, and logout through `AuditLogService`, using request id and client IP where available
 28. Phase 2 now includes minimal admin mutation endpoints under `/api/v1/users`: create user and update user roles, both protected by RBAC and both emitting audit events so Step 8 is fully covered against the current Phase 2 plan scope
 29. Users CRUD and Roles API/UI are now fully implemented. Backend endpoints (GET list/detail, PUT update, DELETE delete for users, and GET roles list) are secure and wired to audit logs. Frontend features DataTable lazy loading, form validations, dialogs, router guards, and sidebar navigation.
+30. Phase 4 MinIO Storage & Audit integration is fully implemented. Features include a Postgres `files` metadata table, Alembic revision, automatic bucket bootstrap on startup lifespan, `FileAdminService` operations, and audit-logged API routes. Client downloads are handled via a chunk-by-chunk FastAPI streaming proxy, supporting token authorization for private files. The frontend includes a responsive FilesPage with drag-and-drop file uploaders, paginated listings, and secure download triggers.
 
 ## Next Useful Steps
 
-1. Start the next concrete admin management surface, likely Roles CRUD or file management, on top of the auth/RBAC + audit foundation already in place.
-2. Populate bug history when the first business-logic defects are fixed.
+1. Implement the async background workers (Celery/Arq) to handle large User import and export jobs as outlined in Phase 4.
+2. Formulate audit log UI viewer pages for administrative inspection.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

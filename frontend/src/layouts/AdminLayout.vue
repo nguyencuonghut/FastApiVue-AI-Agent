@@ -66,6 +66,16 @@
           <i class="pi pi-key admin-layout__nav-icon" aria-hidden="true" />
           <span class="admin-layout__nav-label">Quản lý vai trò</span>
         </RouterLink>
+
+        <RouterLink
+          v-if="permissionStore.can('files.read')"
+          class="admin-layout__nav-link"
+          to="/files"
+          @click="layoutStore.closeMobileSidebar"
+        >
+          <i class="pi pi-file admin-layout__nav-icon" aria-hidden="true" />
+          <span class="admin-layout__nav-label">Quản lý tập tin</span>
+        </RouterLink>
       </nav>
     </aside>
 

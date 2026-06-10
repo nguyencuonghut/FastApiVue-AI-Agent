@@ -132,6 +132,96 @@
   color: var(--app-text-danger);
 }
 
+.users-page__dialog--large {
+  max-width: 50rem !important;
+}
+
+.users-page__action-btn {
+  flex-shrink: 0;
+}
+
+.users-page__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  color: var(--app-text-primary);
+  border-bottom: 1px solid var(--app-border-soft);
+  padding-bottom: 0.375rem;
+}
+
+.users-page__jobs-table {
+  margin-top: 0.5rem;
+  border: 1px solid var(--app-border-soft);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.users-page__progress-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.users-page__progress-text {
+  font-size: 0.8rem;
+  color: var(--app-text-secondary);
+}
+
+.users-page__progress-bar {
+  height: 0.375rem;
+  width: 100%;
+}
+
+.users-page__job-errors {
+  padding: 0.75rem;
+  background-color: var(--app-surface-panel-alt);
+  border-radius: 0.375rem;
+}
+
+.users-page__error-title {
+  color: var(--app-text-danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.users-page__row-error-list {
+  margin: 0;
+  padding-left: 1rem;
+  color: var(--app-text-danger);
+  font-size: 0.8rem;
+  list-style-type: disc;
+}
+
+.users-page__job-no-errors {
+  padding: 0.5rem 0;
+  color: var(--app-text-success);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.users-page__export-confirm {
+  padding: 1rem;
+  background-color: var(--app-surface-panel-alt);
+  border-radius: 0.5rem;
+  border: 1px solid var(--app-border-soft);
+  font-size: 0.9rem;
+}
+
+.users-page__export-filters-list {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.users-page__empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--app-text-muted);
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .users-page__header {
     flex-direction: column;
@@ -150,6 +240,13 @@
 
   .users-page__actions {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .users-page__action-btn {
+    width: 100%;
   }
 }

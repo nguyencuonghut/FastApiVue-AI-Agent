@@ -13,10 +13,13 @@ services:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
       MINIO_ENDPOINT: minio:9000
       CORS_ORIGINS: http://127.0.0.1:${PROXY_HOST_PORT:-8080},http://localhost:${PROXY_HOST_PORT:-8080}
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       postgres:
         condition: service_healthy
       minio:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test:
@@ -111,6 +114,40 @@ services:
     volumes:
       - minio_prod_data:/data
 
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_prod_data:/data
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: prod
+    command: ["arq", "app.worker.WorkerSettings"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      POSTGRES_HOST: postgres
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
+      MINIO_ENDPOINT: minio:9000
+      REDIS_URL: redis://redis:6379/0
+
 volumes:
   postgres_prod_data:
   minio_prod_data:
+  redis_prod_data:

@@ -41,6 +41,7 @@
 - Completed Phase 2 Step 8 scaffold at code level: added `AuditLogService`, wired auth routes to emit audit events for login success/failure, session refresh, and logout, and re-verified backend `pytest` + `ruff` + `mypy`
 - Completed the remaining Step 8 scope from the Phase 2 plan: added minimal admin mutation endpoints for `create user` and `update user roles`, protected them with `require_permission(...)`, emitted audit events for both, and re-verified backend `pytest` + `ruff` + `mypy`
 - Completed full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint, and verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.
+- Completed Phase 4 Storage & Audit integration: implemented database `File` ORM model, Alembic table migration, lifespan auto-bootstrap bucket setup, file services, files API controllers (with FastAPI streaming download proxy), audit logging triggers, frontend types/mappers/api client, vue composables, responsive FilesPage with FileUpload interface, and verified with passing backend unit/contract tests and frontend checks.
 
 ## Open
 

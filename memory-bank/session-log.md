@@ -191,3 +191,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Users CRUD & Roles API/UI Implementation
 - Tom tat: Completed the full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint. Verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.
+
+## 2026-06-10 09:19:18Z - gemini
+
+- Tieu de: Async Workers & User Import/Export
+- Tom tat: Phase 4 implementation of async workers and bulk user import/export integrations is complete. The backend includes Alembic migrations, database models, background worker task processor (arq), API endpoints, services, and tests. The frontend includes a responsive Users page with bulk import/export controls and job status details, matching ESLint/typescript constraints and fully passing aggregate check suites.

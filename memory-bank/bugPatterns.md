@@ -143,6 +143,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: After changing ORM annotations, run real backend import/test checks, not just `py_compile`, because SQLAlchemy validates mapped annotations at import time.
 - Related files: `backend/app/models/audit_log.py`, `backend/app/models/user.py`, `backend/app/models/role.py`, `backend/app/models/permission.py`, `backend/app/models/refresh_token.py`
 
+### 2026-06-10: PrimeVue v4 DataTable Row Expansion Slot Name
+
+- Area: Frontend DataTable layout
+- Trigger: TypeScript compiler error `Property 'rowexpansion' does not exist on type 'DataTableSlots<any>'`.
+- Root cause: In PrimeVue v4, the row expansion template slot is named `#expansion` rather than `#rowexpansion`.
+- Fix: Rename the template slot to `#expansion` in `DataTable`.
+- Regression guard: Avoid using `#rowexpansion` for PrimeVue v4 DataTables; always refer to `#expansion` slot.
+- Related files: `frontend/src/pages/UsersPage.vue`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

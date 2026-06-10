@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import DashboardPage from '@/pages/DashboardPage.vue'
+import FilesPage from '@/pages/FilesPage.vue'
 import ForbiddenPage from '@/pages/ForbiddenPage.vue'
 import LoginPage from '@/pages/LoginPage.vue'
 import RolesPage from '@/pages/RolesPage.vue'
@@ -42,6 +43,15 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'roles.read',
+      },
+    },
+    {
+      path: '/files',
+      name: 'files',
+      component: FilesPage,
+      meta: {
+        requiresAuth: true,
+        requiredPermission: 'files.read',
       },
     },
     {

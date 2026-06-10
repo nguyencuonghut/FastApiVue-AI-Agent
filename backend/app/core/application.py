@@ -14,6 +14,21 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     configure_logging(settings.log_level)
     app.state.settings = settings
+
+    try:
+        from app.storage.minio import build_minio_client
+
+        minio_client = build_minio_client(settings)
+        bucket = settings.minio_bucket
+        if not minio_client.bucket_exists(bucket):
+            minio_client.make_bucket(bucket)
+    except Exception as e:
+        import logging
+
+        logging.getLogger("app").warning(
+            f"Could not connect or initialize MinIO bucket '{settings.minio_bucket}': {e}"
+        )
+
     yield
 
 

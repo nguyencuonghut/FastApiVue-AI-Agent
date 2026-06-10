@@ -37,15 +37,24 @@
 - Verified backend audit foundation scaffold files exist:
   - `backend/app/services/audit_log.py`
   - `backend/tests/test_audit_log_service.py`
-- Verified backend admin user-management and roles files exist:
+- Verified backend admin user-management, roles and files storage files exist:
+  - `backend/app/models/file.py`
   - `backend/app/api/v1/users.py`
+  - `backend/app/api/v1/roles.py`
+  - `backend/app/api/v1/files.py`
   - `backend/app/schemas/user.py`
   - `backend/app/schemas/role.py`
+  - `backend/app/schemas/file.py`
   - `backend/app/services/user_admin.py`
-  - `backend/app/api/v1/roles.py`
+  - `backend/app/services/role_admin.py`
+  - `backend/app/services/file_admin.py`
   - `backend/tests/test_user_admin_service.py`
+  - `backend/tests/test_role_admin_service.py`
+  - `backend/tests/test_file_admin_service.py`
   - `backend/tests/test_roles_api.py`
   - `backend/tests/test_users_api.py`
+  - `backend/tests/test_files_api.py`
+  - `backend/alembic/versions/20260610_0400_create_files_table.py`
 - Verified backend framework/tooling: FastAPI `0.136.3`, SQLAlchemy `2.0.50`, Alembic `1.18.4`, Pydantic Settings `2.14.1`, MinIO `7.2.20`, pytest `9.0.3`, pytest-asyncio `1.4.0`, Ruff `0.15.16`, mypy `1.20.2`
 - Verified backend auth dependency declarations now include `argon2-cffi` and `PyJWT` in `backend/pyproject.toml`
 - Verified current auth service pattern: user fetches for auth/authz eager-load `roles -> permissions` via `selectinload`
@@ -71,13 +80,24 @@
   - `frontend/src/pages/ForbiddenPage.vue`
   - `frontend/tests/unit/auth.store.spec.ts`
   - `frontend/src/types/users.ts`
-  - `frontend/src/types/roles.ts`
+  - `frontend/src/api/roles.mappers.ts`
   - `frontend/src/api/users.mappers.ts`
+  - `frontend/src/api/files.mappers.ts`
   - `frontend/src/api/users.api.ts`
   - `frontend/src/api/roles.api.ts`
+  - `frontend/src/api/files.api.ts`
   - `frontend/src/composables/useUsersPage.ts`
+  - `frontend/src/composables/useRolesPage.ts`
+  - `frontend/src/composables/useFilesPage.ts`
   - `frontend/src/pages/UsersPage.vue`
+  - `frontend/src/pages/RolesPage.vue`
+  - `frontend/src/pages/FilesPage.vue`
   - `frontend/src/styles/pages/_users-page.scss`
+  - `frontend/src/styles/pages/_roles-page.scss`
+  - `frontend/src/styles/pages/_files-page.scss`
+  - `frontend/src/types/users.ts`
+  - `frontend/src/types/roles.ts`
+  - `frontend/src/types/files.ts`
 - Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, Sass `1.100.0`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
 - Verified frontend auth foundation checks run successfully on 2026-06-10: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run build`, `docker compose -f docker-compose.test.yml run --rm e2e-test`

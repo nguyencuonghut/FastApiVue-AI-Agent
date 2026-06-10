@@ -30,9 +30,28 @@
 
         <div class="users-page__actions">
           <Button
+            v-if="permissionStore.can('users.import')"
+            label="Nhập Excel/CSV"
+            icon="pi pi-upload"
+            severity="secondary"
+            outlined
+            class="users-page__action-btn"
+            @click="openImportDialog"
+          />
+          <Button
+            v-if="permissionStore.can('users.export')"
+            label="Xuất Excel/CSV"
+            icon="pi pi-download"
+            severity="secondary"
+            outlined
+            class="users-page__action-btn"
+            @click="openExportDialog"
+          />
+          <Button
             v-if="permissionStore.can('users.create')"
             label="Thêm tài khoản"
             icon="pi pi-plus"
+            class="users-page__action-btn"
             @click="openCreateDialog"
           />
         </div>
@@ -346,18 +365,194 @@
           />
         </div>
       </Dialog>
+
+      <!-- Import Users Dialog -->
+      <Dialog
+        v-model:visible="importDialogVisible"
+        header="Nhập tài khoản từ tập tin (CSV)"
+        modal
+        class="users-page__dialog users-page__dialog--large"
+      >
+        <div class="users-page__import-form">
+          <div class="users-page__form-field">
+            <label class="users-page__form-label">Chọn tệp tài liệu CSV</label>
+            <FileUpload
+              mode="basic"
+              name="file"
+              accept=".csv"
+              :max-file-size="10485760"
+              custom-upload
+              auto
+              fluid
+              choose-label="Tải lên tệp CSV"
+              @uploader="handleImportUpload"
+            />
+          </div>
+
+          <h5 class="users-page__section-title">Lịch sử tiến trình nhập</h5>
+          <DataTable
+            v-model:expanded-rows="expandedRows"
+            :value="importJobs"
+            data-key="id"
+            responsive-layout="scroll"
+            class="users-page__jobs-table"
+          >
+            <template #empty>
+              <div class="users-page__empty-state">
+                Chưa thực hiện tiến trình nhập nào.
+              </div>
+            </template>
+            <Column expander style="width: 3rem" />
+            <Column field="createdAt" header="Thời gian">
+              <template #body="{ data }">
+                {{ formatDateTime(data.createdAt) }}
+              </template>
+            </Column>
+            <Column field="status" header="Trạng thái">
+              <template #body="{ data }">
+                <Tag
+                  :severity="statusJobSeverity(data.status)"
+                  :value="statusJobLabel(data.status)"
+                />
+              </template>
+            </Column>
+            <Column header="Tiến độ">
+              <template #body="{ data }">
+                <div class="users-page__progress-cell">
+                  <div class="users-page__progress-text">
+                    {{ data.processedRows }} / {{ data.totalRows }} hợp lệ
+                  </div>
+                  <ProgressBar
+                    :value="getProgressPercentage(data)"
+                    :show-value="false"
+                    class="users-page__progress-bar"
+                  />
+                </div>
+              </template>
+            </Column>
+            <Column field="failedRows" header="Thất bại" />
+
+            <template #expansion="{ data }">
+              <div
+                v-if="data.errorsJson && data.errorsJson.length > 0"
+                class="users-page__job-errors"
+              >
+                <h6 class="users-page__error-title">
+                  Chi tiết lỗi dòng kiểm tra
+                </h6>
+                <DataTable :value="data.errorsJson" class="p-datatable-sm">
+                  <Column field="row" header="Dòng" style="width: 5rem" />
+                  <Column field="email" header="Email" style="width: 15rem" />
+                  <Column header="Lỗi">
+                    <template #body="{ data: err }">
+                      <ul class="users-page__row-error-list">
+                        <li v-for="(e, i) in err.errors" :key="i">{{ e }}</li>
+                      </ul>
+                    </template>
+                  </Column>
+                </DataTable>
+              </div>
+              <div v-else class="users-page__job-no-errors">
+                Không phát hiện lỗi kiểm tra dòng nào.
+              </div>
+            </template>
+          </DataTable>
+        </div>
+      </Dialog>
+
+      <!-- Export Users Dialog -->
+      <Dialog
+        v-model:visible="exportDialogVisible"
+        header="Xuất danh sách tài khoản"
+        modal
+        class="users-page__dialog users-page__dialog--large"
+      >
+        <div class="users-page__export-form">
+          <div class="users-page__export-confirm">
+            <p>
+              Tệp xuất dữ liệu tài khoản (CSV) sẽ được tạo dựa trên các bộ lọc
+              tìm kiếm hiện tại:
+            </p>
+            <ul class="users-page__export-filters-list">
+              <li>
+                Tìm kiếm email:
+                <strong>{{ lazyParams.search || 'Tất cả' }}</strong>
+              </li>
+              <li>
+                Trạng thái:
+                <strong>{{
+                  statusLabel(lazyParams.status_filter || '')
+                }}</strong>
+              </li>
+            </ul>
+            <Button
+              label="Bắt đầu xuất dữ liệu"
+              icon="pi pi-download"
+              class="w-full mt-3"
+              @click="handleExportTrigger"
+            />
+          </div>
+
+          <h5 class="users-page__section-title mt-4">Danh sách tệp đã xuất</h5>
+          <DataTable
+            :value="exportJobs"
+            data-key="id"
+            class="users-page__jobs-table"
+          >
+            <template #empty>
+              <div class="users-page__empty-state">
+                Chưa có tệp xuất nào được tạo.
+              </div>
+            </template>
+            <Column field="createdAt" header="Thời gian">
+              <template #body="{ data }">
+                {{ formatDateTime(data.createdAt) }}
+              </template>
+            </Column>
+            <Column field="status" header="Trạng thái">
+              <template #body="{ data }">
+                <Tag
+                  :severity="statusJobSeverity(data.status)"
+                  :value="statusJobLabel(data.status)"
+                />
+              </template>
+            </Column>
+            <Column header="Thao tác">
+              <template #body="{ data }">
+                <Button
+                  v-if="data.status === 'completed' && data.file"
+                  icon="pi pi-download"
+                  label="Tải về"
+                  text
+                  severity="success"
+                  @click="downloadJobFile(data.file)"
+                />
+                <span v-else-if="data.status === 'failed'" class="text-danger"
+                  >Lỗi: {{ data.errorSummary }}</span
+                >
+                <span v-else-if="data.status === 'processing'"
+                  >Đang tạo tệp...</span
+                >
+                <span v-else>Đang chờ xử lý...</span>
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+      </Dialog>
     </div>
   </AdminLayout>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import Dialog from 'primevue/dialog'
+import FileUpload from 'primevue/fileupload'
 import InputText from 'primevue/inputtext'
 import MultiSelect from 'primevue/multiselect'
+import ProgressBar from 'primevue/progressbar'
 import Select from 'primevue/select'
 import Tag from 'primevue/tag'
 
@@ -365,6 +560,8 @@ import { useUsersPage } from '@/composables/useUsersPage'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { usePermissionStore } from '@/stores/permission.store'
+import type { FileDomain } from '@/types/files'
+import type { ImportJobDomain } from '@/types/jobs'
 
 const authStore = useAuthStore()
 const permissionStore = usePermissionStore()
@@ -410,7 +607,85 @@ const {
   editErrors,
   submitEdit,
   editFormSubmitting,
+  importDialogVisible,
+  exportDialogVisible,
+  importJobs,
+  exportJobs,
+  fetchImportJobs,
+  fetchExportJobs,
+  handleImportUpload,
+  handleExportTrigger,
 } = useUsersPage()
+
+const expandedRows = ref([])
+
+function openImportDialog() {
+  importDialogVisible.value = true
+  fetchImportJobs()
+}
+
+function openExportDialog() {
+  exportDialogVisible.value = true
+  fetchExportJobs()
+}
+
+async function downloadJobFile(file: FileDomain) {
+  if (!file || !file.url) return
+  try {
+    const response = await window.fetch(file.url, {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to download file content')
+    }
+    const blob = await response.blob()
+    const objectUrl = window.URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = objectUrl
+    link.download = file.filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  } catch {
+    // ignore
+  }
+}
+
+function getProgressPercentage(job: ImportJobDomain) {
+  if (!job.totalRows) return 0
+  return Math.round(
+    ((job.processedRows + job.failedRows) / job.totalRows) * 100,
+  )
+}
+
+function statusJobSeverity(status: string) {
+  switch (status) {
+    case 'completed':
+      return 'success'
+    case 'failed':
+      return 'danger'
+    case 'processing':
+      return 'info'
+    default:
+      return 'warn'
+  }
+}
+
+function statusJobLabel(status: string) {
+  switch (status) {
+    case 'completed':
+      return 'Thành công'
+    case 'failed':
+      return 'Thất bại'
+    case 'processing':
+      return 'Đang xử lý'
+    default:
+      return 'Chờ xử lý'
+  }
+}
 
 const statusOptions = [
   { label: 'Đang hoạt động', value: 'active' },

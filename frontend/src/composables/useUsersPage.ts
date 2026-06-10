@@ -1,4 +1,4 @@
-import { ref, reactive } from 'vue'
+import { ref, reactive, onUnmounted } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { z } from 'zod'
@@ -6,9 +6,18 @@ import { z } from 'zod'
 import { ApiError } from '@/api/http'
 import { listRolesLookup } from '@/api/roles.api'
 import { createUser, deleteUser, listUsers, updateUser } from '@/api/users.api'
+import {
+  importUsers,
+  listImportJobs,
+  getImportJob,
+  exportUsers,
+  listExportJobs,
+  getExportJob,
+} from '@/api/jobs.api'
 import { useAuthStore } from '@/stores/auth.store'
 import type { RoleDomain } from '@/types/roles'
 import type { UserDomain, UserListQueryParams } from '@/types/users'
+import type { ImportJobDomain, ExportJobDomain } from '@/types/jobs'
 
 export function useUsersPage() {
   const authStore = useAuthStore()
@@ -230,6 +239,154 @@ export function useUsersPage() {
     }
   }
 
+  // Import/Export States
+  const importDialogVisible = ref(false)
+  const exportDialogVisible = ref(false)
+  const importJobs = ref<ImportJobDomain[]>([])
+  const exportJobs = ref<ExportJobDomain[]>([])
+  const loadingImportJobs = ref(false)
+  const loadingExportJobs = ref(false)
+  const totalImportJobs = ref(0)
+  const totalExportJobs = ref(0)
+
+  const importJobsParams = reactive({
+    limit: 5,
+    offset: 0,
+  })
+
+  const exportJobsParams = reactive({
+    limit: 5,
+    offset: 0,
+  })
+
+  const pollIntervalMap = new Map<string, ReturnType<typeof setInterval>>()
+
+  function pollImportJob(jobId: string) {
+    if (pollIntervalMap.has(jobId)) return
+
+    const interval = setInterval(async () => {
+      try {
+        const updatedJob = await getImportJob(jobId, authStore.accessToken)
+        const idx = importJobs.value.findIndex((j) => j.id === jobId)
+        if (idx !== -1) {
+          importJobs.value[idx] = updatedJob
+        }
+        if (
+          updatedJob.status === 'completed' ||
+          updatedJob.status === 'failed'
+        ) {
+          clearInterval(interval)
+          pollIntervalMap.delete(jobId)
+          await fetchUsers()
+        }
+      } catch {
+        clearInterval(interval)
+        pollIntervalMap.delete(jobId)
+      }
+    }, 2000)
+
+    pollIntervalMap.set(jobId, interval)
+  }
+
+  function pollExportJob(jobId: string) {
+    if (pollIntervalMap.has(jobId)) return
+
+    const interval = setInterval(async () => {
+      try {
+        const updatedJob = await getExportJob(jobId, authStore.accessToken)
+        const idx = exportJobs.value.findIndex((j) => j.id === jobId)
+        if (idx !== -1) {
+          exportJobs.value[idx] = updatedJob
+        }
+        if (
+          updatedJob.status === 'completed' ||
+          updatedJob.status === 'failed'
+        ) {
+          clearInterval(interval)
+          pollIntervalMap.delete(jobId)
+        }
+      } catch {
+        clearInterval(interval)
+        pollIntervalMap.delete(jobId)
+      }
+    }, 2000)
+
+    pollIntervalMap.set(jobId, interval)
+  }
+
+  async function fetchImportJobs() {
+    loadingImportJobs.value = true
+    try {
+      const res = await listImportJobs(importJobsParams, authStore.accessToken)
+      importJobs.value = res.items
+      totalImportJobs.value = res.total
+
+      res.items.forEach((j) => {
+        if (j.status === 'pending' || j.status === 'processing') {
+          pollImportJob(j.id)
+        }
+      })
+    } catch {
+      // ignore
+    } finally {
+      loadingImportJobs.value = false
+    }
+  }
+
+  async function fetchExportJobs() {
+    loadingExportJobs.value = true
+    try {
+      const res = await listExportJobs(exportJobsParams, authStore.accessToken)
+      exportJobs.value = res.items
+      totalExportJobs.value = res.total
+
+      res.items.forEach((j) => {
+        if (j.status === 'pending' || j.status === 'processing') {
+          pollExportJob(j.id)
+        }
+      })
+    } catch {
+      // ignore
+    } finally {
+      loadingExportJobs.value = false
+    }
+  }
+
+  async function handleImportUpload(event: { files: File | File[] }) {
+    const file = Array.isArray(event.files) ? event.files[0] : event.files
+    if (!file) return
+    try {
+      const job = await importUsers(file, authStore.accessToken)
+      await fetchImportJobs()
+      pollImportJob(job.id)
+    } catch {
+      generalError.value = 'Lỗi hệ thống khi tải lên file nhập tài khoản.'
+    }
+  }
+
+  async function handleExportTrigger() {
+    try {
+      const job = await exportUsers(
+        {
+          search: lazyParams.search || undefined,
+          status: lazyParams.status_filter || undefined,
+        },
+        authStore.accessToken,
+      )
+      await fetchExportJobs()
+      pollExportJob(job.id)
+    } catch {
+      generalError.value = 'Lỗi hệ thống khi khởi chạy xuất tài khoản.'
+    }
+  }
+
+  onUnmounted(() => {
+    for (const interval of pollIntervalMap.values()) {
+      clearInterval(interval)
+    }
+    pollIntervalMap.clear()
+  })
+
   return {
     users,
     totalUsers,
@@ -281,5 +438,21 @@ export function useUsersPage() {
     editErrors: editForm.errors,
     submitEdit,
     editFormSubmitting: editForm.isSubmitting,
+
+    // Import/Export integration
+    importDialogVisible,
+    exportDialogVisible,
+    importJobs,
+    exportJobs,
+    loadingImportJobs,
+    loadingExportJobs,
+    totalImportJobs,
+    totalExportJobs,
+    importJobsParams,
+    exportJobsParams,
+    fetchImportJobs,
+    fetchExportJobs,
+    handleImportUpload,
+    handleExportTrigger,
   }
 }

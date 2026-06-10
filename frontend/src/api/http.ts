@@ -40,7 +40,11 @@ export async function apiRequest<T>(
     headers.set('Authorization', `Bearer ${options.accessToken}`)
   }
 
-  if (options.body && !headers.has('Content-Type')) {
+  if (
+    options.body &&
+    !headers.has('Content-Type') &&
+    !(options.body instanceof FormData)
+  ) {
     headers.set('Content-Type', 'application/json')
   }
 

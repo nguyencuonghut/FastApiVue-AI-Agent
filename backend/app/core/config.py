@@ -76,6 +76,10 @@ class Settings(BaseSettings):
     minio_bucket: str = Field(default="app-local", alias="MINIO_BUCKET")
     minio_secure: bool = Field(default=False, alias="MINIO_SECURE")
 
+    redis_host: str = Field(default="redis", alias="REDIS_HOST")
+    redis_port: int = Field(default=6379, alias="REDIS_PORT")
+    redis_url: str = Field(default="redis://redis:6379/0", alias="REDIS_URL")
+
     cors_origins: str = Field(
         default="http://127.0.0.1:5173,http://localhost:5173",
         alias="CORS_ORIGINS",

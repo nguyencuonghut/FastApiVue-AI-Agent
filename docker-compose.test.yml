@@ -19,10 +19,13 @@ services:
       POSTGRES_HOST: postgres-test
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
       MINIO_ENDPOINT: minio-test:9000
+      REDIS_URL: redis://redis-test:6379/0
     depends_on:
       postgres-test:
         condition: service_healthy
       minio-test:
+        condition: service_healthy
+      redis-test:
         condition: service_healthy
 
   frontend-test:
@@ -74,10 +77,13 @@ services:
       POSTGRES_HOST: postgres-test
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
       MINIO_ENDPOINT: minio-test:9000
+      REDIS_URL: redis://redis-test:6379/0
     depends_on:
       postgres-test:
         condition: service_healthy
       minio-test:
+        condition: service_healthy
+      redis-test:
         condition: service_healthy
     healthcheck:
       test:
@@ -138,6 +144,46 @@ services:
     volumes:
       - minio_test_data:/data
 
+  redis-test:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_test_data:/data
+
+  worker-test:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: dev
+    command: >
+      sh -lc "uv sync &&
+      uv run arq app.worker.WorkerSettings"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      minio-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    environment:
+      APP_ENV: test
+      APP_DEBUG: "false"
+      PYTHONPATH: /app
+      POSTGRES_HOST: postgres-test
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
+      MINIO_ENDPOINT: minio-test:9000
+      REDIS_URL: redis://redis-test:6379/0
+    volumes:
+      - ./backend:/app
+      - backend_venv:/app/.venv
+
 volumes:
   postgres_test_data:
   minio_test_data:
+  redis_test_data:

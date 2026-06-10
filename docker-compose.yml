@@ -12,12 +12,15 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - .env.example
     environment:
       POSTGRES_HOST: postgres
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
       MINIO_ENDPOINT: minio:9000
+      REDIS_URL: redis://redis:6379/0
     healthcheck:
       test:
         - CMD
@@ -107,8 +110,47 @@ services:
     volumes:
       - minio_data:/data
 
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: dev
+    command: >
+      sh -lc "uv sync &&
+      uv run arq app.worker.WorkerSettings"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    environment:
+      POSTGRES_HOST: postgres
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
+      MINIO_ENDPOINT: minio:9000
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+      - backend_venv:/app/.venv
+
 volumes:
   backend_venv:
   frontend_node_modules:
   postgres_data:
   minio_data:
+  redis_data:
