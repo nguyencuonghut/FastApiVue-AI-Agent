@@ -26,9 +26,14 @@
 - Verified backend RBAC scaffold files exist:
   - `backend/app/auth/permissions.py`
   - `backend/tests/test_rbac_core.py`
+- Verified backend auth API scaffold files exist:
+  - `backend/app/api/v1/auth.py`
+  - `backend/app/schemas/auth.py`
+  - `backend/tests/test_auth_api_contract.py`
 - Verified backend framework/tooling: FastAPI `0.136.3`, SQLAlchemy `2.0.50`, Alembic `1.18.4`, Pydantic Settings `2.14.1`, MinIO `7.2.20`, pytest `9.0.3`, pytest-asyncio `1.4.0`, Ruff `0.15.16`, mypy `1.20.2`
 - Verified backend auth dependency declarations now include `argon2-cffi` and `PyJWT` in `backend/pyproject.toml`
 - Verified current auth service pattern: user fetches for auth/authz eager-load `roles -> permissions` via `selectinload`
+- Verified auth API shape at code level: login/refresh/logout/me live under `/api/v1/auth`, refresh token is read from cookie in the route layer, and `me` returns resolved role/permission data
 - Verified backend checks run successfully on 2026-06-09: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
 - Frontend scaffold exists in `frontend/`
 - Frontend package manager and runner: `npm`
@@ -122,6 +127,7 @@
 - Real database migrations and MinIO bucket bootstrap have not been exercised yet.
 - Auth/RBAC migration has been scaffolded, but `alembic upgrade` and runtime ORM import verification against the installed dependency set were not exercised in this turn because the sandboxed `uv` path could not fetch `hatchling` from PyPI and the system Python lacks `sqlalchemy`.
 - Auth core syntax is verified with `python3 -m py_compile`, but backend runtime tests against the installed dependency set remain unverified in this sandbox because `uv` still cannot fetch `hatchling` from PyPI.
+- Auth API syntax is verified with `python3 -m py_compile`, but route runtime verification remains unconfirmed in this sandbox for the same dependency/network reason.
 - Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
 - Full production runtime startup via `docker compose -f docker-compose.prod.yml up` has not been exercised yet; only config validity and production image builds were verified in this step.
 - Local host-level browser E2E via `npm --prefix frontend run test:e2e` remains environment-sensitive in this agent session because the sandbox blocks opening a listening socket on `127.0.0.1:4173` with `EPERM`; the Docker E2E path is verified and should be treated as the reliable browser gate in sandboxed automation.

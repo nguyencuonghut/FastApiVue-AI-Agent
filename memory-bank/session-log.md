@@ -156,3 +156,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Scaffold Phase 2 RBAC resolver
 - Tom tat: Implemented Phase 2 Step 4 at scaffold level by adding centralized permission resolution, role/permission helper functions, require_permission(...) route enforcement, and eager loading of roles->permissions in auth flows. Added RBAC core tests and updated project memory so Step 5 auth API is the next implementation target.
+
+## 2026-06-10 02:10:34Z - codex
+
+- Tieu de: Scaffold Phase 2 auth API
+- Tom tat: Implemented Phase 2 Step 5 at scaffold level by adding auth request/response schemas and /api/v1/auth/login, /refresh, /logout, and /me routes. The contract follows the hybrid strategy: access token in JSON response, refresh token via cookie, and /me returns resolved roles and permissions. Updated memory so Step 6 seed data is the next target. Runtime route verification remains unconfirmed in this sandbox because uv cannot fetch hatchling from PyPI.

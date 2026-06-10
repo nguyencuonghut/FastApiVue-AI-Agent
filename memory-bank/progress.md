@@ -34,6 +34,7 @@
 - Completed Phase 2 Step 2 scaffold at code level: added auth/RBAC ORM models, metadata registration, a first Alembic revision, and a schema metadata test for users/roles/permissions/refresh_tokens/audit_logs
 - Completed Phase 2 Step 3 scaffold at code level: added password hashing, JWT access-token issue/decode, refresh-token issue/refresh/revoke flow, current-user dependency, and auth core tests under `backend/app/auth/`
 - Completed Phase 2 Step 4 scaffold at code level: added backend permission resolver helpers, `require_permission(...)`, eager loading of `roles -> permissions` for current-user/auth flows, and RBAC core tests
+- Completed Phase 2 Step 5 scaffold at code level: added auth request/response schemas, `/api/v1/auth/login|refresh|logout|me` routes, refresh-cookie handling, and auth API contract tests
 
 ## Open
 

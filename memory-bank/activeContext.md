@@ -26,9 +26,10 @@ The repository has been prepared with:
 20. Phase 2 database foundation is now scaffolded in code: auth/RBAC ORM models and a first Alembic revision exist for `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `refresh_tokens`, and `audit_logs`
 21. Phase 2 auth core service is now scaffolded in code: password hashing, JWT access-token issue/decode, refresh-token issue/refresh/revoke, and `get_current_user` dependency exist under `backend/app/auth/`
 22. Phase 2 RBAC core is now scaffolded in code: permission resolver helpers and `require_permission(...)` exist, and current-user fetches eager-load `roles -> permissions`
+23. Phase 2 auth API is now scaffolded in code: `/api/v1/auth/login`, `/refresh`, `/logout`, and `/me` exist with hybrid cookie+Bearer contract and response schemas
 
 ## Next Useful Steps
 
-1. Start `Phase 2` Step 5 auth API on top of the auth core and RBAC resolver.
+1. Start `Phase 2` Step 6 seed data for admin role, user role, base permissions, and initial admin account.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

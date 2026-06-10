@@ -83,6 +83,13 @@ Phase 2 auth uses a hybrid browser-first token model.
 4. refresh token must not be exposed as raw JSON payload or stored raw in the database
 5. auth bootstrap should attempt refresh before treating the user as anonymous
 
+Auth API contract follows that strategy:
+
+1. `POST /auth/login` returns access token JSON and sets refresh cookie
+2. `POST /auth/refresh` reads refresh token from cookie, not request body
+3. `POST /auth/logout` revokes refresh token and clears cookie
+4. `GET /auth/me` returns resolved roles and permissions for the current user
+
 ## RBAC Resolver Pattern
 
 Permission checks must be backend-first and centralized.
