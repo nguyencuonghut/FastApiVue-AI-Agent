@@ -42,8 +42,9 @@
 - Completed the remaining Step 8 scope from the Phase 2 plan: added minimal admin mutation endpoints for `create user` and `update user roles`, protected them with `require_permission(...)`, emitted audit events for both, and re-verified backend `pytest` + `ruff` + `mypy`
 - Completed full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint, and verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.
 - Completed Phase 4 Storage & Audit integration: implemented database `File` ORM model, Alembic table migration, lifespan auto-bootstrap bucket setup, file services, files API controllers (with FastAPI streaming download proxy), audit logging triggers, frontend types/mappers/api client, vue composables, responsive FilesPage with FileUpload interface, and verified with passing backend unit/contract tests and frontend checks.
+- Re-verified on 10/06/2026 that Phases 2, 3, and 4 are complete against the current design doc scope. Backend `pytest`, `ruff`, and `mypy` pass; frontend `typecheck`, `lint`, `test:unit`, and `build` pass.
 
 ## Open
 
-- Start recording real bug history
+- Start `Phase 5: Hardening`
 - Optionally install Bun and run the upstream `agent-memory` CLI locally

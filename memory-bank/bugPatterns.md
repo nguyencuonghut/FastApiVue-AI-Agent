@@ -152,6 +152,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: Avoid using `#rowexpansion` for PrimeVue v4 DataTables; always refer to `#expansion` slot.
 - Related files: `frontend/src/pages/UsersPage.vue`
 
+### 2026-06-10: ARQ fallback typing can silently break backend mypy
+
+- Area: Backend async job service typing
+- Trigger: During a phase-status verification run, backend `mypy` failed in `app/services/job_admin.py` even though runtime tests passed.
+- Root cause: The offline fallback redefined `create_pool` under `except ImportError`, producing a different callable signature from the real `arq.create_pool` import. `mypy` treated that conditional import path as incompatible overload-like variants.
+- Fix: Replace the dual-signature fallback with a dedicated `create_job_queue(...)` wrapper plus a small `JobQueue` protocol and `DummyJobQueue` fallback.
+- Regression guard: When providing offline fallbacks for optional third-party integrations, do not redefine imported callables with different signatures. Wrap them behind a project-local function/protocol boundary instead.
+- Related files: `backend/app/services/job_admin.py`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

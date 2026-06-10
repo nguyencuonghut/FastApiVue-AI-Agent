@@ -946,6 +946,8 @@ Không log password, token, secret hoặc signed URL đầy đủ.
 
 ### Phase 2: Auth + RBAC
 
+Trạng thái: Đã hoàn thành và được xác minh ở mức code + quality gate.
+
 - User model.
 - Role/permission model.
 - Login/refresh/logout/me.
@@ -954,6 +956,8 @@ Không log password, token, secret hoặc signed URL đầy đủ.
 - Audit log nền tảng.
 
 ### Phase 3: Admin UI
+
+Trạng thái: Đã hoàn thành và được xác minh ở mức code + frontend quality gate.
 
 - Sakai-inspired layout.
 - Dark/light mode.
@@ -964,6 +968,8 @@ Không log password, token, secret hoặc signed URL đầy đủ.
 - DataTable lazy loading với server-side pagination/filter/sort.
 
 ### Phase 4: Storage + Audit
+
+Trạng thái: Đã hoàn thành và được xác minh ở mức code + backend/frontend quality gate.
 
 - MinIO adapter.
 - File upload endpoint.

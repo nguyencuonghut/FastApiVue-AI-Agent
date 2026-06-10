@@ -1,25 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, Protocol, cast
 from uuid import UUID
-
-try:
-    from arq import create_pool
-    from arq.connections import RedisSettings
-except ImportError:
-    # Graceful fallback for offline environments / local check environments
-    async def create_pool(*args: Any, **kwargs: Any) -> Any:
-        class DummyPool:
-            async def enqueue_job(self, *args: Any, **kwargs: Any) -> Any:
-                return None
-
-        return DummyPool()
-
-    class RedisSettings:  # type: ignore[no-redef]
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            pass
-
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,6 +10,34 @@ from sqlalchemy.orm import selectinload
 
 from app.core.config import get_settings
 from app.models import ExportJob, File, ImportJob
+
+_create_pool: Any
+
+try:
+    from arq import create_pool as _create_pool
+    from arq.connections import RedisSettings
+except ImportError:
+    _create_pool = None
+
+    class RedisSettings:  # type: ignore[no-redef]
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            pass
+
+
+class JobQueue(Protocol):
+    async def enqueue_job(self, *args: Any, **kwargs: Any) -> Any: ...
+
+
+class DummyJobQueue:
+    async def enqueue_job(self, *args: Any, **kwargs: Any) -> None:
+        return None
+
+
+async def create_job_queue(*, host: str, port: int) -> JobQueue:
+    if _create_pool is None:
+        return DummyJobQueue()
+
+    return cast(JobQueue, await _create_pool(RedisSettings(host=host, port=port)))
 
 
 class JobNotFoundError(Exception):
@@ -42,8 +53,9 @@ class JobAdminService:
     async def _get_redis(self) -> Any:
         if self.redis_pool is not None:
             return self.redis_pool
-        return await create_pool(
-            RedisSettings(host=self.settings.redis_host, port=self.settings.redis_port)
+        return await create_job_queue(
+            host=self.settings.redis_host,
+            port=self.settings.redis_port,
         )
 
     async def create_import_job(self, *, file_id: UUID, user_id: UUID) -> ImportJob:

@@ -2,6 +2,18 @@
 
 Ngày tạo: 10/06/2026
 
+## Trạng thái
+
+Phase 2 hiện đã hoàn thành trong codebase.
+
+Đã xác minh lại bằng backend quality gate:
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run mypy .`
+
+Scope audit log của phase này cũng đã được hoàn tất: không chỉ auth events mà cả admin mutation tối thiểu cho tạo user và cập nhật role user.
+
 ## Mục tiêu
 
 Phase 2 triển khai nền tảng authentication và authorization cho boilerplate.

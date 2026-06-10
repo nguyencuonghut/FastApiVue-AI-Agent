@@ -64,6 +64,7 @@
 - Verified minimal admin mutation audit pattern at code level: `POST /api/v1/users` and `PUT /api/v1/users/{id}/roles` are protected by `users.create` / `users.update` permissions and log `users.user_created` / `users.roles_updated`
 - Verified backend checks run successfully on 2026-06-09: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
 - Verified backend checks run successfully on 2026-06-10 after Step 8 audit work: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
+- Re-verified backend checks on 2026-06-10 during the phase-status audit: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
 - Frontend scaffold exists in `frontend/`
 - Frontend package manager and runner: `npm`
 - Verified frontend dependency set from `frontend/package.json` and `frontend/package-lock.json`
@@ -101,6 +102,7 @@
 - Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, Sass `1.100.0`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
 - Verified frontend auth foundation checks run successfully on 2026-06-10: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run build`, `docker compose -f docker-compose.test.yml run --rm e2e-test`
+- Re-verified frontend checks on 2026-06-10 during the phase-status audit: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run build`
 - Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using a `<style>` block
 - Verified frontend style architecture: `frontend/src/styles/**/*.scss` is now the centralized style tree for tokens, base styles, vendors, layouts, components, and pages
 - Verified frontend body font baseline from `frontend/src/styles/base/primitives.scss`: `Be Vietnam Pro`
@@ -182,6 +184,7 @@
 - Time handling constraint: business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`) and must not depend on host/browser runtime timezone implicitly
 - Auth strategy constraint: Phase 2 uses a hybrid browser-first model with short-lived Bearer access token plus `httpOnly` refresh cookie
 - Enterprise features: async User import/export jobs, large DataTable performance, heavy file import/export handling, RBAC, audit logging, rate limiting, dependency/container scanning
+- Current phase status: Phases 2, 3, and 4 are complete against the current design-doc scope; Phase 5 Hardening is the next open phase
 - Production readiness: OpenTelemetry, structured logs, metrics/tracing, backup/restore, secret management, SLO, compliance gates
 
 ## Unverified

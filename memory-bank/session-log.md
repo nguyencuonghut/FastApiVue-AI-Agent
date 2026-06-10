@@ -196,3 +196,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Async Workers & User Import/Export
 - Tom tat: Phase 4 implementation of async workers and bulk user import/export integrations is complete. The backend includes Alembic migrations, database models, background worker task processor (arq), API endpoints, services, and tests. The frontend includes a responsive Users page with bulk import/export controls and job status details, matching ESLint/typescript constraints and fully passing aggregate check suites.
+
+## 2026-06-10 09:40:06Z - codex
+
+- Tieu de: Audit phase status va chot Phase 2-4
+- Tom tat: Da doi chieu codebase voi docs/fullstack-boilerplate-design.md, xac nhan Phase 2, 3, 4 da hoan thanh theo scope hien tai, sua regression mypy trong backend/app/services/job_admin.py cho ARQ fallback typing, va cap nhat docs/memory de Phase 5 tro thanh phase tiep theo.
