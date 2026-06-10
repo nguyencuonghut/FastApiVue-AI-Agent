@@ -51,6 +51,18 @@ class Settings(BaseSettings):
         default="/api/v1/auth",
         alias="AUTH_REFRESH_COOKIE_PATH",
     )
+    auth_seed_admin_email: str = Field(
+        default="admin@fastapivue.local",
+        alias="AUTH_SEED_ADMIN_EMAIL",
+    )
+    auth_seed_admin_password: str = Field(
+        default="change-me-admin-password",
+        alias="AUTH_SEED_ADMIN_PASSWORD",
+    )
+    auth_seed_update_admin_password: bool = Field(
+        default=False,
+        alias="AUTH_SEED_UPDATE_ADMIN_PASSWORD",
+    )
 
     database_url: str = Field(
         default="postgresql+asyncpg://postgres:postgres@postgres:5432/app",

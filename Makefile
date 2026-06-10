@@ -9,6 +9,7 @@ DOCKER_TEST_COMPOSE := docker compose -f docker-compose.test.yml
 	backend-typecheck \
 	backend-test \
 	backend-security \
+	backend-seed-auth \
 	backend-check \
 	frontend-lint \
 	frontend-format-check \
@@ -37,6 +38,9 @@ backend-test:
 
 backend-security:
 	cd backend && if [ -x .venv/bin/bandit ]; then .venv/bin/bandit -c pyproject.toml -r app; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run bandit -c pyproject.toml -r app; fi
+
+backend-seed-auth:
+	cd backend && if [ -x .venv/bin/python ]; then .venv/bin/python scripts/seed_auth_rbac.py; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run python scripts/seed_auth_rbac.py; fi
 
 backend-check: backend-lint backend-format-check backend-typecheck backend-test backend-security
 

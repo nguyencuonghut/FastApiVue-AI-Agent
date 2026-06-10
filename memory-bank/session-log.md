@@ -161,3 +161,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Scaffold Phase 2 auth API
 - Tom tat: Implemented Phase 2 Step 5 at scaffold level by adding auth request/response schemas and /api/v1/auth/login, /refresh, /logout, and /me routes. The contract follows the hybrid strategy: access token in JSON response, refresh token via cookie, and /me returns resolved roles and permissions. Updated memory so Step 6 seed data is the next target. Runtime route verification remains unconfirmed in this sandbox because uv cannot fetch hatchling from PyPI.
+
+## 2026-06-10 02:14:22Z - codex
+
+- Tieu de: Scaffold Phase 2 auth seed data
+- Tom tat: Completed Phase 2 Step 6 scaffold for auth seed data: added centralized baseline permission codes, idempotent auth/RBAC seed service, seed-related backend settings and env vars, backend/scripts/seed_auth_rbac.py, and Makefile/README wiring. Verified syntax with python3 -m py_compile; runtime seed execution remains unverified in this sandbox because uv-backed dependency resolution is blocked.

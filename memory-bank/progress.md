@@ -35,6 +35,7 @@
 - Completed Phase 2 Step 3 scaffold at code level: added password hashing, JWT access-token issue/decode, refresh-token issue/refresh/revoke flow, current-user dependency, and auth core tests under `backend/app/auth/`
 - Completed Phase 2 Step 4 scaffold at code level: added backend permission resolver helpers, `require_permission(...)`, eager loading of `roles -> permissions` for current-user/auth flows, and RBAC core tests
 - Completed Phase 2 Step 5 scaffold at code level: added auth request/response schemas, `/api/v1/auth/login|refresh|logout|me` routes, refresh-cookie handling, and auth API contract tests
+- Completed Phase 2 Step 6 scaffold at code level: added baseline auth seed constants, idempotent auth/RBAC seed service, seed-related settings/env vars, `backend/scripts/seed_auth_rbac.py`, and `Makefile`/README wiring for initial admin/bootstrap data
 
 ## Open
 

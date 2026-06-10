@@ -99,6 +99,18 @@ Permission checks must be backend-first and centralized.
 3. eager-load `roles -> permissions` before authz checks to avoid async lazy-load surprises during request handling
 4. frontend visibility rules are consumers of backend permission truth, not substitutes for backend enforcement
 
+## Auth Seed Pattern
+
+Initial auth/RBAC data must be created through an idempotent service, not ad hoc SQL.
+
+1. keep baseline permission codes in one central module
+2. seed `admin` and `user` roles explicitly
+3. assign all baseline permissions to `admin`
+4. keep `user` minimal by default and expand intentionally later
+5. create the initial admin account from environment-backed config
+6. never allow the seeder to run with a placeholder default password
+7. if admin password rotation during reseed is needed, gate it behind an explicit boolean setting
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.
