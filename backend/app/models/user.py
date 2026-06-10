@@ -44,12 +44,17 @@ class User(Base):
         onupdate=func.now(),
     )
 
-    roles: Mapped[list["Role"]] = relationship(
+    roles: Mapped[list[Role]] = relationship(
         secondary="user_roles",
         back_populates="users",
     )
-    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
-    audit_logs: Mapped[list["AuditLog"]] = relationship(back_populates="actor_user")
+    refresh_tokens: Mapped[list[RefreshToken]] = relationship(
+        back_populates="user",
+    )
+    audit_logs: Mapped[list[AuditLog]] = relationship(
+        back_populates="actor_user",
+    )
+
 
 user_roles = Table(
     "user_roles",

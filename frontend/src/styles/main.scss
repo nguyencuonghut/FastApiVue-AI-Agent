@@ -5,6 +5,8 @@
 @use './pages/dashboard-page';
 @use './pages/forbidden-page';
 @use './pages/login-page';
+@use './pages/users-page';
+@use './pages/roles-page';
 @use './components/dashboard/quick-filter-form';
 @use './components/dashboard/health-snapshot-table';
 @use './components/dashboard/summary-cards';

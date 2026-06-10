@@ -40,7 +40,10 @@ class FakeAsyncSession:
         compiled = str(statement)
         params = statement.compile().params  # type: ignore[attr-defined]
 
-        if "FROM users" in compiled and "users.email" in compiled:
+        if "id_1" in params and "FROM users" in compiled:
+            return FakeScalarResult(self.user_by_id.get(params["id_1"]))
+
+        if "email_1" in params and "FROM users" in compiled:
             return FakeScalarResult(self.user_by_email.get(params["email_1"]))
 
         if "FROM refresh_tokens" in compiled and "refresh_tokens.token_hash" in compiled:
@@ -165,6 +168,28 @@ async def test_refresh_session_rejects_revoked_token() -> None:
 
     with pytest.raises(RefreshTokenError):
         await service.refresh_session(refresh_token=raw_token)
+
+
+@pytest.mark.asyncio
+async def test_revoke_refresh_token_returns_user_when_revoked() -> None:
+    user = build_user()
+    raw_token = "refresh-token-to-revoke"
+    token_hash = sha256(raw_token.encode("utf-8")).hexdigest()
+    token_record = RefreshToken(
+        user_id=user.id,
+        token_hash=token_hash,
+        expires_at=datetime(2099, 1, 1, tzinfo=UTC),
+    )
+    token_record.user = user
+
+    session = FakeAsyncSession(refresh_by_hash={token_hash: token_record})
+    service = AuthService(session)  # type: ignore[arg-type]
+
+    revoked_user = await service.revoke_refresh_token(refresh_token=raw_token)
+
+    assert revoked_user is user
+    assert token_record.revoked_at is not None
+    assert token_record.last_used_at is not None
 
 
 @pytest.mark.asyncio

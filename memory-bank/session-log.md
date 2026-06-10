@@ -176,3 +176,18 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Harden frontend auth API boundary
 - Tom tat: Refactored frontend auth flow to separate backend DTOs from frontend domain models. Added auth.mappers.ts, introduced AuthSession and CurrentUser domain types, kept raw backend snake_case fields in DTO types only, and updated auth.api.ts plus auth.store.ts to consume normalized models. Verified with npm run typecheck, npm run lint, npm run test:unit, and npm run build.
+
+## 2026-06-10 03:14:19Z - codex
+
+- Tieu de: Scaffold Phase 2 audit log foundation
+- Tom tat: Completed Phase 2 Step 8 audit foundation for backend auth. Added AuditLogService and AuditLogContext, wired auth routes to emit baseline audit events for login success, login failure, session refresh, and logout with request id and client IP when available, and updated auth service so logout can resolve the revoked token owner. Also fixed JWT timestamp normalization and ORM annotation issues surfaced by runtime verification. Verified with python3 -m py_compile and backend uv run pytest + ruff check + mypy.
+
+## 2026-06-10 03:20:06Z - codex
+
+- Tieu de: Complete Phase 2 Step 8 admin audit scope
+- Tom tat: Finished the remaining Phase 2 Step 8 scope from the implementation plan by adding minimal admin mutation endpoints: POST /api/v1/users and PUT /api/v1/users/{id}/roles. Both endpoints are RBAC-protected, use a dedicated user admin service, and emit audit events users.user_created and users.roles_updated via AuditLogService. Verified with python3 -m py_compile and backend uv run pytest + ruff check + mypy.
+
+## 2026-06-10 04:11:20Z - gemini
+
+- Tieu de: Users CRUD & Roles API/UI Implementation
+- Tom tat: Completed the full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint. Verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.

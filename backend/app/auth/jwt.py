@@ -23,7 +23,7 @@ class AccessTokenPayload:
 
 def issue_access_token(user_id: UUID, *, now: datetime | None = None) -> tuple[str, datetime]:
     settings = get_settings()
-    issued_at = now or datetime.now(UTC)
+    issued_at = (now or datetime.now(UTC)).replace(microsecond=0)
     expires_at = issued_at + timedelta(minutes=settings.access_token_expire_minutes)
     payload = {
         "sub": str(user_id),

@@ -8,11 +8,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import get_current_user
 from app.auth.permissions import resolve_permission_codes, resolve_role_names
-from app.auth.service import AuthService, InactiveUserError, InvalidCredentialsError, RefreshTokenError
+from app.auth.service import (
+    AuthService,
+    InactiveUserError,
+    InvalidCredentialsError,
+    RefreshTokenError,
+)
 from app.core.config import Settings, get_settings
 from app.db.session import get_db_session
 from app.models import User
 from app.schemas.auth import AccessTokenResponse, CurrentUserResponse, LoginRequest
+from app.services import AuditLogContext, AuditLogService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -23,16 +29,38 @@ def get_auth_service(
     return AuthService(session)
 
 
+def get_audit_log_service(
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> AuditLogService:
+    return AuditLogService(session)
+
+
 @router.post("/login", response_model=AccessTokenResponse)
 async def login(
     payload: LoginRequest,
+    request: Request,
     response: Response,
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> AccessTokenResponse:
     try:
-        auth_bundle = await auth_service.authenticate(email=payload.email, password=payload.password)
+        auth_bundle = await auth_service.authenticate(
+            email=payload.email,
+            password=payload.password,
+        )
     except (InvalidCredentialsError, InactiveUserError) as exc:
+        await audit_log_service.log_event(
+            action="auth.login_failed",
+            entity_type="auth_session",
+            context=AuditLogContext(
+                ip_address=_extract_client_ip(request),
+                metadata_json={
+                    "email": payload.email,
+                    "outcome": "failed",
+                },
+            ),
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials.",
@@ -45,7 +73,24 @@ async def login(
         expires_at=auth_bundle.refresh_token_expires_at,
     )
 
-    return _build_access_token_response(auth_bundle.access_token, auth_bundle.access_token_expires_at)
+    await audit_log_service.log_event(
+        action="auth.login_succeeded",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=auth_bundle.user.id,
+            entity_id=str(auth_bundle.user.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": auth_bundle.user.email,
+                "outcome": "succeeded",
+            },
+        ),
+    )
+
+    return _build_access_token_response(
+        auth_bundle.access_token,
+        auth_bundle.access_token_expires_at,
+    )
 
 
 @router.post("/refresh", response_model=AccessTokenResponse)
@@ -53,6 +98,7 @@ async def refresh(
     request: Request,
     response: Response,
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> AccessTokenResponse:
     cookie_token = request.cookies.get(settings.auth_refresh_cookie_name)
@@ -77,7 +123,23 @@ async def refresh(
         expires_at=auth_bundle.refresh_token_expires_at,
     )
 
-    return _build_access_token_response(auth_bundle.access_token, auth_bundle.access_token_expires_at)
+    await audit_log_service.log_event(
+        action="auth.session_refreshed",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=auth_bundle.user.id,
+            entity_id=str(auth_bundle.user.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": auth_bundle.user.email,
+            },
+        ),
+    )
+
+    return _build_access_token_response(
+        auth_bundle.access_token,
+        auth_bundle.access_token_expires_at,
+    )
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
@@ -85,13 +147,28 @@ async def logout(
     request: Request,
     response: Response,
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> Response:
     refresh_token = request.cookies.get(settings.auth_refresh_cookie_name)
+    revoked_user: User | None = None
     if refresh_token is not None:
-        await auth_service.revoke_refresh_token(refresh_token=refresh_token)
+        revoked_user = await auth_service.revoke_refresh_token(refresh_token=refresh_token)
 
     _clear_refresh_cookie(response=response, settings=settings)
+
+    await audit_log_service.log_event(
+        action="auth.logout",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=revoked_user.id if revoked_user is not None else None,
+            entity_id=str(revoked_user.id) if revoked_user is not None else None,
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "has_refresh_cookie": refresh_token is not None,
+            },
+        ),
+    )
     return response
 
 
@@ -146,3 +223,11 @@ def _clear_refresh_cookie(*, response: Response, settings: Settings) -> None:
         samesite=settings.auth_refresh_cookie_samesite,
         secure=settings.auth_refresh_cookie_secure,
     )
+
+
+def _extract_client_ip(request: Request) -> str | None:
+    forwarded_for = request.headers.get("X-Forwarded-For")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+
+    return request.client.host if request.client is not None else None

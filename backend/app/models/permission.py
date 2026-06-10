@@ -43,7 +43,7 @@ class Permission(Base):
         server_default=func.now(),
     )
 
-    roles: Mapped[list["Role"]] = relationship(
+    roles: Mapped[list[Role]] = relationship(
         secondary=role_permissions,
         back_populates="permissions",
     )

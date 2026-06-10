@@ -50,14 +50,16 @@ class AuthSeedService:
 
         if not email:
             raise AuthSeedConfigurationError("AUTH_SEED_ADMIN_EMAIL must not be empty.")
-        if not password or password == "change-me-admin-password":
+        if not password or password == "change-me-admin-password":  # nosec B105
             raise AuthSeedConfigurationError(
                 "AUTH_SEED_ADMIN_PASSWORD must be set to a non-placeholder value before seeding.",
             )
 
     async def _ensure_permissions(self) -> tuple[list[Permission], int]:
         result = await self.session.execute(select(Permission))
-        existing_permissions = {permission.code: permission for permission in result.scalars().all()}
+        existing_permissions = {
+            permission.code: permission for permission in result.scalars().all()
+        }
 
         permissions: list[Permission] = []
         created_permissions = 0
@@ -115,7 +117,9 @@ class AuthSeedService:
         )
         admin_user = result.scalar_one_or_none()
 
-        admin_role_result = await self.session.execute(select(Role).where(Role.name == ADMIN_ROLE_NAME))
+        admin_role_result = await self.session.execute(
+            select(Role).where(Role.name == ADMIN_ROLE_NAME),
+        )
         admin_role = admin_role_result.scalar_one()
 
         created_admin_user = False

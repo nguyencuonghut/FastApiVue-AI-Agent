@@ -40,8 +40,31 @@
           to="/"
           @click="layoutStore.closeMobileSidebar"
         >
-          <i class="pi pi-chart-bar admin-layout__nav-icon" aria-hidden="true" />
+          <i
+            class="pi pi-chart-bar admin-layout__nav-icon"
+            aria-hidden="true"
+          />
           <span class="admin-layout__nav-label">Dashboard Smoke</span>
+        </RouterLink>
+
+        <RouterLink
+          v-if="permissionStore.can('users.read')"
+          class="admin-layout__nav-link"
+          to="/users"
+          @click="layoutStore.closeMobileSidebar"
+        >
+          <i class="pi pi-users admin-layout__nav-icon" aria-hidden="true" />
+          <span class="admin-layout__nav-label">Quản lý tài khoản</span>
+        </RouterLink>
+
+        <RouterLink
+          v-if="permissionStore.can('roles.read')"
+          class="admin-layout__nav-link"
+          to="/roles"
+          @click="layoutStore.closeMobileSidebar"
+        >
+          <i class="pi pi-key admin-layout__nav-icon" aria-hidden="true" />
+          <span class="admin-layout__nav-label">Quản lý vai trò</span>
         </RouterLink>
       </nav>
     </aside>
@@ -50,7 +73,11 @@
       <header class="admin-layout__topbar">
         <div class="admin-layout__topbar-start">
           <Button
-            :aria-label="layoutStore.sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            :aria-label="
+              layoutStore.sidebarCollapsed
+                ? 'Expand sidebar'
+                : 'Collapse sidebar'
+            "
             class="admin-layout__sidebar-toggle"
             icon="pi pi-bars"
             rounded
@@ -110,12 +137,15 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useLayoutStore } from '@/stores/layout.store'
 import { usePermissionStore } from '@/stores/permission.store'
 
-withDefaults(defineProps<{
-  title: string
-  sectionLabel?: string
-}>(), {
-  sectionLabel: 'Phase 1 Scaffold',
-})
+withDefaults(
+  defineProps<{
+    title: string
+    sectionLabel?: string
+  }>(),
+  {
+    sectionLabel: 'Phase 1 Scaffold',
+  },
+)
 
 const layoutStore = useLayoutStore()
 const authStore = useAuthStore()

@@ -1,3 +1,4 @@
+from collections.abc import Awaitable, Callable
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
@@ -39,7 +40,9 @@ async def get_current_user(
     return user
 
 
-def require_permission(permission_code: str):
+def require_permission(
+    permission_code: str,
+) -> Callable[..., Awaitable[User]]:
     async def dependency(
         current_user: Annotated[User, Depends(get_current_user)],
     ) -> User:

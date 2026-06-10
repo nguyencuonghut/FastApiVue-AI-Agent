@@ -38,6 +38,9 @@
 - Completed Phase 2 Step 6 scaffold at code level: added baseline auth seed constants, idempotent auth/RBAC seed service, seed-related settings/env vars, `backend/scripts/seed_auth_rbac.py`, and `Makefile`/README wiring for initial admin/bootstrap data
 - Completed Phase 2 Step 7 scaffold at code level: added frontend auth API client, shared HTTP helper, auth and permission stores, router guards, login page, forbidden page, logout UI, and verified anonymous redirect to login through Docker Playwright E2E
 - Hardened the frontend API boundary for auth: split backend DTOs from frontend domain models and added `auth.mappers.ts` so future backend contract changes stay localized to the API layer
+- Completed Phase 2 Step 8 scaffold at code level: added `AuditLogService`, wired auth routes to emit audit events for login success/failure, session refresh, and logout, and re-verified backend `pytest` + `ruff` + `mypy`
+- Completed the remaining Step 8 scope from the Phase 2 plan: added minimal admin mutation endpoints for `create user` and `update user roles`, protected them with `require_permission(...)`, emitted audit events for both, and re-verified backend `pytest` + `ruff` + `mypy`
+- Completed full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint, and verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.
 
 ## Open
 

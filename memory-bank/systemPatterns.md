@@ -131,6 +131,17 @@ Initial auth/RBAC data must be created through an idempotent service, not ad hoc
 6. never allow the seeder to run with a placeholder default password
 7. if admin password rotation during reseed is needed, gate it behind an explicit boolean setting
 
+## Audit Log Pattern
+
+Audit logging should be service-based and event-shaped.
+
+1. keep audit persistence in a shared service instead of inlining raw ORM writes across routes
+2. use stable action codes such as `auth.login_succeeded` and `auth.logout`
+3. include request correlation and client IP when the request context is available
+4. never log passwords or raw refresh tokens
+5. keep auth audit payloads minimal and structured so later dashboards or filters can query them reliably
+6. when admin mutation endpoints exist, emit dedicated action codes per mutation instead of reusing generic auth events
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.

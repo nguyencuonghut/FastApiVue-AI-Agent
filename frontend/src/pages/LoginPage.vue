@@ -3,11 +3,7 @@
     <div class="login-page__panel">
       <div class="login-page__hero">
         <div class="login-page__brand">
-          <img
-            alt=""
-            class="login-page__brand-logo"
-            src="/favicon.svg"
-          />
+          <img alt="" class="login-page__brand-logo" src="/favicon.svg" />
           <div>
             <p class="login-page__eyebrow">Phase 2 Auth Foundation</p>
             <h1 class="login-page__title">Đăng nhập quản trị</h1>
@@ -21,9 +17,7 @@
       </div>
 
       <Card class="login-page__card">
-        <template #title>
-          Sign In
-        </template>
+        <template #title> Sign In </template>
         <template #content>
           <form class="login-page__form" @submit.prevent="submitLogin">
             <div class="login-page__field">
@@ -85,11 +79,18 @@ import { useLoginPage } from '@/composables/useLoginPage'
 const route = useRoute()
 const router = useRouter()
 
-const { email, emailProps, errors, isSubmitting, password, passwordProps, submitLogin } =
-  useLoginPage(async () => {
-    const redirectTarget =
-      typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+const {
+  email,
+  emailProps,
+  errors,
+  isSubmitting,
+  password,
+  passwordProps,
+  submitLogin,
+} = useLoginPage(async () => {
+  const redirectTarget =
+    typeof route.query.redirect === 'string' ? route.query.redirect : '/'
 
-    await router.replace(redirectTarget)
-  })
+  await router.replace(redirectTarget)
+})
 </script>

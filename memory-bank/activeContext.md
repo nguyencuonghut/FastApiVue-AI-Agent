@@ -30,9 +30,12 @@ The repository has been prepared with:
 24. Phase 2 seed-data foundation is now scaffolded in code: base permission codes, `admin`/`user` roles, initial admin-user bootstrap service, seed script, and seed-related env config now exist under `backend/app/auth/`, `backend/app/services/`, and `backend/scripts/`
 25. Phase 2 frontend auth foundation is now scaffolded in code: `auth.api`, shared `http` client, `auth` and `permission` stores, router guards, login page, forbidden page, logout UI, and anonymous-to-login bootstrap behavior now exist under `frontend/src/`
 26. Frontend auth API boundary is now hardened: backend DTOs are separated from frontend domain models through `auth.mappers.ts`, so auth contract drift should stay localized to `src/api` and type files
+27. Phase 2 audit-log foundation is now scaffolded in code: auth routes emit baseline audit events for login success/failure, session refresh, and logout through `AuditLogService`, using request id and client IP where available
+28. Phase 2 now includes minimal admin mutation endpoints under `/api/v1/users`: create user and update user roles, both protected by RBAC and both emitting audit events so Step 8 is fully covered against the current Phase 2 plan scope
+29. Users CRUD and Roles API/UI are now fully implemented. Backend endpoints (GET list/detail, PUT update, DELETE delete for users, and GET roles list) are secure and wired to audit logs. Frontend features DataTable lazy loading, form validations, dialogs, router guards, and sidebar navigation.
 
 ## Next Useful Steps
 
-1. Start `Phase 2` Step 8 audit-log foundation for login/logout and admin auth/RBAC changes.
+1. Start the next concrete admin management surface, likely Roles CRUD or file management, on top of the auth/RBAC + audit foundation already in place.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

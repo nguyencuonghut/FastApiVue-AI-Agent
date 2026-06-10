@@ -34,18 +34,33 @@
   - `backend/app/auth/seed_data.py`
   - `backend/app/services/auth_seed.py`
   - `backend/scripts/seed_auth_rbac.py`
+- Verified backend audit foundation scaffold files exist:
+  - `backend/app/services/audit_log.py`
+  - `backend/tests/test_audit_log_service.py`
+- Verified backend admin user-management and roles files exist:
+  - `backend/app/api/v1/users.py`
+  - `backend/app/schemas/user.py`
+  - `backend/app/schemas/role.py`
+  - `backend/app/services/user_admin.py`
+  - `backend/app/api/v1/roles.py`
+  - `backend/tests/test_user_admin_service.py`
+  - `backend/tests/test_roles_api.py`
+  - `backend/tests/test_users_api.py`
 - Verified backend framework/tooling: FastAPI `0.136.3`, SQLAlchemy `2.0.50`, Alembic `1.18.4`, Pydantic Settings `2.14.1`, MinIO `7.2.20`, pytest `9.0.3`, pytest-asyncio `1.4.0`, Ruff `0.15.16`, mypy `1.20.2`
 - Verified backend auth dependency declarations now include `argon2-cffi` and `PyJWT` in `backend/pyproject.toml`
 - Verified current auth service pattern: user fetches for auth/authz eager-load `roles -> permissions` via `selectinload`
 - Verified auth API shape at code level: login/refresh/logout/me live under `/api/v1/auth`, refresh token is read from cookie in the route layer, and `me` returns resolved role/permission data
 - Verified auth seed pattern at code level: bootstrap data is seeded through an idempotent service that creates baseline permissions, `admin`/`user` roles, and an initial admin account while refusing to run with the placeholder password from `.env.example`
+- Verified auth audit pattern at code level: auth routes log `auth.login_failed`, `auth.login_succeeded`, `auth.session_refreshed`, and `auth.logout` through a shared `AuditLogService`; request id comes from the request-id context middleware and client IP is extracted from `X-Forwarded-For` or `request.client`
+- Verified minimal admin mutation audit pattern at code level: `POST /api/v1/users` and `PUT /api/v1/users/{id}/roles` are protected by `users.create` / `users.update` permissions and log `users.user_created` / `users.roles_updated`
 - Verified backend checks run successfully on 2026-06-09: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
+- Verified backend checks run successfully on 2026-06-10 after Step 8 audit work: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
 - Frontend scaffold exists in `frontend/`
 - Frontend package manager and runner: `npm`
 - Verified frontend dependency set from `frontend/package.json` and `frontend/package-lock.json`
 - Verified frontend dependency override on 2026-06-09: `frontend/package.json` forces transitive `glob` to `13.0.6` to remove the deprecated `glob@10.5.0` warning emitted by Docker/frontend installs
 - Verified frontend app entrypoint: `frontend/src/main.ts`
-- Verified frontend auth foundation scaffold files exist:
+- Verified frontend auth foundation scaffold and users/roles CRUD files exist:
   - `frontend/src/api/auth.api.ts`
   - `frontend/src/api/auth.mappers.ts`
   - `frontend/src/api/http.ts`
@@ -55,6 +70,14 @@
   - `frontend/src/pages/LoginPage.vue`
   - `frontend/src/pages/ForbiddenPage.vue`
   - `frontend/tests/unit/auth.store.spec.ts`
+  - `frontend/src/types/users.ts`
+  - `frontend/src/types/roles.ts`
+  - `frontend/src/api/users.mappers.ts`
+  - `frontend/src/api/users.api.ts`
+  - `frontend/src/api/roles.api.ts`
+  - `frontend/src/composables/useUsersPage.ts`
+  - `frontend/src/pages/UsersPage.vue`
+  - `frontend/src/styles/pages/_users-page.scss`
 - Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, Sass `1.100.0`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
 - Verified frontend auth foundation checks run successfully on 2026-06-10: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run build`, `docker compose -f docker-compose.test.yml run --rm e2e-test`

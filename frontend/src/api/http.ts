@@ -61,7 +61,10 @@ export async function apiRequest<T>(
 
   if (!response.ok) {
     throw new ApiError(
-      resolveErrorMessage(payload, response.statusText || 'API request failed.'),
+      resolveErrorMessage(
+        payload,
+        response.statusText || 'API request failed.',
+      ),
       response.status,
     )
   }

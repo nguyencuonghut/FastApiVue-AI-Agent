@@ -7,8 +7,8 @@
       </h2>
       <p class="forbidden-page__body">
         UI guard ở frontend chỉ phản ánh quyền do backend trả về trong
-        <code>/api/v1/auth/me</code>. Hãy liên hệ quản trị viên nếu cần mở
-        thêm permission.
+        <code>/api/v1/auth/me</code>. Hãy liên hệ quản trị viên nếu cần mở thêm
+        permission.
       </p>
       <RouterLink class="forbidden-page__link" to="/">
         Quay về dashboard

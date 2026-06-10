@@ -84,17 +84,18 @@ class AuthService:
         await self.session.flush()
         return bundle
 
-    async def revoke_refresh_token(self, *, refresh_token: str) -> None:
+    async def revoke_refresh_token(self, *, refresh_token: str) -> User | None:
         token_hash = _hash_refresh_token(refresh_token)
         refresh_token_record = await self._get_refresh_token_record(token_hash)
 
         if refresh_token_record is None or refresh_token_record.revoked_at is not None:
-            return
+            return None
 
         now = datetime.now(UTC)
         refresh_token_record.revoked_at = now
         refresh_token_record.last_used_at = now
         await self.session.flush()
+        return refresh_token_record.user
 
     async def get_active_user(self, *, user_id: UUID) -> User | None:
         statement = (
@@ -119,6 +120,7 @@ class AuthService:
             token_hash=_hash_refresh_token(refresh_token),
             expires_at=refresh_token_expires_at,
         )
+        refresh_token_record.user = user
         self.session.add(refresh_token_record)
         await self.session.flush()
 

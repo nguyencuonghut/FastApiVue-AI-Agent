@@ -1,6 +1,8 @@
 <template>
   <Button
-    :aria-label="themeStore.isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    :aria-label="
+      themeStore.isDark ? 'Switch to light mode' : 'Switch to dark mode'
+    "
     :icon="themeStore.isDark ? 'pi pi-sun' : 'pi pi-moon'"
     class="theme-switch"
     rounded

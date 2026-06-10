@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, JSON, String, func
+from sqlalchemy import JSON, DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -35,4 +35,4 @@ class AuditLog(Base):
         server_default=func.now(),
     )
 
-    actor_user: Mapped["User" | None] = relationship(back_populates="audit_logs")
+    actor_user: Mapped[User] = relationship(back_populates="audit_logs")

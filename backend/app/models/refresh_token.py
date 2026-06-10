@@ -32,4 +32,4 @@ class RefreshToken(Base):
         server_default=func.now(),
     )
 
-    user: Mapped["User"] = relationship(back_populates="refresh_tokens")
+    user: Mapped[User] = relationship(back_populates="refresh_tokens")

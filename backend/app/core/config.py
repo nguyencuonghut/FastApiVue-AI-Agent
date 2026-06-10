@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -43,7 +44,7 @@ class Settings(BaseSettings):
         default=False,
         alias="AUTH_REFRESH_COOKIE_SECURE",
     )
-    auth_refresh_cookie_samesite: str = Field(
+    auth_refresh_cookie_samesite: Literal["lax", "strict", "none"] = Field(
         default="lax",
         alias="AUTH_REFRESH_COOKIE_SAMESITE",
     )

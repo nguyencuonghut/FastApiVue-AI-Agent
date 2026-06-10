@@ -125,6 +125,24 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: For any PrimeVue field placed inside CSS grid/flex cards, verify the wrapper and the input both opt into shrinking with `min-width: 0` and explicit width constraints.
 - Related files: `frontend/src/styles/components/dashboard/quick-filter-form.scss`
 
+### 2026-06-10: JWT expiry drifted because issued tokens kept microseconds
+
+- Area: Backend auth token issuance
+- Trigger: `test_issue_and_decode_access_token` failed because decoded JWT expiry lost microseconds while the original `expires_at` still contained them.
+- Root cause: `issue_access_token` used `datetime.now(UTC)` directly, but JWT timestamp serialization truncates to whole seconds.
+- Fix: Normalize `issued_at` to `microsecond=0` before computing and encoding token timestamps.
+- Regression guard: When asserting JWT timestamps or comparing encoded/decoded expiry values, keep token issue times second-aligned.
+- Related files: `backend/app/auth/jwt.py`, `backend/tests/test_auth_core.py`
+
+### 2026-06-10: SQLAlchemy runtime import broke on relationship annotation form
+
+- Area: Backend ORM model annotations
+- Trigger: Backend runtime import failed with `MappedAnnotationError` while loading `AuditLog.actor_user`.
+- Root cause: The relationship annotation used a quoted union form that SQLAlchemy's annotation parser did not accept in the live import path.
+- Fix: Change relationship annotations to the SQLAlchemy-compatible pattern used across the model package and re-run runtime tests and linting.
+- Regression guard: After changing ORM annotations, run real backend import/test checks, not just `py_compile`, because SQLAlchemy validates mapped annotations at import time.
+- Related files: `backend/app/models/audit_log.py`, `backend/app/models/user.py`, `backend/app/models/role.py`, `backend/app/models/permission.py`, `backend/app/models/refresh_token.py`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

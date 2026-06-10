@@ -1,0 +1,306 @@
+from __future__ import annotations
+
+from typing import Annotated
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.api.v1.auth import _build_current_user_response, _extract_client_ip
+from app.auth.dependencies import require_permission
+from app.auth.permissions import resolve_role_names
+from app.db.session import get_db_session
+from app.models import User, UserStatus
+from app.schemas import (
+    UserCreateRequest,
+    UserListResponse,
+    UserResponse,
+    UserRoleUpdateRequest,
+    UserUpdateRequest,
+)
+from app.services import (
+    AuditLogContext,
+    AuditLogService,
+    EmailAlreadyExistsError,
+    RoleNotFoundError,
+    UserAdminService,
+    UserNotFoundError,
+)
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+
+def get_user_admin_service(
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> UserAdminService:
+    return UserAdminService(session)
+
+
+def get_audit_log_service(
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> AuditLogService:
+    return AuditLogService(session)
+
+
+@router.get("", response_model=UserListResponse)
+async def list_users(
+    request: Request,
+    current_user: Annotated[User, Depends(require_permission("users.read"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+    limit: int = 10,
+    offset: int = 0,
+    search: str | None = None,
+    status_filter: str | None = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
+) -> UserListResponse:
+    user_status = None
+    if status_filter:
+        try:
+            user_status = UserStatus(status_filter)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Invalid status filter.",
+            ) from exc
+
+    users, total = await user_admin_service.list_users(
+        limit=limit,
+        offset=offset,
+        search=search,
+        status=user_status,
+        sort_by=sort_by,
+        sort_order=sort_order,
+    )
+
+    return UserListResponse(
+        items=[_build_user_response(u) for u in users],
+        total=total,
+    )
+
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user(
+    user_id: UUID,
+    current_user: Annotated[User, Depends(require_permission("users.read"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+) -> UserResponse:
+    try:
+        user = await user_admin_service.get_user_by_id(user_id)
+    except UserNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    return _build_user_response(user)
+
+
+@router.post(
+    "",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_user(
+    payload: UserCreateRequest,
+    request: Request,
+    current_user: Annotated[User, Depends(require_permission("users.create"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+) -> UserResponse:
+    try:
+        created_user = await user_admin_service.create_user(
+            email=payload.email,
+            password=payload.password,
+            status=UserStatus(payload.status),
+            role_names=payload.role_names,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="User status is invalid.",
+        ) from exc
+    except EmailAlreadyExistsError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+    except RoleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+    await audit_log_service.log_event(
+        action="users.user_created",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=current_user.id,
+            entity_id=str(created_user.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": created_user.email,
+                "role_names": sorted(resolve_role_names(created_user)),
+            },
+        ),
+    )
+
+    return _build_user_response(created_user)
+
+
+@router.put(
+    "/{user_id}",
+    response_model=UserResponse,
+)
+async def update_user(
+    user_id: UUID,
+    payload: UserUpdateRequest,
+    request: Request,
+    current_user: Annotated[User, Depends(require_permission("users.update"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+) -> UserResponse:
+    try:
+        user_status = UserStatus(payload.status)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="User status is invalid.",
+        ) from exc
+
+    try:
+        updated_user = await user_admin_service.update_user(
+            user_id=user_id,
+            email=payload.email,
+            status=user_status,
+            password=payload.password,
+            role_names=payload.role_names,
+        )
+    except UserNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except EmailAlreadyExistsError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+    except RoleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+    await audit_log_service.log_event(
+        action="users.user_updated",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=current_user.id,
+            entity_id=str(updated_user.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": updated_user.email,
+                "role_names": sorted(resolve_role_names(updated_user)),
+            },
+        ),
+    )
+
+    return _build_user_response(updated_user)
+
+
+@router.put(
+    "/{user_id}/roles",
+    response_model=UserResponse,
+)
+async def update_user_roles(
+    user_id: UUID,
+    payload: UserRoleUpdateRequest,
+    request: Request,
+    current_user: Annotated[User, Depends(require_permission("users.update"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+) -> UserResponse:
+    try:
+        updated_user = await user_admin_service.update_user_roles(
+            user_id=user_id,
+            role_names=payload.role_names,
+        )
+    except UserNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except RoleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+    await audit_log_service.log_event(
+        action="users.roles_updated",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=current_user.id,
+            entity_id=str(updated_user.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": updated_user.email,
+                "role_names": sorted(resolve_role_names(updated_user)),
+            },
+        ),
+    )
+
+    return _build_user_response(updated_user)
+
+
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_user(
+    user_id: UUID,
+    request: Request,
+    current_user: Annotated[User, Depends(require_permission("users.delete"))],
+    user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+) -> None:
+    if current_user.id == user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete yourself.",
+        )
+
+    try:
+        target_user = await user_admin_service.get_user_by_id(user_id)
+        target_email = target_user.email
+        await user_admin_service.delete_user(user_id)
+    except UserNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+    await audit_log_service.log_event(
+        action="users.user_deleted",
+        entity_type="user",
+        context=AuditLogContext(
+            actor_user_id=current_user.id,
+            entity_id=str(user_id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "email": target_email,
+            },
+        ),
+    )
+
+
+def _build_user_response(user: User) -> UserResponse:
+    current_user_payload = _build_current_user_response(user)
+    return UserResponse(
+        id=current_user_payload.id,
+        email=current_user_payload.email,
+        status=current_user_payload.status,
+        roles=current_user_payload.roles,
+        permissions=current_user_payload.permissions,
+        last_login_at=current_user_payload.last_login_at,
+    )
