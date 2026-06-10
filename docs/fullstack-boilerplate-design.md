@@ -19,6 +19,8 @@ Boilerplate phải có:
 - Auto test framework cho cả backend và frontend.
 - Linter, formatter, typecheck cho cả backend và frontend.
 - Giao diện phải mobile responsive, không chỉ tối ưu cho desktop admin.
+- Font mặc định của giao diện là `Be Vietnam Pro`.
+- Timezone nghiệp vụ mặc định là `Asia/Ho_Chi_Minh` (`GMT+7`).
 
 ## Nguồn tham khảo đã xác minh
 
@@ -53,6 +55,7 @@ Boilerplate phải có:
 - Ruff: lint + format.
 - mypy hoặc pyright: typecheck.
 - Bandit: security scan.
+- Timezone chuẩn của application: `Asia/Ho_Chi_Minh` (`GMT+7`) cho mọi business-facing date/time rule.
 
 ### Frontend
 
@@ -73,6 +76,8 @@ Boilerplate phải có:
 - Playwright: E2E test.
 - MSW hoặc API mock layer: test frontend không phụ thuộc backend thật khi cần.
 - Responsive-first layout behavior cho mobile, tablet và desktop.
+- Typography chuẩn toàn hệ thống: `Be Vietnam Pro`.
+- Mọi formatter ngày giờ phải nhận timezone rõ ràng, mặc định là `Asia/Ho_Chi_Minh`.
 
 ### Infrastructure
 

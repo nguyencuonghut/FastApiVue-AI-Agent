@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     app_env: str = Field(default="development", alias="APP_ENV")
     app_debug: bool = Field(default=True, alias="APP_DEBUG")
     app_version: str = "0.1.0"
+    app_timezone: str = Field(default="Asia/Ho_Chi_Minh", alias="APP_TIMEZONE")
 
     backend_host: str = Field(default="0.0.0.0", alias="BACKEND_HOST")  # nosec B104
     backend_port: int = Field(default=8000, alias="BACKEND_PORT")

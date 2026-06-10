@@ -116,3 +116,18 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Fix mobile content gutters
 - Tom tat: Constrained the mobile admin shell and dashboard sections to full-width responsive boxes, clipped horizontal overflow, and fixed asymmetric left/right gutters affecting the topbar, page header, and dashboard cards.
+
+## 2026-06-09 10:04:54Z - codex
+
+- Tieu de: Add font and timezone requirements
+- Tom tat: Set Be Vietnam Pro as the default frontend body font, added APP_TIMEZONE and VITE_APP_TIMEZONE with Asia/Ho_Chi_Minh baseline, and updated project rules/memory so date-time handling must be explicit and guarded against UTC-local drift bugs.
+
+## 2026-06-10 01:36:06Z - codex
+
+- Tieu de: Fix Quick Filter input overflow
+- Tom tat: Constrained the Quick Filter form card so PrimeVue InputText fields shrink correctly inside the grid, preventing the Owner Email value from overflowing past the card edge.
+
+## 2026-06-10 01:38:22Z - codex
+
+- Tieu de: Add shared admin footer
+- Tom tat: Added a shared footer to the admin shell so every page has consistent bottom metadata, including product identity and the default timezone sourced from VITE_APP_TIMEZONE.

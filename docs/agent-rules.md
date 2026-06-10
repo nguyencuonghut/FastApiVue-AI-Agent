@@ -46,6 +46,20 @@ Nếu dự án phát hiện thêm một pattern lặp lại, phải cập nhật
 9. Giao diện phải mobile responsive.
 Mọi layout, page và shared component phải hoạt động tốt trên mobile, tablet và desktop. Không được thiết kế admin UI theo kiểu desktop-only rồi mới vá responsive về sau.
 
+10. Font UI mặc định là `Be Vietnam Pro`.
+Không tự ý đổi sang font khác nếu chưa có quyết định thiết kế mới ở cấp hệ thống.
+
+11. Timezone mặc định của hệ thống là `Asia/Ho_Chi_Minh` (`GMT+7`).
+Khi nhập liệu, lưu trữ, parse, format và hiển thị thời gian, phải nói rõ đang dùng timezone nào. Không được ngầm dựa vào timezone của máy người dùng hay timezone mặc định của runtime.
+
+12. Phải phòng ngừa bug ngày giờ trước khi code.
+Đặc biệt chú ý các lỗi:
+   - lệch ngày do parse `YYYY-MM-DD` như UTC thay vì local business date
+   - hiển thị sai ngày khi convert giữa UTC và `Asia/Ho_Chi_Minh`
+   - gửi datetime không kèm timezone hoặc offset
+   - dùng lẫn lộn `date` và `datetime`
+   - filter từ ngày/đến ngày bị lệch biên đầu ngày hoặc cuối ngày
+
 ## Kết quả mong muốn
 
 Agent phải hành xử như một thành viên trong team có hệ thống ghi nhớ bằng văn bản, không phải như một chat model chỉ dựa vào context ngắn hạn.

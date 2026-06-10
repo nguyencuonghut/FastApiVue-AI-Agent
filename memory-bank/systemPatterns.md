@@ -55,6 +55,24 @@ Use shared responsive rules for:
 
 Do not rely on page-by-page fixes for mobile. Responsive behavior should come from centralized layout/component styles and tested breakpoints.
 
+## Typography Pattern
+
+Frontend typography is centralized.
+
+Use one shared body font family across the application: `Be Vietnam Pro`.
+
+Font changes belong in the centralized style layer, not in page-level or component-level overrides.
+
+## Time Handling Pattern
+
+Application-facing time behavior must be explicit.
+
+1. treat `Asia/Ho_Chi_Minh` (`GMT+7`) as the default business timezone
+2. distinguish `date` from `datetime` in API contracts and UI forms
+3. store and transmit datetimes with explicit timezone/offset rules
+4. convert display values intentionally instead of relying on runtime defaults
+5. verify date-range filters against start-of-day and end-of-day boundaries in the target timezone
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.
@@ -124,6 +142,7 @@ Admin shell should follow a Sakai-like separation of concerns:
 2. page context such as section label and page title should live in a dedicated page-header area below the topbar, not inside the topbar itself
 3. collapsed desktop sidebar must switch nav to icon-first rendering and hide text labels instead of letting them overflow
 4. mobile sidebar must not stay in normal page flow; it should open as an off-canvas overlay with a backdrop so the topbar and content remain vertically ordered
+5. footer belongs to the shared admin shell, not to individual pages, so global metadata such as product identity and default timezone stay consistent across the app
 
 ## Docker Dev Pattern
 

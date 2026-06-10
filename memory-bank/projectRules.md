@@ -94,3 +94,22 @@ Admin UI must work on mobile, tablet, and desktop.
 Shared layout pieces such as sidebar, topbar, breadcrumb, tables, forms, dialogs, cards, and action bars must degrade gracefully on smaller viewports.
 
 Do not treat responsive behavior as a later polish task. It is part of the base acceptance criteria for frontend work.
+
+## Rule 12: Typography Is A System Contract
+
+The default UI font is `Be Vietnam Pro`.
+
+Do not mix multiple body-font families across pages or modules unless the design system is intentionally revised. Shared layout, form, table, and dashboard views should inherit from one centralized font definition.
+
+## Rule 13: Timezone Must Be Explicit
+
+The default business timezone is `Asia/Ho_Chi_Minh` (`GMT+7`).
+
+For user-facing dates and times:
+
+- do not rely on the developer machine timezone
+- do not rely on the browser locale alone to decide timezone
+- do not mix naive and timezone-aware datetimes
+- do not send ambiguous datetime strings between frontend and backend
+
+When the system stores UTC internally, conversion to `Asia/Ho_Chi_Minh` must be explicit at display and date-filter boundaries.

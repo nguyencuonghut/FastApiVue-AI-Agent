@@ -138,6 +138,8 @@
 
 .admin-layout__surface {
   position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
   min-width: 0;
   width: 100%;
   max-width: 100%;
@@ -195,6 +197,27 @@
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+}
+
+.admin-layout__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2rem 1.35rem;
+  border-top: 1px solid var(--app-border-soft);
+  color: var(--app-text-muted);
+  background: linear-gradient(
+    180deg,
+    rgba(17, 28, 25, 0.08),
+    rgba(17, 28, 25, 0.22)
+  );
+}
+
+.admin-layout__footer-copy,
+.admin-layout__footer-meta {
+  margin: 0;
+  font-size: 0.92rem;
 }
 
 .admin-layout--sidebar-collapsed {
@@ -265,7 +288,8 @@
 
   .admin-layout__topbar,
   .admin-layout__page-header,
-  .admin-layout__content {
+  .admin-layout__content,
+  .admin-layout__footer {
     width: 100%;
     max-width: 100%;
     margin: 0;
@@ -284,6 +308,13 @@
 
   .admin-layout__content {
     padding-top: 1rem;
+  }
+
+  .admin-layout__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 0.95rem;
+    padding-bottom: 1.1rem;
   }
 
   .admin-layout--sidebar-collapsed {

@@ -72,6 +72,15 @@
       <main class="admin-layout__content">
         <slot />
       </main>
+
+      <footer class="admin-layout__footer">
+        <p class="admin-layout__footer-copy">
+          © {{ currentYear }} FastApiVueBoilerplate. Sakai-inspired admin shell.
+        </p>
+        <p class="admin-layout__footer-meta">
+          Timezone mặc định: {{ appTimezone }}
+        </p>
+      </footer>
     </div>
   </div>
 </template>
@@ -92,6 +101,11 @@ withDefaults(defineProps<{
 })
 
 const layoutStore = useLayoutStore()
+const appTimezone = import.meta.env.VITE_APP_TIMEZONE ?? 'Asia/Ho_Chi_Minh'
+const currentYear = new Intl.DateTimeFormat('en-GB', {
+  year: 'numeric',
+  timeZone: appTimezone,
+}).format(new Date())
 
 function handleViewportChange() {
   layoutStore.syncViewport()

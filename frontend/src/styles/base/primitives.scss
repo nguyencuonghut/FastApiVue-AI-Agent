@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
 *,
 *::before,
 *::after {
@@ -12,7 +14,7 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
   background: var(--app-surface-ground);
   color: var(--app-text-primary);
 }

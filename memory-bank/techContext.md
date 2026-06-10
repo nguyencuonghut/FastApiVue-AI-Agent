@@ -21,6 +21,7 @@
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
 - Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using a `<style>` block
 - Verified frontend style architecture: `frontend/src/styles/**/*.scss` is now the centralized style tree for tokens, base styles, vendors, layouts, components, and pages
+- Verified frontend body font baseline from `frontend/src/styles/base/primitives.scss`: `Be Vietnam Pro`
 - Verified Docker dev scaffold exists in project root:
   - `docker-compose.yml`
   - `docker/backend/Dockerfile`
@@ -45,6 +46,7 @@
   - minio API `59000`
   - minio console `59001`
 - Verified `.env.example` exposes `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `POSTGRES_HOST_PORT`, `MINIO_API_HOST_PORT`, `MINIO_CONSOLE_HOST_PORT`
+- Verified timezone baseline from `.env.example` and `backend/app/core/config.py`: `APP_TIMEZONE=Asia/Ho_Chi_Minh`, `VITE_APP_TIMEZONE=Asia/Ho_Chi_Minh`
 - Verified Docker production scaffold exists in project root:
   - `docker-compose.prod.yml`
   - `docker/nginx/prod.conf`
@@ -90,6 +92,8 @@
 - Backend quality tools: Ruff, mypy or pyright, pytest, pytest-asyncio, pytest-cov, testcontainers or Docker Compose test profile, Bandit
 - Frontend quality tools: ESLint, Prettier, vue-tsc, Vitest, Vue Test Utils, Playwright, MSW or API mock layer
 - Frontend UX constraint: the admin UI must be mobile responsive across mobile, tablet, and desktop viewports
+- Frontend typography constraint: shared UI uses `Be Vietnam Pro` as the default body font
+- Time handling constraint: business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`) and must not depend on host/browser runtime timezone implicitly
 - Enterprise features: async User import/export jobs, large DataTable performance, heavy file import/export handling, RBAC, audit logging, rate limiting, dependency/container scanning
 - Production readiness: OpenTelemetry, structured logs, metrics/tracing, backup/restore, secret management, SLO, compliance gates
 

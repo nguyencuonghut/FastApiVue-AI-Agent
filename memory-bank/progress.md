@@ -26,6 +26,9 @@
 - Completed Phase 1 Step 7 Quality gates: added a root `Makefile` with canonical backend/frontend/local/Docker commands, documented the workflow in `README.md`, and verified `make check` plus Docker browser E2E
 - Fixed the mobile admin shell: moved small-screen sidebar behavior to an off-canvas overlay with backdrop, added viewport-aware layout state, tightened mobile spacing, and re-verified Docker browser E2E
 - Fixed mobile shell width drift: topbar, page header, content wrapper, and dashboard cards now use symmetric mobile gutters with full-width constraints and clipped horizontal overflow
+- Added system-wide typography and time baseline: `Be Vietnam Pro` is the default UI font, `.env.example` now carries `APP_TIMEZONE` and `VITE_APP_TIMEZONE`, and project rules now require explicit `Asia/Ho_Chi_Minh` time handling
+- Fixed dashboard form overflow: PrimeVue `Owner Email` input in `Quick Filter Form` is now constrained correctly inside the card on desktop/mobile
+- Added a shared admin-shell footer in `AdminLayout` with consistent product metadata and timezone display sourced from `VITE_APP_TIMEZONE`
 
 ## Open
 

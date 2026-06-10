@@ -116,6 +116,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: After changing mobile shell spacing or component structure, verify that topbar/page-header/content render with symmetric left/right gutters and no horizontal drift.
 - Related files: `frontend/src/styles/layouts/admin-layout.scss`, `frontend/src/styles/pages/dashboard-page.scss`, `frontend/src/styles/components/dashboard/summary-cards.scss`, `frontend/src/styles/components/dashboard/quick-filter-form.scss`, `frontend/src/styles/components/dashboard/health-snapshot-table.scss`
 
+### 2026-06-10: PrimeVue input overflowed from dashboard form card
+
+- Area: Frontend form layout inside dashboard cards
+- Trigger: In the `Validation Scaffold` card, the `Owner Email` input value extended past the right edge of the card.
+- Root cause: The grid form and field wrappers did not fully constrain PrimeVue `InputText` width; without `min-width: 0` and explicit `width: 100%`, the input could size itself from content and overflow the card.
+- Fix: Add `overflow: hidden` to the card, set `min-width: 0` on the form and field wrappers, and force `.p-inputtext` inside the form fields to `width: 100%` with constrained max width.
+- Regression guard: For any PrimeVue field placed inside CSS grid/flex cards, verify the wrapper and the input both opt into shrinking with `min-width: 0` and explicit width constraints.
+- Related files: `frontend/src/styles/components/dashboard/quick-filter-form.scss`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
