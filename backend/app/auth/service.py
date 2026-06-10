@@ -13,7 +13,7 @@ from sqlalchemy.orm import selectinload
 from app.auth.hashing import verify_password
 from app.auth.jwt import issue_access_token
 from app.core.config import get_settings
-from app.models import RefreshToken, User, UserStatus
+from app.models import RefreshToken, Role, User, UserStatus
 
 
 class InvalidCredentialsError(Exception):
@@ -97,7 +97,13 @@ class AuthService:
         await self.session.flush()
 
     async def get_active_user(self, *, user_id: UUID) -> User | None:
-        user = await self.session.get(User, user_id)
+        statement = (
+            select(User)
+            .options(selectinload(User.roles).selectinload(Role.permissions))
+            .where(User.id == user_id)
+        )
+        result = await self.session.execute(statement)
+        user = result.scalar_one_or_none()
         if user is None or user.status is not UserStatus.ACTIVE:
             return None
         return user
@@ -125,7 +131,11 @@ class AuthService:
         )
 
     async def _get_user_by_email(self, email: str) -> User | None:
-        statement = select(User).where(User.email == email)
+        statement = (
+            select(User)
+            .options(selectinload(User.roles).selectinload(Role.permissions))
+            .where(User.email == email)
+        )
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
 

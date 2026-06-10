@@ -83,6 +83,15 @@ Phase 2 auth uses a hybrid browser-first token model.
 4. refresh token must not be exposed as raw JSON payload or stored raw in the database
 5. auth bootstrap should attempt refresh before treating the user as anonymous
 
+## RBAC Resolver Pattern
+
+Permission checks must be backend-first and centralized.
+
+1. resolve permissions from `user -> roles -> permissions`
+2. keep `require_permission(...)` as the route-level enforcement boundary
+3. eager-load `roles -> permissions` before authz checks to avoid async lazy-load surprises during request handling
+4. frontend visibility rules are consumers of backend permission truth, not substitutes for backend enforcement
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.

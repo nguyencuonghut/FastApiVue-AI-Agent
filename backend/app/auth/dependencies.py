@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.jwt import AuthTokenError, decode_access_token
+from app.auth.permissions import has_permission
 from app.auth.service import AuthService
 from app.db.session import get_db_session
 from app.models import User
@@ -36,3 +37,17 @@ async def get_current_user(
         )
 
     return user
+
+
+def require_permission(permission_code: str):
+    async def dependency(
+        current_user: Annotated[User, Depends(get_current_user)],
+    ) -> User:
+        if not has_permission(current_user, permission_code):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to perform this action.",
+            )
+        return current_user
+
+    return dependency

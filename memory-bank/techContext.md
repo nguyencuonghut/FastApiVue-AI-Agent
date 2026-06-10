@@ -23,8 +23,12 @@
   - `backend/app/auth/service.py`
   - `backend/app/auth/dependencies.py`
   - `backend/tests/test_auth_core.py`
+- Verified backend RBAC scaffold files exist:
+  - `backend/app/auth/permissions.py`
+  - `backend/tests/test_rbac_core.py`
 - Verified backend framework/tooling: FastAPI `0.136.3`, SQLAlchemy `2.0.50`, Alembic `1.18.4`, Pydantic Settings `2.14.1`, MinIO `7.2.20`, pytest `9.0.3`, pytest-asyncio `1.4.0`, Ruff `0.15.16`, mypy `1.20.2`
 - Verified backend auth dependency declarations now include `argon2-cffi` and `PyJWT` in `backend/pyproject.toml`
+- Verified current auth service pattern: user fetches for auth/authz eager-load `roles -> permissions` via `selectinload`
 - Verified backend checks run successfully on 2026-06-09: `uv run pytest`, `uv run ruff check .`, `uv run mypy .`
 - Frontend scaffold exists in `frontend/`
 - Frontend package manager and runner: `npm`

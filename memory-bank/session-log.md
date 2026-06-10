@@ -151,3 +151,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Scaffold Phase 2 auth core service
 - Tom tat: Implemented Phase 2 Step 3 at scaffold level by adding Argon2 password hashing, PyJWT-based access token issue/decode with required claims, refresh-token issue/refresh/revoke flow, and a current-user dependency in backend/app/auth/. Also added service-level auth core tests and updated project memory so Step 4 permission guard/RBAC resolver is the next target. Runtime backend tests remain unverified in this sandbox because uv cannot fetch hatchling from PyPI.
+
+## 2026-06-10 02:05:59Z - codex
+
+- Tieu de: Scaffold Phase 2 RBAC resolver
+- Tom tat: Implemented Phase 2 Step 4 at scaffold level by adding centralized permission resolution, role/permission helper functions, require_permission(...) route enforcement, and eager loading of roles->permissions in auth flows. Added RBAC core tests and updated project memory so Step 5 auth API is the next implementation target.
