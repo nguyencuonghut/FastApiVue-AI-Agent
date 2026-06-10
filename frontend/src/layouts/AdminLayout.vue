@@ -35,6 +35,7 @@
 
       <nav class="admin-layout__nav">
         <RouterLink
+          v-if="permissionStore.can('dashboard.read')"
           class="admin-layout__nav-link"
           to="/"
           @click="layoutStore.closeMobileSidebar"
@@ -60,7 +61,21 @@
         </div>
 
         <div class="admin-layout__toolbar">
+          <div v-if="authStore.currentUser" class="admin-layout__user-chip">
+            <span class="admin-layout__user-label">Signed in as</span>
+            <strong class="admin-layout__user-value">
+              {{ authStore.currentUser.email }}
+            </strong>
+          </div>
           <ThemeModeSwitch />
+          <Button
+            class="admin-layout__logout-button"
+            icon="pi pi-sign-out"
+            label="Logout"
+            severity="secondary"
+            text
+            @click="handleLogout"
+          />
         </div>
       </header>
 
@@ -88,10 +103,12 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
 import Button from 'primevue/button'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 
 import ThemeModeSwitch from '@/components/shared/ThemeModeSwitch.vue'
+import { useAuthStore } from '@/stores/auth.store'
 import { useLayoutStore } from '@/stores/layout.store'
+import { usePermissionStore } from '@/stores/permission.store'
 
 withDefaults(defineProps<{
   title: string
@@ -101,11 +118,19 @@ withDefaults(defineProps<{
 })
 
 const layoutStore = useLayoutStore()
+const authStore = useAuthStore()
+const permissionStore = usePermissionStore()
+const router = useRouter()
 const appTimezone = import.meta.env.VITE_APP_TIMEZONE ?? 'Asia/Ho_Chi_Minh'
 const currentYear = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: appTimezone,
 }).format(new Date())
+
+async function handleLogout() {
+  await authStore.logout()
+  await router.replace('/login')
+}
 
 function handleViewportChange() {
   layoutStore.syncViewport()

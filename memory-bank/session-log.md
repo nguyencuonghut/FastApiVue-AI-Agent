@@ -166,3 +166,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Scaffold Phase 2 auth seed data
 - Tom tat: Completed Phase 2 Step 6 scaffold for auth seed data: added centralized baseline permission codes, idempotent auth/RBAC seed service, seed-related backend settings and env vars, backend/scripts/seed_auth_rbac.py, and Makefile/README wiring. Verified syntax with python3 -m py_compile; runtime seed execution remains unverified in this sandbox because uv-backed dependency resolution is blocked.
+
+## 2026-06-10 03:00:32Z - codex
+
+- Tieu de: Scaffold Phase 2 frontend auth foundation
+- Tom tat: Completed Phase 2 Step 7 scaffold for frontend auth foundation: added auth API client and shared HTTP helper, Pinia auth and permission stores, centralized router guards, login and forbidden pages, topbar logout, and anonymous-to-login bootstrap behavior that degrades gracefully when refresh is missing or backend auth is unavailable. Verified with npm run typecheck, npm run lint, npm run test:unit, npm run build, and docker compose -f docker-compose.test.yml run --rm e2e-test.
+
+## 2026-06-10 03:05:22Z - codex
+
+- Tieu de: Harden frontend auth API boundary
+- Tom tat: Refactored frontend auth flow to separate backend DTOs from frontend domain models. Added auth.mappers.ts, introduced AuthSession and CurrentUser domain types, kept raw backend snake_case fields in DTO types only, and updated auth.api.ts plus auth.store.ts to consume normalized models. Verified with npm run typecheck, npm run lint, npm run test:unit, and npm run build.

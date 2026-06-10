@@ -28,9 +28,11 @@ The repository has been prepared with:
 22. Phase 2 RBAC core is now scaffolded in code: permission resolver helpers and `require_permission(...)` exist, and current-user fetches eager-load `roles -> permissions`
 23. Phase 2 auth API is now scaffolded in code: `/api/v1/auth/login`, `/refresh`, `/logout`, and `/me` exist with hybrid cookie+Bearer contract and response schemas
 24. Phase 2 seed-data foundation is now scaffolded in code: base permission codes, `admin`/`user` roles, initial admin-user bootstrap service, seed script, and seed-related env config now exist under `backend/app/auth/`, `backend/app/services/`, and `backend/scripts/`
+25. Phase 2 frontend auth foundation is now scaffolded in code: `auth.api`, shared `http` client, `auth` and `permission` stores, router guards, login page, forbidden page, logout UI, and anonymous-to-login bootstrap behavior now exist under `frontend/src/`
+26. Frontend auth API boundary is now hardened: backend DTOs are separated from frontend domain models through `auth.mappers.ts`, so auth contract drift should stay localized to `src/api` and type files
 
 ## Next Useful Steps
 
-1. Start `Phase 2` Step 7 frontend auth foundation for login bootstrap, refresh flow, route guards, and permission-aware UI state.
+1. Start `Phase 2` Step 8 audit-log foundation for login/logout and admin auth/RBAC changes.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

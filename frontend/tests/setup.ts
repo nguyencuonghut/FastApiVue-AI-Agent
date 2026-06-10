@@ -2,7 +2,8 @@ import { config } from '@vue/test-utils'
 
 config.global.stubs = {
   Button: {
-    template: '<button><slot /></button>',
+    props: ['label'],
+    template: '<button><slot />{{ label }}</button>',
   },
   Card: {
     template: '<article><slot name="title" /><slot name="content" /></article>',
@@ -14,6 +15,12 @@ config.global.stubs = {
       '<div><slot /><div data-testid="row-count">{{ value?.length ?? 0 }}</div></div>',
   },
   InputText: {
+    props: ['modelValue'],
+    emits: ['update:modelValue'],
+    template:
+      '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+  },
+  Password: {
     props: ['modelValue'],
     emits: ['update:modelValue'],
     template:

@@ -1,11 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-test('renders the frontend smoke dashboard', async ({ page }) => {
+test('redirects anonymous users to the login page', async ({ page }) => {
   await page.goto('/')
 
-  await expect(
-    page.getByRole('heading', { name: 'Frontend Smoke Dashboard' }),
-  ).toBeVisible()
-  await expect(page.getByText('Vue 3 + PrimeVue v4 scaffold')).toBeVisible()
-  await expect(page.getByText('Smoke Snapshot')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Đăng nhập quản trị' })).toBeVisible()
+  await expect(page.getByText('Phase 2 Auth Foundation')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Đăng nhập' })).toBeVisible()
 })

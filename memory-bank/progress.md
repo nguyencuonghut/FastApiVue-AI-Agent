@@ -36,6 +36,8 @@
 - Completed Phase 2 Step 4 scaffold at code level: added backend permission resolver helpers, `require_permission(...)`, eager loading of `roles -> permissions` for current-user/auth flows, and RBAC core tests
 - Completed Phase 2 Step 5 scaffold at code level: added auth request/response schemas, `/api/v1/auth/login|refresh|logout|me` routes, refresh-cookie handling, and auth API contract tests
 - Completed Phase 2 Step 6 scaffold at code level: added baseline auth seed constants, idempotent auth/RBAC seed service, seed-related settings/env vars, `backend/scripts/seed_auth_rbac.py`, and `Makefile`/README wiring for initial admin/bootstrap data
+- Completed Phase 2 Step 7 scaffold at code level: added frontend auth API client, shared HTTP helper, auth and permission stores, router guards, login page, forbidden page, logout UI, and verified anonymous redirect to login through Docker Playwright E2E
+- Hardened the frontend API boundary for auth: split backend DTOs from frontend domain models and added `auth.mappers.ts` so future backend contract changes stay localized to the API layer
 
 ## Open
 

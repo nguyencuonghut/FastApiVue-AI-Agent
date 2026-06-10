@@ -1,0 +1,144 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(43, 138, 117, 0.16),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(43, 138, 117, 0.12),
+      transparent 24%
+    ),
+    var(--app-surface-ground);
+}
+
+.login-page__panel {
+  width: min(100%, 68rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 28rem);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.login-page__hero,
+.login-page__card {
+  border: 1px solid var(--app-border-strong);
+  border-radius: 1.75rem;
+  background: var(--app-surface-panel);
+  box-shadow: 0 1.5rem 3rem rgba(7, 18, 16, 0.18);
+}
+
+.login-page__hero {
+  display: grid;
+  gap: 1.25rem;
+  padding: 2rem;
+}
+
+.login-page__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-page__brand-logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.login-page__eyebrow {
+  margin: 0 0 0.4rem;
+  color: var(--app-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-page__title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.05;
+}
+
+.login-page__lead {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--app-text-secondary);
+  font-size: 1.03rem;
+  line-height: 1.7;
+}
+
+.login-page__card {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem;
+}
+
+.login-page__card .p-card {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.login-page__card .p-card-title {
+  font-size: 1.55rem;
+}
+
+.login-page__card .p-card-content {
+  padding-top: 0.5rem;
+}
+
+.login-page__form {
+  display: grid;
+  gap: 1rem;
+}
+
+.login-page__field {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.login-page__label {
+  color: var(--app-text-secondary);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.login-page__input,
+.login-page__password,
+.login-page__password .p-password-input {
+  width: 100%;
+}
+
+.login-page__error {
+  color: var(--p-red-400);
+  font-size: 0.84rem;
+}
+
+.login-page__submit {
+  margin-top: 0.35rem;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    padding: 1rem;
+  }
+
+  .login-page__panel {
+    grid-template-columns: 1fr;
+  }
+
+  .login-page__hero,
+  .login-page__card {
+    padding-inline: 1.25rem;
+  }
+}

@@ -45,11 +45,24 @@
 - Verified frontend dependency set from `frontend/package.json` and `frontend/package-lock.json`
 - Verified frontend dependency override on 2026-06-09: `frontend/package.json` forces transitive `glob` to `13.0.6` to remove the deprecated `glob@10.5.0` warning emitted by Docker/frontend installs
 - Verified frontend app entrypoint: `frontend/src/main.ts`
+- Verified frontend auth foundation scaffold files exist:
+  - `frontend/src/api/auth.api.ts`
+  - `frontend/src/api/auth.mappers.ts`
+  - `frontend/src/api/http.ts`
+  - `frontend/src/stores/auth.store.ts`
+  - `frontend/src/stores/permission.store.ts`
+  - `frontend/src/router/guards.ts`
+  - `frontend/src/pages/LoginPage.vue`
+  - `frontend/src/pages/ForbiddenPage.vue`
+  - `frontend/tests/unit/auth.store.spec.ts`
 - Verified frontend framework/tooling: Vue `3.5.34`, Vite `8.0.16`, Vue Router `5.1.0`, Pinia `3.0.4`, PrimeVue `4.5.5`, PrimeIcons `7.0.0`, VeeValidate `4.15.1`, Zod `3.25.76`, Sass `1.100.0`, ESLint `10.4.1`, Prettier `3.8.3`, Vitest `4.1.8`, Vue Test Utils `2.4.11`, Playwright `1.60.0`
 - Verified frontend checks run successfully on 2026-06-09: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`
+- Verified frontend auth foundation checks run successfully on 2026-06-10: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run build`, `docker compose -f docker-compose.test.yml run --rm e2e-test`
 - Verified frontend guardrail: `npm run lint` calls `frontend/scripts/check-no-scoped-style.mjs` to reject any Vue SFC using a `<style>` block
 - Verified frontend style architecture: `frontend/src/styles/**/*.scss` is now the centralized style tree for tokens, base styles, vendors, layouts, components, and pages
 - Verified frontend body font baseline from `frontend/src/styles/base/primitives.scss`: `Be Vietnam Pro`
+- Verified frontend auth bootstrap pattern at code level: app routes are guarded through `router.beforeEach`, login is guest-only, protected routes call `authStore.initialize()`, and failed refresh/network bootstrap falls back to anonymous state so the login page can still render
+- Verified frontend API-isolation pattern at code level: backend DTOs stay in `types/auth.ts`, API normalization happens in `frontend/src/api/auth.mappers.ts`, and stores consume domain-shaped `AuthSession` / `CurrentUser` objects instead of raw backend response fields
 - Verified Docker dev scaffold exists in project root:
   - `docker-compose.yml`
   - `docker/backend/Dockerfile`

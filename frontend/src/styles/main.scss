@@ -3,6 +3,8 @@
 @use './vendors/primevue';
 @use './layouts/admin-layout';
 @use './pages/dashboard-page';
+@use './pages/forbidden-page';
+@use './pages/login-page';
 @use './components/dashboard/quick-filter-form';
 @use './components/dashboard/health-snapshot-table';
 @use './components/dashboard/summary-cards';

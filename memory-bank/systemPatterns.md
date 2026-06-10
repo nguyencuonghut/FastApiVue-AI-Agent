@@ -90,6 +90,26 @@ Auth API contract follows that strategy:
 3. `POST /auth/logout` revokes refresh token and clears cookie
 4. `GET /auth/me` returns resolved roles and permissions for the current user
 
+## Frontend Auth Foundation Pattern
+
+Frontend auth should bootstrap once and guard routes centrally.
+
+1. keep access token in Pinia memory only
+2. use refresh-cookie bootstrap on app start or first protected navigation
+3. route guards own the public/protected decision, not individual pages
+4. treat missing or invalid refresh session as anonymous state, not as a fatal app crash
+5. expose resolved roles and permissions from one auth source of truth, then consume them through a permission store or equivalent helper
+6. keep login form logic in a composable and page styles in centralized `src/styles/`
+
+## Frontend API Boundary Pattern
+
+Frontend code should isolate backend contract changes behind a thin adapter layer.
+
+1. keep raw backend DTO shapes separate from frontend domain models
+2. normalize response fields in `src/api/*mappers.ts` before data reaches stores or pages
+3. let stores consume domain models only, not backend `snake_case` payloads
+4. if backend URLs or payload fields change, prefer fixing `api/*` and mapper files before touching stores, router guards, or pages
+
 ## RBAC Resolver Pattern
 
 Permission checks must be backend-first and centralized.
