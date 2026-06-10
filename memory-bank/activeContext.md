@@ -21,9 +21,10 @@ The repository has been prepared with:
 15. mobile responsive behavior is now a mandatory frontend requirement alongside dark/light consistency, not an optional later enhancement
 16. the admin shell now uses a responsive split behavior: collapsed icon-first sidebar on desktop and off-canvas sidebar with backdrop on mobile so topbar/page-header/content keep Sakai-like ordering
 17. typography and time handling are now explicit system constraints: UI uses `Be Vietnam Pro`, and business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`)
+18. a dedicated implementation plan now exists for `Phase 2: Auth + RBAC`, covering schema, auth core, permission guards, seed data, frontend auth foundation, audit log, and test milestones
 
 ## Next Useful Steps
 
-1. Decide whether Phase 1 should stop at scaffold completion or continue into the next feature phase.
+1. Start implementing `docs/phase-2-auth-rbac-implementation-plan.md`.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

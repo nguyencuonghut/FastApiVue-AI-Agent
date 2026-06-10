@@ -131,3 +131,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Add shared admin footer
 - Tom tat: Added a shared footer to the admin shell so every page has consistent bottom metadata, including product identity and the default timezone sourced from VITE_APP_TIMEZONE.
+
+## 2026-06-10 01:48:56Z - codex
+
+- Tieu de: Create Phase 2 Auth RBAC implementation plan
+- Tom tat: Added docs/phase-2-auth-rbac-implementation-plan.md with scope, deliverables, rollout order, API contract, test matrix, acceptance criteria, and risks for Phase 2 Auth + RBAC, then updated memory-bank TOC, active context, and progress to make it the next implementation phase.

@@ -29,6 +29,7 @@
 - Added system-wide typography and time baseline: `Be Vietnam Pro` is the default UI font, `.env.example` now carries `APP_TIMEZONE` and `VITE_APP_TIMEZONE`, and project rules now require explicit `Asia/Ho_Chi_Minh` time handling
 - Fixed dashboard form overflow: PrimeVue `Owner Email` input in `Quick Filter Form` is now constrained correctly inside the card on desktop/mobile
 - Added a shared admin-shell footer in `AdminLayout` with consistent product metadata and timezone display sourced from `VITE_APP_TIMEZONE`
+- Added `docs/phase-2-auth-rbac-implementation-plan.md` with scope, deliverables, rollout order, acceptance criteria, risks, and test matrix for Phase 2
 
 ## Open
 
