@@ -141,3 +141,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Close Phase 2 auth strategy
 - Tom tat: Closed Phase 2 Step 1 by choosing a hybrid browser-first auth model: short-lived Bearer access token plus httpOnly refresh cookie, documented it in docs/phase-2-auth-strategy-decision.md, updated the Phase 2 plan and fullstack design, and added matching auth config baseline to .env.example and backend settings.
+
+## 2026-06-10 02:00:08Z - codex
+
+- Tieu de: Scaffold Phase 2 auth RBAC schema
+- Tom tat: Implemented Phase 2 Step 2 at scaffold level by adding ORM models and an initial Alembic revision for users, roles, permissions, user-role mappings, role-permission mappings, refresh tokens, and audit logs, then updated memory to mark Step 3 auth core service as the next implementation target. Runtime migration verification remains unconfirmed in this sandbox because uv could not fetch hatchling from PyPI and the system Python does not have SQLAlchemy installed.

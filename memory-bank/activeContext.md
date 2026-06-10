@@ -23,9 +23,10 @@ The repository has been prepared with:
 17. typography and time handling are now explicit system constraints: UI uses `Be Vietnam Pro`, and business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`)
 18. a dedicated implementation plan now exists for `Phase 2: Auth + RBAC`, covering schema, auth core, permission guards, seed data, frontend auth foundation, audit log, and test milestones
 19. Phase 2 auth strategy is now closed: short-lived Bearer access token plus `httpOnly` refresh cookie, with config baseline already added to `.env.example` and backend settings
+20. Phase 2 database foundation is now scaffolded in code: auth/RBAC ORM models and a first Alembic revision exist for `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `refresh_tokens`, and `audit_logs`
 
 ## Next Useful Steps
 
-1. Start `Phase 2` implementation from database model + migration using the closed auth strategy in `docs/phase-2-auth-strategy-decision.md`.
+1. Start `Phase 2` Step 3 auth core service on top of the new schema foundation.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.
