@@ -24,9 +24,10 @@ The repository has been prepared with:
 18. a dedicated implementation plan now exists for `Phase 2: Auth + RBAC`, covering schema, auth core, permission guards, seed data, frontend auth foundation, audit log, and test milestones
 19. Phase 2 auth strategy is now closed: short-lived Bearer access token plus `httpOnly` refresh cookie, with config baseline already added to `.env.example` and backend settings
 20. Phase 2 database foundation is now scaffolded in code: auth/RBAC ORM models and a first Alembic revision exist for `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `refresh_tokens`, and `audit_logs`
+21. Phase 2 auth core service is now scaffolded in code: password hashing, JWT access-token issue/decode, refresh-token issue/refresh/revoke, and `get_current_user` dependency exist under `backend/app/auth/`
 
 ## Next Useful Steps
 
-1. Start `Phase 2` Step 3 auth core service on top of the new schema foundation.
+1. Start `Phase 2` Step 4 permission guard + RBAC resolver on top of the auth core and schema foundation.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

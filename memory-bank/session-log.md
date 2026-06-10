@@ -146,3 +146,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Scaffold Phase 2 auth RBAC schema
 - Tom tat: Implemented Phase 2 Step 2 at scaffold level by adding ORM models and an initial Alembic revision for users, roles, permissions, user-role mappings, role-permission mappings, refresh tokens, and audit logs, then updated memory to mark Step 3 auth core service as the next implementation target. Runtime migration verification remains unconfirmed in this sandbox because uv could not fetch hatchling from PyPI and the system Python does not have SQLAlchemy installed.
+
+## 2026-06-10 02:04:08Z - codex
+
+- Tieu de: Scaffold Phase 2 auth core service
+- Tom tat: Implemented Phase 2 Step 3 at scaffold level by adding Argon2 password hashing, PyJWT-based access token issue/decode with required claims, refresh-token issue/refresh/revoke flow, and a current-user dependency in backend/app/auth/. Also added service-level auth core tests and updated project memory so Step 4 permission guard/RBAC resolver is the next target. Runtime backend tests remain unverified in this sandbox because uv cannot fetch hatchling from PyPI.

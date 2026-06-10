@@ -32,6 +32,7 @@
 - Added `docs/phase-2-auth-rbac-implementation-plan.md` with scope, deliverables, rollout order, acceptance criteria, risks, and test matrix for Phase 2
 - Closed Phase 2 Step 1 auth strategy: added `docs/phase-2-auth-strategy-decision.md`, updated design/plan docs, and introduced hybrid auth config baseline in `.env.example` and backend settings
 - Completed Phase 2 Step 2 scaffold at code level: added auth/RBAC ORM models, metadata registration, a first Alembic revision, and a schema metadata test for users/roles/permissions/refresh_tokens/audit_logs
+- Completed Phase 2 Step 3 scaffold at code level: added password hashing, JWT access-token issue/decode, refresh-token issue/refresh/revoke flow, current-user dependency, and auth core tests under `backend/app/auth/`
 
 ## Open
 
