@@ -15,3 +15,4 @@ Related design docs:
 - `docs/fullstack-boilerplate-design.md`
 - `docs/phase-1-scaffold-implementation-plan.md`
 - `docs/phase-2-auth-rbac-implementation-plan.md`
+- `docs/phase-2-auth-strategy-decision.md`

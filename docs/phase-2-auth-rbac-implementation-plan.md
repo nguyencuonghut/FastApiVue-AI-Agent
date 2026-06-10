@@ -156,12 +156,18 @@ Phase 2 phải chốt rõ:
 
 ### Bước 1: Chốt auth strategy
 
-1. Chọn kiểu token transport chính:
-   - `Authorization Bearer`
-   - hoặc `httpOnly cookie`
-2. Chốt access token expiry và refresh token expiry.
-3. Chốt refresh token persistence strategy.
-4. Chốt timezone policy cho token/audit timestamp.
+1. Chọn hybrid strategy:
+   - `access token` ngắn hạn qua `Authorization Bearer`
+   - `refresh token` qua `httpOnly cookie`
+2. Chốt access token expiry baseline: `15 phút`.
+3. Chốt refresh token expiry baseline: `7 ngày`.
+4. Chốt refresh token persistence strategy:
+   - không lưu raw token
+   - chỉ lưu token id hoặc hash
+5. Chốt timezone policy cho token/audit timestamp:
+   - runtime timestamp explicit
+   - business-facing display theo `Asia/Ho_Chi_Minh`
+6. Bám theo quyết định đã ghi trong `docs/phase-2-auth-strategy-decision.md`.
 
 Kết quả:
 

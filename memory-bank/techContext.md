@@ -47,6 +47,7 @@
   - minio console `59001`
 - Verified `.env.example` exposes `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `POSTGRES_HOST_PORT`, `MINIO_API_HOST_PORT`, `MINIO_CONSOLE_HOST_PORT`
 - Verified timezone baseline from `.env.example` and `backend/app/core/config.py`: `APP_TIMEZONE=Asia/Ho_Chi_Minh`, `VITE_APP_TIMEZONE=Asia/Ho_Chi_Minh`
+- Verified Phase 2 auth config baseline from `.env.example` and `backend/app/core/config.py`: `AUTH_TOKEN_TRANSPORT=hybrid`, refresh cookie settings, `ACCESS_TOKEN_EXPIRE_MINUTES`, and `REFRESH_TOKEN_EXPIRE_DAYS`
 - Verified Docker production scaffold exists in project root:
   - `docker-compose.prod.yml`
   - `docker/nginx/prod.conf`
@@ -94,6 +95,7 @@
 - Frontend UX constraint: the admin UI must be mobile responsive across mobile, tablet, and desktop viewports
 - Frontend typography constraint: shared UI uses `Be Vietnam Pro` as the default body font
 - Time handling constraint: business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`) and must not depend on host/browser runtime timezone implicitly
+- Auth strategy constraint: Phase 2 uses a hybrid browser-first model with short-lived Bearer access token plus `httpOnly` refresh cookie
 - Enterprise features: async User import/export jobs, large DataTable performance, heavy file import/export handling, RBAC, audit logging, rate limiting, dependency/container scanning
 - Production readiness: OpenTelemetry, structured logs, metrics/tracing, backup/restore, secret management, SLO, compliance gates
 

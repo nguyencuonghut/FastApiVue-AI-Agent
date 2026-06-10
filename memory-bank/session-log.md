@@ -136,3 +136,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Create Phase 2 Auth RBAC implementation plan
 - Tom tat: Added docs/phase-2-auth-rbac-implementation-plan.md with scope, deliverables, rollout order, API contract, test matrix, acceptance criteria, and risks for Phase 2 Auth + RBAC, then updated memory-bank TOC, active context, and progress to make it the next implementation phase.
+
+## 2026-06-10 01:55:37Z - codex
+
+- Tieu de: Close Phase 2 auth strategy
+- Tom tat: Closed Phase 2 Step 1 by choosing a hybrid browser-first auth model: short-lived Bearer access token plus httpOnly refresh cookie, documented it in docs/phase-2-auth-strategy-decision.md, updated the Phase 2 plan and fullstack design, and added matching auth config baseline to .env.example and backend settings.

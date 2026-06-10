@@ -21,6 +21,36 @@ class Settings(BaseSettings):
     backend_host: str = Field(default="0.0.0.0", alias="BACKEND_HOST")  # nosec B104
     backend_port: int = Field(default=8000, alias="BACKEND_PORT")
     api_v1_prefix: str = Field(default="/api/v1", alias="API_V1_PREFIX")
+    jwt_secret_key: str = Field(default="change-me", alias="JWT_SECRET_KEY")
+    jwt_refresh_secret_key: str = Field(
+        default="change-me-too",
+        alias="JWT_REFRESH_SECRET_KEY",
+    )
+    access_token_expire_minutes: int = Field(
+        default=30,
+        alias="ACCESS_TOKEN_EXPIRE_MINUTES",
+    )
+    refresh_token_expire_days: int = Field(
+        default=7,
+        alias="REFRESH_TOKEN_EXPIRE_DAYS",
+    )
+    auth_token_transport: str = Field(default="hybrid", alias="AUTH_TOKEN_TRANSPORT")
+    auth_refresh_cookie_name: str = Field(
+        default="fastapivue_refresh_token",
+        alias="AUTH_REFRESH_COOKIE_NAME",
+    )
+    auth_refresh_cookie_secure: bool = Field(
+        default=False,
+        alias="AUTH_REFRESH_COOKIE_SECURE",
+    )
+    auth_refresh_cookie_samesite: str = Field(
+        default="lax",
+        alias="AUTH_REFRESH_COOKIE_SAMESITE",
+    )
+    auth_refresh_cookie_path: str = Field(
+        default="/api/v1/auth",
+        alias="AUTH_REFRESH_COOKIE_PATH",
+    )
 
     database_url: str = Field(
         default="postgresql+asyncpg://postgres:postgres@postgres:5432/app",

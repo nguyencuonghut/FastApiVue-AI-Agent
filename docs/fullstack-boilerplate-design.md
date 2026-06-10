@@ -1024,7 +1024,7 @@ Không log password, token, secret hoặc signed URL đầy đủ.
 ## Quyết định thiết kế cần chốt khi implement
 
 1. Dùng SQLAlchemy sync hay async. Khuyến nghị: async vì FastAPI + asyncpg.
-2. Dùng cookie httpOnly hay Authorization Bearer cho token. Khuyến nghị: httpOnly cookie nếu ưu tiên browser security; Bearer nếu ưu tiên API client đơn giản.
+2. Auth strategy đã chốt cho Phase 2: hybrid. Access token ngắn hạn đi qua `Authorization Bearer`, refresh token đi qua `httpOnly cookie`.
 3. Refresh token lưu plain hash hay token id. Khuyến nghị: chỉ lưu hash/token id, không lưu token raw.
 4. FE lấy type từ OpenAPI bằng tool nào. Khuyến nghị: `openapi-typescript`.
 5. Có dùng Tailwind giống Sakai hay giữ CSS module/custom CSS. Khuyến nghị: dùng CSS variables + utility tối thiểu, tránh phụ thuộc quá nhiều vào utility class.

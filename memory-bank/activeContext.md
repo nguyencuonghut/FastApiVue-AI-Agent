@@ -22,9 +22,10 @@ The repository has been prepared with:
 16. the admin shell now uses a responsive split behavior: collapsed icon-first sidebar on desktop and off-canvas sidebar with backdrop on mobile so topbar/page-header/content keep Sakai-like ordering
 17. typography and time handling are now explicit system constraints: UI uses `Be Vietnam Pro`, and business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`)
 18. a dedicated implementation plan now exists for `Phase 2: Auth + RBAC`, covering schema, auth core, permission guards, seed data, frontend auth foundation, audit log, and test milestones
+19. Phase 2 auth strategy is now closed: short-lived Bearer access token plus `httpOnly` refresh cookie, with config baseline already added to `.env.example` and backend settings
 
 ## Next Useful Steps
 
-1. Start implementing `docs/phase-2-auth-rbac-implementation-plan.md`.
+1. Start `Phase 2` implementation from database model + migration using the closed auth strategy in `docs/phase-2-auth-strategy-decision.md`.
 2. Populate bug history when the first business-logic defects are fixed.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

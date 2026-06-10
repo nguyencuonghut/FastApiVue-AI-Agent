@@ -73,6 +73,16 @@ Application-facing time behavior must be explicit.
 4. convert display values intentionally instead of relying on runtime defaults
 5. verify date-range filters against start-of-day and end-of-day boundaries in the target timezone
 
+## Auth Strategy Pattern
+
+Phase 2 auth uses a hybrid browser-first token model.
+
+1. access token is short-lived and sent via `Authorization Bearer`
+2. refresh token is longer-lived and stored in an `httpOnly` cookie
+3. frontend keeps access token in memory only
+4. refresh token must not be exposed as raw JSON payload or stored raw in the database
+5. auth bootstrap should attempt refresh before treating the user as anonymous
+
 ## Enterprise Data Pattern
 
 Large data flows must be server-driven.
