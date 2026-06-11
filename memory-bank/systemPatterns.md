@@ -106,6 +106,7 @@ Frontend auth should bootstrap once and guard routes centrally.
 4. treat missing or invalid refresh session as anonymous state, not as a fatal app crash
 5. expose resolved roles and permissions from one auth source of truth, then consume them through a permission store or equivalent helper
 6. keep login form logic in a composable and page styles in centralized `src/styles/`
+7. if an admin page edits the currently authenticated user, refresh the auth source of truth immediately after save so shell UI like avatar, display name, roles, and permissions do not go stale
 
 ## Frontend API Boundary Pattern
 
@@ -229,6 +230,7 @@ Admin shell should follow a Sakai-like separation of concerns:
 3. collapsed desktop sidebar must switch nav to icon-first rendering and hide text labels instead of letting them overflow
 4. mobile sidebar must not stay in normal page flow; it should open as an off-canvas overlay with a backdrop so the topbar and content remain vertically ordered
 5. footer belongs to the shared admin shell, not to individual pages, so global metadata such as product identity and default timezone stay consistent across the app
+6. authenticated user controls should be compact: dark/light toggle plus avatar trigger in the topbar, with account actions exposed through an avatar dropdown instead of a persistent email chip or standalone logout button
 
 ## Docker Dev Pattern
 

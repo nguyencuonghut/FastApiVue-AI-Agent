@@ -306,3 +306,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Fix avatar preview URLs to avoid internal hostnames
 - Tom tat: Fixed user-avatar preview/download URL generation by switching backend file, jobs, and avatar-upload responses from absolute request.base_url URLs to same-origin relative /api/v1/files/{id}/download paths. This prevents browser ERR_NAME_NOT_RESOLVED when Docker/Vite proxy flows expose internal hostnames. Verified backend tests, ruff, mypy, and frontend lint/typecheck. Browser-level verification was blocked in this session by missing Playwright browser extension and existing Docker E2E network issues.
+
+## 2026-06-11 04:46:41Z - codex
+
+- Tieu de: Refine topbar with avatar account menu
+- Tom tat: Updated the shared admin topbar to remove the logged-in email chip and standalone logout button, added an avatar trigger beside the theme toggle, exposed account actions through a dropdown menu with Ho so and Logout, and added a minimal /profile page as a valid destination for the account menu. Verified frontend lint, typecheck, unit tests, and production build.
+
+## 2026-06-11 04:50:22Z - codex
+
+- Tieu de: Refresh auth store after editing current user
+- Tom tat: Fixed stale topbar avatar after editing the currently logged-in user in UsersPage. After a successful updateUser call, the flow now refreshes authStore.currentUser when the edited user id matches the authenticated user id, so shell UI like avatar updates immediately without page reload. Updated bug patterns and frontend auth system pattern; verified frontend lint, typecheck, and unit tests.

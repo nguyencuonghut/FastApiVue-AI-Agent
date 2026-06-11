@@ -4,6 +4,7 @@ import DashboardPage from '@/pages/DashboardPage.vue'
 import FilesPage from '@/pages/FilesPage.vue'
 import ForbiddenPage from '@/pages/ForbiddenPage.vue'
 import LoginPage from '@/pages/LoginPage.vue'
+import ProfilePage from '@/pages/ProfilePage.vue'
 import RolesPage from '@/pages/RolesPage.vue'
 import UsersPage from '@/pages/UsersPage.vue'
 
@@ -52,6 +53,14 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'files.read',
+      },
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfilePage,
+      meta: {
+        requiresAuth: true,
       },
     },
     {

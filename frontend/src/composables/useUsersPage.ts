@@ -188,7 +188,7 @@ export function useUsersPage() {
     if (!selectedUser.value) return
     submitError.value = null
     try {
-      await updateUser(
+      const updatedUser = await updateUser(
         selectedUser.value.id,
         {
           email: values.email,
@@ -200,6 +200,11 @@ export function useUsersPage() {
         },
         authStore.accessToken,
       )
+
+      if (authStore.currentUser?.id === updatedUser.id) {
+        await authStore.fetchCurrentUser()
+      }
+
       editDialogVisible.value = false
       editForm.resetForm()
       await fetchUsers()

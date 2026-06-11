@@ -255,6 +255,15 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: For browser-consumed resource URLs behind same-origin proxy architecture, prefer relative API paths over absolute URLs derived from backend request metadata.
 - Related files: `backend/app/api/url_utils.py`, `backend/app/api/v1/files.py`, `backend/app/api/v1/jobs.py`, `backend/app/api/v1/users.py`
 
+### 2026-06-11: Topbar avatar stays stale after editing the currently logged-in user
+
+- Area: Frontend user-management flow and auth store synchronization
+- Trigger: Updating the avatar for the currently logged-in user through `UsersPage` changed the saved user record, but the topbar avatar only updated after a full page reload.
+- Root cause: `useUsersPage.submitEdit()` refreshed the paginated users list, but did not refresh `authStore.currentUser`. The topbar renders from `authStore.currentUser`, not from the users table state.
+- Fix: After a successful `updateUser(...)`, if the edited user id matches `authStore.currentUser?.id`, immediately call `authStore.fetchCurrentUser()` before closing the dialog.
+- Regression guard: Any admin flow that can mutate the currently authenticated user must refresh `authStore.currentUser` (or an equivalent source of truth) after a successful save.
+- Related files: `frontend/src/composables/useUsersPage.ts`, `frontend/src/stores/auth.store.ts`, `frontend/src/layouts/AdminLayout.vue`
+
 
 ## Usage Rule
 

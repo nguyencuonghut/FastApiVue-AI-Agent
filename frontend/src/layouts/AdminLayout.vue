@@ -98,20 +98,29 @@
         </div>
 
         <div class="admin-layout__toolbar">
-          <div v-if="authStore.currentUser" class="admin-layout__user-chip">
-            <span class="admin-layout__user-label">Signed in as</span>
-            <strong class="admin-layout__user-value">
-              {{ authStore.currentUser.email }}
-            </strong>
-          </div>
           <ThemeModeSwitch />
-          <Button
-            class="admin-layout__logout-button"
-            icon="pi pi-sign-out"
-            label="Logout"
-            severity="secondary"
-            text
-            @click="handleLogout"
+          <button
+            v-if="authStore.currentUser"
+            aria-label="Mở menu tài khoản"
+            class="admin-layout__profile-trigger"
+            type="button"
+            @click="toggleProfileMenu"
+          >
+            <img
+              v-if="authStore.currentUser.avatarUrl"
+              :src="authStore.currentUser.avatarUrl"
+              alt="Ảnh đại diện người dùng"
+              class="admin-layout__profile-avatar-image"
+            />
+            <span v-else class="admin-layout__profile-avatar-fallback">
+              {{ profileInitials }}
+            </span>
+          </button>
+          <Menu
+            ref="profileMenuRef"
+            :model="profileMenuItems"
+            popup
+            class="admin-layout__profile-menu"
           />
         </div>
       </header>
@@ -138,8 +147,9 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import Button from 'primevue/button'
+import Menu from 'primevue/menu'
 import { RouterLink, useRouter } from 'vue-router'
 
 import ThemeModeSwitch from '@/components/shared/ThemeModeSwitch.vue'
@@ -161,15 +171,49 @@ const layoutStore = useLayoutStore()
 const authStore = useAuthStore()
 const permissionStore = usePermissionStore()
 const router = useRouter()
+const profileMenuRef = ref<InstanceType<typeof Menu> | null>(null)
 const appTimezone = import.meta.env.VITE_APP_TIMEZONE ?? 'Asia/Ho_Chi_Minh'
 const currentYear = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: appTimezone,
 }).format(new Date())
+const profileInitials = computed(() => {
+  const fullName = authStore.currentUser?.fullName?.trim()
+  if (fullName) {
+    const parts = fullName.split(/\s+/).filter(Boolean)
+    return parts
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? '')
+      .join('')
+  }
+
+  const email = authStore.currentUser?.email?.trim()
+  return email ? email.slice(0, 2).toUpperCase() : 'FV'
+})
+const profileMenuItems = [
+  {
+    label: 'Hồ sơ',
+    icon: 'pi pi-user',
+    command: async () => {
+      await router.push('/profile')
+    },
+  },
+  {
+    label: 'Logout',
+    icon: 'pi pi-sign-out',
+    command: async () => {
+      await handleLogout()
+    },
+  },
+]
 
 async function handleLogout() {
   await authStore.logout()
   await router.replace('/login')
+}
+
+function toggleProfileMenu(event: globalThis.MouseEvent) {
+  profileMenuRef.value?.toggle(event)
 }
 
 function handleViewportChange() {

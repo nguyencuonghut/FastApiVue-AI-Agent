@@ -50,6 +50,8 @@
 - Audited required-field markers on 11/06/2026 and extended the red-asterisk convention beyond Login/Users to Roles, Files upload, and the dashboard Quick Filter form. Project rules and design docs now treat the marker as a mandatory form UX contract.
 - Replaced manual avatar URL entry in Users management with image upload flow on 11/06/2026: added backend `/api/v1/users/avatar-upload`, reused file storage + MinIO, updated Users create/edit dialogs to upload images instead of typing links, and verified backend route tests in-container plus frontend lint/typecheck/unit/build.
 - Fixed avatar preview URL regression on 11/06/2026 by switching backend file/avatar/job payloads from absolute URLs to relative `/api/v1/...` paths, preventing browser `ERR_NAME_NOT_RESOLVED` when the backend runs behind Docker/Vite proxy hostnames.
+- Refined the shared topbar on 11/06/2026: removed inline email/logout controls, added avatar-trigger dropdown account menu, and introduced a minimal authenticated `/profile` page so the new `Hồ sơ` action has a valid destination.
+- Fixed topbar avatar stale-state on 11/06/2026: when Users edit saves the currently logged-in account, the flow now refreshes `authStore.currentUser` immediately so the shell avatar updates without page reload.
 
 ## Open
 
