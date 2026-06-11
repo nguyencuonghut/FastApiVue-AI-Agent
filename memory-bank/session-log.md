@@ -356,3 +356,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Fix Email Notification Timezone Offset
 - Tom tat: Imported zoneinfo and converted started_at/completed_at datetimes to the local Asia/Ho_Chi_Minh timezone before constructing the email subject and template content.
+
+## 2026-06-11 08:47:39Z - gemini
+
+- Tieu de: Dynamic SEO Title and Meta Description Updates
+- Tom tat: Extended RouteMeta interface with optional title and description fields, updated all routes with page-specific SEO parameters, and implemented a router.afterEach hook to update document.title and meta tags dynamically.

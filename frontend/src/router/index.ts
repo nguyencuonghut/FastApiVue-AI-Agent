@@ -28,6 +28,8 @@ export const router = createRouter({
       component: LoginPage,
       meta: {
         guestOnly: true,
+        title: 'Đăng nhập',
+        description: 'Đăng nhập hệ thống quản trị FastAPI Vue Boilerplate.',
       },
     },
     {
@@ -37,6 +39,9 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'dashboard.read',
+        title: 'Bảng điều khiển',
+        description:
+          'Bảng điều khiển tổng quan hệ thống, giám sát sức khỏe dịch vụ và chỉ số hoạt động.',
       },
     },
     {
@@ -46,6 +51,9 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'users.read',
+        title: 'Quản lý tài khoản',
+        description:
+          'Danh sách tài khoản người dùng, vai trò phân quyền và lịch sử hoạt động hệ thống.',
       },
     },
     {
@@ -55,6 +63,9 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'roles.read',
+        title: 'Quản lý vai trò',
+        description:
+          'Cấu hình vai trò và quản lý chi tiết phân quyền truy cập hệ thống.',
       },
     },
     {
@@ -64,6 +75,9 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'files.read',
+        title: 'Quản lý tệp tin',
+        description:
+          'Tải lên, lưu trữ, quản lý tệp tin bảo mật tích hợp hệ thống lưu trữ MinIO.',
       },
     },
     {
@@ -73,6 +87,9 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'backups.read',
+        title: 'Sao lưu & Khôi phục',
+        description:
+          'Cấu hình sao lưu Postgres tự động, quản lý lịch sử sao lưu và khôi phục dữ liệu hệ thống.',
       },
     },
     {
@@ -81,6 +98,9 @@ export const router = createRouter({
       component: ProfilePage,
       meta: {
         requiresAuth: true,
+        title: 'Thông tin cá nhân',
+        description:
+          'Cập nhật thông tin cá nhân tài khoản, họ và tên và ảnh đại diện.',
       },
     },
     {
@@ -89,7 +109,33 @@ export const router = createRouter({
       component: ForbiddenPage,
       meta: {
         requiresAuth: true,
+        title: 'Không có quyền truy cập',
+        description: 'Bạn không có đủ quyền hạn để truy cập tài nguyên này.',
       },
     },
   ],
+})
+
+router.afterEach((to) => {
+  const defaultTitle = 'FastAPI Vue Boilerplate'
+  const title =
+    typeof to.meta.title === 'string'
+      ? `${to.meta.title}`
+      : defaultTitle
+  document.title = title
+
+  const defaultDescription =
+    'FastAPI Vue Boilerplate - A modern, secure, and production-ready enterprise boilerplate.'
+  const description =
+    typeof to.meta.description === 'string'
+      ? to.meta.description
+      : defaultDescription
+
+  let metaDescription = document.querySelector('meta[name="description"]')
+  if (!metaDescription) {
+    metaDescription = document.createElement('meta')
+    metaDescription.setAttribute('name', 'description')
+    document.head.appendChild(metaDescription)
+  }
+  metaDescription.setAttribute('content', description)
 })
