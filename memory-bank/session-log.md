@@ -316,3 +316,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Refresh auth store after editing current user
 - Tom tat: Fixed stale topbar avatar after editing the currently logged-in user in UsersPage. After a successful updateUser call, the flow now refreshes authStore.currentUser when the edited user id matches the authenticated user id, so shell UI like avatar updates immediately without page reload. Updated bug patterns and frontend auth system pattern; verified frontend lint, typecheck, and unit tests.
+
+## 2026-06-11 05:13:56Z - codex
+
+- Tieu de: Fix mobile admin topbar visibility
+- Tom tat: Removed overflow clipping from sticky admin-shell ancestors, moved horizontal overflow protection to body/#app, added router scroll restoration, and documented the mobile topbar regression pattern in memory.
+
+## 2026-06-11 05:29:55Z - codex
+
+- Tieu de: Tighten mobile CRUD page widths
+- Tom tat: Fixed mobile horizontal overflow on Users, Roles, and Files by adding min-width guards, full-width stacked action buttons, and table-wrapper horizontal scrolling so shared topbar controls are not pushed off-screen.

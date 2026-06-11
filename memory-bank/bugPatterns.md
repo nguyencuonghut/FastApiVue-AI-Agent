@@ -258,6 +258,20 @@ That means agents must not assume there were no bugs. It means bug memory has no
 ### 2026-06-11: Topbar avatar stays stale after editing the currently logged-in user
 
 - Area: Frontend user-management flow and auth store synchronization
+- Trigger: Updating the current user's avatar or profile from the Users page changed the table data, but the shared topbar avatar stayed stale until a full page reload.
+- Root cause: The Users edit flow refreshed the users listing but did not refresh `authStore.currentUser`, while the topbar renders avatar state from the auth store rather than from the users table.
+- Fix: After a successful user update, if the updated record matches `authStore.currentUser?.id`, immediately call `authStore.fetchCurrentUser()` so the shell state refreshes in the same interaction.
+- Regression guard: Any admin flow that can mutate the currently authenticated user's display data must refresh the shared auth source of truth, not just the local CRUD listing.
+- Related files: `frontend/src/composables/useUsersPage.ts`, `frontend/src/stores/auth.store.ts`, `frontend/src/layouts/AdminLayout.vue`
+
+### 2026-06-11: Mobile topbar loses sticky visibility on longer admin pages
+
+- Area: Frontend admin shell responsive layout
+- Trigger: On mobile, the shared topbar appeared fine on `Dashboard Smoke` but disappeared on longer pages like Users, Roles, Files, and Profile while scrolling.
+- Root cause: The mobile shell relied on `position: sticky` for the topbar, but ancestor containers in `AdminLayout` used `overflow-x: clip`, a pattern that can break sticky behavior in mobile browsers. Route navigation also had no explicit `scrollBehavior`, so page-to-page navigation could preserve awkward scroll positions.
+- Fix: Remove overflow clipping from sticky ancestors in `admin-layout.scss`, move horizontal overflow protection to `body/#app` in `primitives.scss`, and add router `scrollBehavior` to reset forward navigation to the top while preserving browser back/forward saved positions.
+- Regression guard: Do not put `overflow: hidden/clip/auto` on ancestors of sticky shell elements unless browser behavior is verified on mobile. Shared admin shell routing should define explicit scroll restoration behavior.
+- Related files: `frontend/src/styles/layouts/admin-layout.scss`, `frontend/src/styles/base/primitives.scss`, `frontend/src/router/index.ts`
 - Trigger: Updating the avatar for the currently logged-in user through `UsersPage` changed the saved user record, but the topbar avatar only updated after a full page reload.
 - Root cause: `useUsersPage.submitEdit()` refreshed the paginated users list, but did not refresh `authStore.currentUser`. The topbar renders from `authStore.currentUser`, not from the users table state.
 - Fix: After a successful `updateUser(...)`, if the edited user id matches `authStore.currentUser?.id`, immediately call `authStore.fetchCurrentUser()` before closing the dialog.

@@ -275,3 +275,13 @@ The root `Makefile` is the canonical developer entrypoint for pre-commit checks:
 3. `make frontend-test-e2e` is a separate local browser gate because host socket policies may differ by environment
 4. `make docker-test-e2e` is the reliable browser E2E gate for sandboxed or CI-like environments
 5. `make check` should stay stable and fast enough for routine local validation
+## Mobile CRUD Page Width Discipline
+
+Shared admin-shell responsiveness is not enough on its own. CRUD pages that contain filter bars, action groups, and PrimeVue DataTables must also enforce their own mobile width discipline:
+
+- header/filter/action wrappers need `min-width: 0`
+- search/select controls must drop desktop `min-width` constraints on mobile
+- mobile action groups should stack vertically and use full-width buttons
+- table card wrappers should use `overflow-x: auto` rather than clipping, so horizontal table content scrolls inside the card instead of stretching the whole page
+
+If page-level containers do not follow these rules, the entire page can overflow horizontally and make shared shell controls like the topbar toolbar appear missing off-screen.

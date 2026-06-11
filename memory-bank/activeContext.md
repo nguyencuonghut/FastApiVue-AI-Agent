@@ -42,6 +42,7 @@ The repository has been prepared with:
 36. User avatar handling has moved away from raw URL entry: the Users module now uploads avatar images through a dedicated `/api/v1/users/avatar-upload` endpoint, reusing the shared file-storage/MinIO service and then persisting the returned `avatar_url` in normal user create/update payloads.
 37. Browser-facing file/avatar URLs are now emitted as relative same-origin API paths to avoid leaking Docker/internal hostnames into frontend previews and download links.
 38. The shared admin topbar now uses an avatar-trigger account menu: email text and the standalone logout button are removed, avatar is shown beside the theme toggle, and account actions are exposed through a dropdown with `Hồ sơ` and `Logout`.
+39. The mobile admin shell now avoids overflow clipping on sticky ancestors, and router navigation now restores scroll predictably; this prevents the shared topbar from disappearing on longer non-dashboard pages in mobile view.
 
 ## Next Useful Steps
 

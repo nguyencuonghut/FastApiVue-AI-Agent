@@ -52,6 +52,8 @@
 - Fixed avatar preview URL regression on 11/06/2026 by switching backend file/avatar/job payloads from absolute URLs to relative `/api/v1/...` paths, preventing browser `ERR_NAME_NOT_RESOLVED` when the backend runs behind Docker/Vite proxy hostnames.
 - Refined the shared topbar on 11/06/2026: removed inline email/logout controls, added avatar-trigger dropdown account menu, and introduced a minimal authenticated `/profile` page so the new `Hồ sơ` action has a valid destination.
 - Fixed topbar avatar stale-state on 11/06/2026: when Users edit saves the currently logged-in account, the flow now refreshes `authStore.currentUser` immediately so the shell avatar updates without page reload.
+- Fixed mobile topbar visibility regression on 11/06/2026: removed overflow clipping from sticky admin-shell ancestors, moved horizontal overflow protection to `body/#app`, added router scroll restoration, and re-verified frontend lint/typecheck/build.
+- Extended the mobile topbar fix on 11/06/2026 to CRUD pages: Users, Roles, and Files now constrain header/filter/action widths correctly on mobile, stack action buttons full-width, and let DataTable wrappers scroll horizontally inside the card instead of stretching the whole page.
 
 ## Open
 
