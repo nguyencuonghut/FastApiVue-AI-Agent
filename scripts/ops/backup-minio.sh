@@ -11,11 +11,10 @@ MINIO_SERVICE="${MINIO_SERVICE:-minio}"
 mkdir -p "$OUTPUT_DIR"
 
 if [[ "${DRY_RUN:-false}" == "true" ]]; then
-  echo "[dry-run] docker compose exec -T $MINIO_SERVICE sh -lc 'tar -C /data -czf - .' > $OUTPUT_FILE"
+  echo "[dry-run] docker compose cp $MINIO_SERVICE:/data - | gzip > $OUTPUT_FILE"
   exit 0
 fi
 
-docker compose exec -T "$MINIO_SERVICE" \
-  sh -lc 'tar -C /data -czf - .' > "$OUTPUT_FILE"
+docker compose cp "$MINIO_SERVICE":/data - | gzip > "$OUTPUT_FILE"
 
 echo "MinIO backup written to $OUTPUT_FILE"

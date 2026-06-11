@@ -15,11 +15,10 @@ if [[ ! -f "$BACKUP_FILE" ]]; then
 fi
 
 if [[ "${DRY_RUN:-false}" == "true" ]]; then
-  echo "[dry-run] cat $BACKUP_FILE | docker compose exec -T $MINIO_SERVICE sh -lc 'mkdir -p /data && tar -C /data -xzf -'"
+  echo "[dry-run] gunzip -c $BACKUP_FILE | docker compose cp - $MINIO_SERVICE:/"
   exit 0
 fi
 
-cat "$BACKUP_FILE" | docker compose exec -T "$MINIO_SERVICE" \
-  sh -lc 'mkdir -p /data && tar -C /data -xzf -'
+gunzip -c "$BACKUP_FILE" | docker compose cp - "$MINIO_SERVICE":/
 
 echo "MinIO restore completed from $BACKUP_FILE"

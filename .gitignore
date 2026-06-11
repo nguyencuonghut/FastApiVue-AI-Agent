@@ -21,3 +21,6 @@ coverage/
 
 # Agent-memory runtime queue.
 /.agent-memory/inbox/*.json
+
+# Backups folder.
+/backups/
