@@ -222,7 +222,7 @@ def _set_refresh_cookie(
         expires=expires_at,
     )
     response.set_cookie(
-        key="fastapivue_logged_in",
+        key=settings.auth_logged_in_cookie_name,
         value="true",
         httponly=False,
         secure=settings.auth_refresh_cookie_secure,
@@ -240,7 +240,7 @@ def _clear_refresh_cookie(*, response: Response, settings: Settings) -> None:
         secure=settings.auth_refresh_cookie_secure,
     )
     response.delete_cookie(
-        key="fastapivue_logged_in",
+        key=settings.auth_logged_in_cookie_name,
         path="/",
         samesite=settings.auth_refresh_cookie_samesite,
         secure=settings.auth_refresh_cookie_secure,

@@ -266,3 +266,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: prevent-infinite-401-refresh-loop-on-stale-cookie
 - Tom tat: Modified auth.store.ts to actively expire fastapivue_logged_in cookie on refresh rejection. This prevents infinite refresh token retry loops and 401 console logs when sessions are invalid or database is wiped.
+
+## 2026-06-11 02:31:16Z - gemini
+
+- Tieu de: dynamic-cookie-naming-customization
+- Tom tat: Exposed VITE_AUTH_LOGGED_IN_COOKIE_NAME as a dynamic environment variable in .env and .env.example, mapped it to backend settings, and consumed it dynamically in auth.store.ts. This decouples the boilerplate naming from fastapivue_logged_in and allows naming customization in future boilerplate forks.

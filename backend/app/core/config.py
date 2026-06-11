@@ -40,6 +40,10 @@ class Settings(BaseSettings):
         default="fastapivue_refresh_token",
         alias="AUTH_REFRESH_COOKIE_NAME",
     )
+    auth_logged_in_cookie_name: str = Field(
+        default="fastapivue_logged_in",
+        alias="VITE_AUTH_LOGGED_IN_COOKIE_NAME",
+    )
     auth_refresh_cookie_secure: bool = Field(
         default=False,
         alias="AUTH_REFRESH_COOKIE_SECURE",

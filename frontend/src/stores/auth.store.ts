@@ -11,6 +11,9 @@ import type { CurrentUser, LoginFormValues } from '@/types/auth'
 
 let initializePromise: Promise<void> | null = null
 
+const LOGGED_IN_COOKIE_NAME =
+  import.meta.env.VITE_AUTH_LOGGED_IN_COOKIE_NAME || 'fastapivue_logged_in'
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: null as string | null,
@@ -30,8 +33,7 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = null
       this.currentUser = null
       try {
-        document.cookie =
-          'fastapivue_logged_in=; path=/; max-age=0; samesite=lax'
+        document.cookie = `${LOGGED_IN_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`
       } catch {
         // ignore in non-browser environments
       }
@@ -60,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
 
       const hasLoggedInCookie = document.cookie
         .split(';')
-        .some((item) => item.trim().startsWith('fastapivue_logged_in='))
+        .some((item) => item.trim().startsWith(`${LOGGED_IN_COOKIE_NAME}=`))
 
       if (!hasLoggedInCookie) {
         this.clearAuthState()
