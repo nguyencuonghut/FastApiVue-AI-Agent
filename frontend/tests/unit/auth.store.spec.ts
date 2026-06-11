@@ -17,9 +17,11 @@ describe('auth.store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
+    document.cookie = 'fastapivue_logged_in=; max-age=0'
   })
 
   it('bootstraps authenticated state from refresh cookie', async () => {
+    document.cookie = 'fastapivue_logged_in=true'
     authApiMock.refreshSession.mockResolvedValue({
       accessToken: 'bootstrap-token',
       tokenType: 'bearer',
@@ -44,6 +46,7 @@ describe('auth.store', () => {
   })
 
   it('falls back to anonymous state when refresh is unauthorized', async () => {
+    document.cookie = 'fastapivue_logged_in=true'
     authApiMock.refreshSession.mockRejectedValue(
       new ApiError('Refresh token is invalid.', 401),
     )

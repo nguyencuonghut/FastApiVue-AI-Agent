@@ -15,7 +15,7 @@ services:
       redis:
         condition: service_healthy
     env_file:
-      - .env.example
+      - .env
     environment:
       POSTGRES_HOST: postgres
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
@@ -117,8 +117,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - "${REDIS_HOST_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
 
@@ -138,7 +136,7 @@ services:
       redis:
         condition: service_healthy
     env_file:
-      - .env.example
+      - .env
     environment:
       POSTGRES_HOST: postgres
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app

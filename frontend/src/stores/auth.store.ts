@@ -52,6 +52,16 @@ export const useAuthStore = defineStore('auth', {
         return
       }
 
+      const hasLoggedInCookie = document.cookie
+        .split(';')
+        .some((item) => item.trim().startsWith('fastapivue_logged_in='))
+
+      if (!hasLoggedInCookie) {
+        this.clearAuthState()
+        this.initialized = true
+        return
+      }
+
       this.initializing = true
 
       initializePromise = (async () => {

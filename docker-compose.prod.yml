@@ -5,7 +5,7 @@ services:
       dockerfile: docker/backend/Dockerfile
       target: prod
     env_file:
-      - .env.example
+      - .env
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
@@ -138,7 +138,7 @@ services:
       redis:
         condition: service_healthy
     env_file:
-      - .env.example
+      - .env
     environment:
       APP_ENV: production
       APP_DEBUG: "false"

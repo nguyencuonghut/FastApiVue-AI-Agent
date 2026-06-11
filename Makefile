@@ -22,7 +22,10 @@ DOCKER_TEST_COMPOSE := docker compose -f docker-compose.test.yml
 	docker-test-backend \
 	docker-test-frontend \
 	docker-test-e2e \
-	docker-test
+	docker-test \
+	migrate \
+	migrate-refresh \
+	seed
 
 backend-lint:
 	cd backend && if [ -x .venv/bin/ruff ]; then .venv/bin/ruff check .; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run ruff check .; fi
@@ -75,3 +78,13 @@ docker-test-e2e:
 	$(DOCKER_TEST_COMPOSE) run --rm e2e-test
 
 docker-test: docker-test-backend docker-test-frontend docker-test-e2e
+
+migrate:
+	docker compose exec backend uv run alembic upgrade head
+
+migrate-refresh:
+	docker compose exec backend uv run alembic downgrade base
+	docker compose exec backend uv run alembic upgrade head
+
+seed:
+	docker compose exec backend uv run python scripts/seed_auth_rbac.py

@@ -11,7 +11,7 @@ services:
       .venv/bin/mypy . &&
       .venv/bin/bandit -c pyproject.toml -s B104 -r app"
     env_file:
-      - .env.example
+      - .env
     environment:
       APP_ENV: test
       APP_DEBUG: "false"
@@ -69,7 +69,7 @@ services:
       sh -lc "uv sync &&
       uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
     env_file:
-      - .env.example
+      - .env
     environment:
       APP_ENV: test
       APP_DEBUG: "false"
@@ -170,7 +170,7 @@ services:
       redis-test:
         condition: service_healthy
     env_file:
-      - .env.example
+      - .env
     environment:
       APP_ENV: test
       APP_DEBUG: "false"

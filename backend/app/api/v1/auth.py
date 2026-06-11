@@ -214,12 +214,27 @@ def _set_refresh_cookie(
         path=settings.auth_refresh_cookie_path,
         expires=expires_at,
     )
+    response.set_cookie(
+        key="fastapivue_logged_in",
+        value="true",
+        httponly=False,
+        secure=settings.auth_refresh_cookie_secure,
+        samesite=settings.auth_refresh_cookie_samesite,
+        path="/",
+        expires=expires_at,
+    )
 
 
 def _clear_refresh_cookie(*, response: Response, settings: Settings) -> None:
     response.delete_cookie(
         key=settings.auth_refresh_cookie_name,
         path=settings.auth_refresh_cookie_path,
+        samesite=settings.auth_refresh_cookie_samesite,
+        secure=settings.auth_refresh_cookie_secure,
+    )
+    response.delete_cookie(
+        key="fastapivue_logged_in",
+        path="/",
         samesite=settings.auth_refresh_cookie_samesite,
         secure=settings.auth_refresh_cookie_secure,
     )
