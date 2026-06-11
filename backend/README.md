@@ -13,4 +13,5 @@ uv run ruff check .
 uv run ruff format --check .
 uv run mypy .
 uv run bandit -r app
+XDG_CACHE_HOME=/tmp/.cache uv run pip-audit
 ```

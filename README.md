@@ -119,6 +119,7 @@ make backend-format-check
 make backend-typecheck
 make backend-test
 make backend-security
+make backend-dependency-audit
 
 # Frontend
 make frontend-lint
@@ -126,6 +127,14 @@ make frontend-format-check
 make frontend-typecheck
 make frontend-test-unit
 make frontend-test-e2e
+make frontend-dependency-audit
+
+# Security / dependency audit
+make security-check
+
+# Performance smoke
+make perf-users-list
+make perf-users-export
 ```
 
 Target Docker tương ứng:
@@ -145,6 +154,34 @@ make docker-test-e2e
 ```
 
 Lý do: `make check` gom toàn bộ lint/format/typecheck/unit/security ổn định trên local, còn browser E2E phụ thuộc khả năng bind port của host nên có target riêng và có path Docker tương ứng.
+
+## Phase 5 Hardening baseline
+
+Repo hiện có baseline hardening ở mức Phase 5:
+
+- Coverage report backend/frontend
+- GitHub Actions CI tại `.github/workflows/ci.yml`
+- Backend security headers middleware
+- Rate limit cho endpoint nhạy cảm:
+  - `POST /api/v1/auth/login`
+  - `POST /api/v1/files/upload`
+  - `POST /api/v1/users/avatar-upload`
+  - `POST /api/v1/users/import`
+  - `POST /api/v1/users/export`
+- Query hardening cho list API với `limit <= 100`
+- Backend dependency audit qua `pip-audit`
+- Frontend dependency audit qua `npm audit`
+- Performance smoke scripts:
+  - `scripts/perf/check_users_list.py`
+  - `scripts/perf/check_users_export.py`
+
+Trạng thái verify gần nhất:
+
+- Backend `pytest`, `ruff`, `mypy`: đã pass
+- Frontend `lint`, `typecheck`, `test:unit`: đã pass
+- `make perf-users-list` và `make perf-users-export`: đã sửa để chạy bằng backend Python env thay vì `python3` host
+- `make backend-dependency-audit` và `make frontend-dependency-audit`: đã sửa để dùng cache writable trong `/tmp`
+- Dependency audit và perf smoke từ host vẫn có thể bị chặn trong môi trường sandbox không có DNS hoặc không cho mở socket localhost
 
 Nếu cần đổi cache cho `uv`, có thể truyền:
 

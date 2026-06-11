@@ -7,7 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
+from app.core.rate_limit import InMemoryRateLimiter
 from app.core.request_id import RequestIDMiddleware
+from app.core.security_headers import apply_security_headers
 
 
 @asynccontextmanager
@@ -15,6 +17,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     configure_logging(settings.log_level)
     app.state.settings = settings
+    app.state.rate_limiter = InMemoryRateLimiter()
 
     try:
         from app.storage.minio import build_minio_client
@@ -41,6 +44,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         version=app_settings.app_version,
         lifespan=lifespan,
     )
+    app.state.rate_limiter = InMemoryRateLimiter()
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_build_cors_origins(app_settings.cors_origins),
@@ -49,6 +53,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
     )
     app.add_middleware(RequestIDMiddleware)
+
+    @app.middleware("http")
+    async def security_headers_middleware(request, call_next):  # type: ignore[no-untyped-def]
+        response = await call_next(request)
+        apply_security_headers(
+            request=request,
+            response=response,
+            settings=app_settings,
+        )
+        return response
+
     app.include_router(api_router, prefix=app_settings.api_v1_prefix)
 
     @app.get("/health", tags=["health"])

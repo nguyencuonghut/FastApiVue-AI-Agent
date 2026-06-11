@@ -179,6 +179,20 @@
   - `Makefile`
   - `make check`
   - `make docker-test-e2e`
+- Verified Phase 5 hardening files exist on 2026-06-11:
+  - `backend/app/core/security_headers.py`
+  - `backend/app/core/rate_limit.py`
+  - `backend/tests/test_hardening_api.py`
+  - `.github/workflows/ci.yml`
+  - `scripts/perf/check_users_list.py`
+  - `scripts/perf/check_users_export.py`
+- Verified Phase 5 local checks on 2026-06-11:
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv run pytest && UV_CACHE_DIR=/tmp/uv-cache uv run ruff check . && UV_CACHE_DIR=/tmp/uv-cache uv run mypy .`
+  - `cd frontend && npm run lint && npm run typecheck && npm run test:unit`
+- Verified Phase 5 Makefile hardening command wiring on 2026-06-11:
+  - `perf-users-list` and `perf-users-export` now execute through the backend Python environment instead of host `python3`
+  - `backend-dependency-audit` now uses `XDG_CACHE_HOME=/tmp/.cache`
+  - `frontend-dependency-audit` now uses `NPM_CONFIG_CACHE=/tmp/.npm`
 
 ## Planned Stack
 
@@ -194,7 +208,7 @@
 - Time handling constraint: business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`) and must not depend on host/browser runtime timezone implicitly
 - Auth strategy constraint: Phase 2 uses a hybrid browser-first model with short-lived Bearer access token plus `httpOnly` refresh cookie
 - Enterprise features: async User import/export jobs, large DataTable performance, heavy file import/export handling, RBAC, audit logging, rate limiting, dependency/container scanning
-- Current phase status: Phases 2, 3, and 4 are complete against the current design-doc scope; Phase 5 Hardening is the next open phase
+- Current phase status: Phases 2, 3, and 4 are complete against the current design-doc scope; Phase 5 Hardening is implemented and locally verified, with unrestricted dependency-audit/perf verification still pending
 - Production readiness: OpenTelemetry, structured logs, metrics/tracing, backup/restore, secret management, SLO, compliance gates
 
 ## Unverified
@@ -207,6 +221,9 @@
 - Host-side `curl` to mapped Docker ports could not be verified from this agent session because the shell environment blocks localhost socket access with `Operation not permitted`; container-internal HTTP checks did pass.
 - Full production runtime startup via `docker compose -f docker-compose.prod.yml up` has not been exercised yet; only config validity and production image builds were verified in this step.
 - Local host-level browser E2E via `npm --prefix frontend run test:e2e` remains environment-sensitive in this agent session because the sandbox blocks opening a listening socket on `127.0.0.1:4173` with `EPERM`; the Docker E2E path is verified and should be treated as the reliable browser gate in sandboxed automation.
+- `make backend-dependency-audit` is wired correctly but remained unverified against live advisories in this session because sandbox DNS could not resolve `pypi.org`.
+- `make frontend-dependency-audit` is wired correctly but remained unverified against live advisories in this session because sandbox DNS could not resolve `registry.npmjs.org`.
+- `make perf-users-list` and `make perf-users-export` are wired correctly to the backend Python environment, but host-side runtime verification remained blocked in this session because localhost socket access returned `Operation not permitted`.
 
 ## Important Note
 

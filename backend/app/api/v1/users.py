@@ -5,13 +5,14 @@ import typing
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.url_utils import build_api_file_download_path
 from app.api.v1.auth import _build_current_user_response, _extract_client_ip
 from app.auth.dependencies import get_current_user, require_permission
 from app.auth.permissions import has_permission, resolve_role_names
+from app.core.rate_limit import build_rate_limit_dependency
 from app.db.session import get_db_session
 from app.models import User, UserStatus
 from app.schemas import (
@@ -33,6 +34,11 @@ from app.services import (
 )
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+limit_users_avatar_upload = build_rate_limit_dependency(
+    scope="users.avatar_upload",
+    limit_setting="rate_limit_users_avatar_upload",
+)
 
 
 def get_user_admin_service(
@@ -73,8 +79,8 @@ async def list_users(
     request: Request,
     current_user: Annotated[User, Depends(require_permission("users.read"))],
     user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     search: str | None = None,
     status_filter: str | None = None,
     sort_by: str = "created_at",
@@ -125,6 +131,7 @@ async def get_user(
     "/avatar-upload",
     response_model=UserAvatarUploadResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(limit_users_avatar_upload)],
 )
 async def upload_user_avatar(
     request: Request,

@@ -11,6 +11,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         env_nested_delimiter="__",
         extra="ignore",
+        populate_by_name=True,
     )
 
     app_name: str = Field(default="FastApiVueBoilerplate", alias="APP_NAME")
@@ -89,6 +90,38 @@ class Settings(BaseSettings):
         alias="CORS_ORIGINS",
     )
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
+    security_headers_enabled: bool = Field(
+        default=True,
+        alias="SECURITY_HEADERS_ENABLED",
+    )
+    security_hsts_enabled: bool = Field(
+        default=False,
+        alias="SECURITY_HSTS_ENABLED",
+    )
+    rate_limit_window_seconds: int = Field(
+        default=60,
+        alias="RATE_LIMIT_WINDOW_SECONDS",
+    )
+    rate_limit_auth_login: int = Field(
+        default=5,
+        alias="RATE_LIMIT_AUTH_LOGIN",
+    )
+    rate_limit_files_upload: int = Field(
+        default=10,
+        alias="RATE_LIMIT_FILES_UPLOAD",
+    )
+    rate_limit_users_avatar_upload: int = Field(
+        default=10,
+        alias="RATE_LIMIT_USERS_AVATAR_UPLOAD",
+    )
+    rate_limit_users_import: int = Field(
+        default=5,
+        alias="RATE_LIMIT_USERS_IMPORT",
+    )
+    rate_limit_users_export: int = Field(
+        default=10,
+        alias="RATE_LIMIT_USERS_EXPORT",
+    )
 
 
 @lru_cache

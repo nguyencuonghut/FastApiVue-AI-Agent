@@ -54,8 +54,11 @@
 - Fixed topbar avatar stale-state on 11/06/2026: when Users edit saves the currently logged-in account, the flow now refreshes `authStore.currentUser` immediately so the shell avatar updates without page reload.
 - Fixed mobile topbar visibility regression on 11/06/2026: removed overflow clipping from sticky admin-shell ancestors, moved horizontal overflow protection to `body/#app`, added router scroll restoration, and re-verified frontend lint/typecheck/build.
 - Extended the mobile topbar fix on 11/06/2026 to CRUD pages: Users, Roles, and Files now constrain header/filter/action widths correctly on mobile, stack action buttons full-width, and let DataTable wrappers scroll horizontally inside the card instead of stretching the whole page.
+- Started and substantially implemented `Phase 5: Hardening` on 11/06/2026: added backend security headers middleware, in-memory rate limiting for sensitive endpoints, query caps for list APIs, backend hardening tests, frontend/backend coverage output, GitHub Actions CI workflow, dependency-audit targets, and performance smoke scripts.
+- Re-verified Phase 5 local quality gates on 11/06/2026: backend `pytest`, `ruff`, and `mypy` pass; frontend `lint`, `typecheck`, and `test:unit` pass.
+- Fixed Phase 5 tooling regressions on 11/06/2026: hardening tests no longer hang on unstable ASGI multipart/export request paths, performance smoke targets now run with the backend Python environment instead of host `python3`, and dependency-audit targets now use writable cache directories under `/tmp`.
 
 ## Open
 
-- Start `Phase 5: Hardening`
+- Finish unrestricted verification for Phase 5 dependency audits and host-side performance smoke outside the current sandbox DNS/socket limits
 - Optionally install Bun and run the upstream `agent-memory` CLI locally

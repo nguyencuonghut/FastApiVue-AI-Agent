@@ -275,6 +275,25 @@ The root `Makefile` is the canonical developer entrypoint for pre-commit checks:
 3. `make frontend-test-e2e` is a separate local browser gate because host socket policies may differ by environment
 4. `make docker-test-e2e` is the reliable browser E2E gate for sandboxed or CI-like environments
 5. `make check` should stay stable and fast enough for routine local validation
+
+Phase 5 hardening adds a second layer of quality gates:
+
+- `make backend-dependency-audit`
+- `make frontend-dependency-audit`
+- `make security-check`
+- `make perf-users-list`
+- `make perf-users-export`
+
+These commands must be runnable from a clean clone without depending on host Python packages or writable cache paths under `$HOME`. If a command needs Python dependencies, run it through the backend environment (`.venv` or `uv run`). If a command uses package-manager caches, direct them to writable paths such as `/tmp` in restricted environments.
+
+For security/rate-limit route tests in this repo, prefer a mixed strategy:
+
+- runtime request tests for stable paths like headers and general API behavior
+- unit tests for limiter engines
+- route-contract assertions for dependency wiring on upload/export endpoints when ASGI multipart/request-path tests become unstable in the sandbox harness
+
+This keeps hardening verification deterministic without falsely treating sandbox transport behavior as an application bug.
+
 ## Mobile CRUD Page Width Discipline
 
 Shared admin-shell responsiveness is not enough on its own. CRUD pages that contain filter bars, action groups, and PrimeVue DataTables must also enforce their own mobile width discipline:

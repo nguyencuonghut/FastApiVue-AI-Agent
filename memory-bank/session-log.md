@@ -326,3 +326,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Tighten mobile CRUD page widths
 - Tom tat: Fixed mobile horizontal overflow on Users, Roles, and Files by adding min-width guards, full-width stacked action buttons, and table-wrapper horizontal scrolling so shared topbar controls are not pushed off-screen.
+
+## 2026-06-11 06:23:23Z - codex
+
+- Tieu de: Phase 5 hardening baseline
+- Tom tat: Implemented Phase 5 hardening baseline with security headers, in-memory rate limiting, CI workflow, coverage outputs, hardening tests, performance smoke scripts, and audit command wiring. Re-verified backend pytest/ruff/mypy and frontend lint/typecheck/test:unit. Documented that dependency audits and host-side perf smoke remain environment-dependent because sandbox DNS and localhost socket access are blocked.

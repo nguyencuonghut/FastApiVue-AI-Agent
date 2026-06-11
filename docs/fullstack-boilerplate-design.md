@@ -995,6 +995,22 @@ Trạng thái: Đã hoàn thành và được xác minh ở mức code + backend
 - Performance test cho list API, DataTable và import/export file nặng.
 - Security test cho RBAC, rate limit, upload và import/export.
 
+Baseline đã được implement trong repo:
+
+- Backend security headers middleware.
+- In-memory rate limit cho `auth.login`, `files.upload`, `users.avatar-upload`, `users.import`, `users.export`.
+- Query hardening cho list endpoints với `limit <= 100`.
+- Backend hardening tests cho security headers, rate-limit wiring, permission wiring, và query cap.
+- Coverage report output cho backend/frontend.
+- GitHub Actions CI workflow tại `.github/workflows/ci.yml`.
+- Performance smoke scripts cho `users.list` và `users.export`.
+- Make targets cho `backend-dependency-audit`, `frontend-dependency-audit`, `security-check`, `perf-users-list`, `perf-users-export`.
+
+Lưu ý verify:
+
+- `pytest`, `ruff`, `mypy` backend và `lint`, `typecheck`, `test:unit` frontend đã được verify.
+- Dependency audit và host-side perf smoke cần ghi nhận rõ trạng thái verify theo mỗi môi trường, vì các lệnh này phụ thuộc DNS/socket ra ngoài sandbox.
+
 ### Phase 6: Production Readiness
 
 - OpenTelemetry instrumentation.

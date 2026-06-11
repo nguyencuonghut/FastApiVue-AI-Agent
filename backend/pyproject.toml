@@ -30,6 +30,7 @@ dependencies = [
 dev = [
   "bandit>=1.8.0,<2.0.0",
   "mypy>=1.16.0,<2.0.0",
+  "pip-audit>=2.9.0,<3.0.0",
   "pytest>=9.0.0,<10.0.0",
   "pytest-asyncio>=1.0.0,<2.0.0",
   "pytest-cov>=6.2.0,<7.0.0",
@@ -41,7 +42,7 @@ packages = ["app"]
 
 [tool.pytest.ini_options]
 minversion = "9.0"
-addopts = "--strict-markers --strict-config --cov=app --cov-report=term-missing"
+addopts = "--strict-markers --strict-config --cov=app --cov-report=term-missing --cov-report=xml --cov-report=html"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 
@@ -77,6 +78,7 @@ default-groups = ["dev"]
 dev = [
   "bandit>=1.8.0,<2.0.0",
   "mypy>=1.16.0,<2.0.0",
+  "pip-audit>=2.9.0,<3.0.0",
   "pytest>=9.0.0,<10.0.0",
   "pytest-asyncio>=1.0.0,<2.0.0",
   "pytest-cov>=6.2.0,<7.0.0",

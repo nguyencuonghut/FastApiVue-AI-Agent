@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.auth import _extract_client_ip
@@ -57,8 +57,8 @@ def _build_role_response(role: Role) -> RoleResponse:
 async def list_roles(
     current_user: Annotated[User, Depends(require_permission("roles.read"))],
     role_admin_service: Annotated[RoleAdminService, Depends(get_role_admin_service)],
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     search: str | None = None,
     sort_by: str = "name",
     sort_order: str = "asc",

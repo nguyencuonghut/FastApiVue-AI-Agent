@@ -9,6 +9,7 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
+    Query,
     Request,
     UploadFile,
     status,
@@ -19,6 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.url_utils import build_api_file_download_path
 from app.auth.dependencies import get_current_user, require_permission
 from app.auth.permissions import has_permission
+from app.core.rate_limit import build_rate_limit_dependency
 from app.db.session import get_db_session
 from app.models import ExportJob, File, ImportJob, User
 from app.schemas.file import FileResponse
@@ -33,6 +35,15 @@ from app.services.file_admin import FileAdminService
 from app.services.job_admin import JobAdminService, JobNotFoundError
 
 router = APIRouter(tags=["jobs"])
+
+limit_users_import = build_rate_limit_dependency(
+    scope="users.import",
+    limit_setting="rate_limit_users_import",
+)
+limit_users_export = build_rate_limit_dependency(
+    scope="users.export",
+    limit_setting="rate_limit_users_export",
+)
 
 
 def get_job_service(
@@ -106,7 +117,10 @@ def _build_export_job_response(job: ExportJob) -> ExportJobResponse:
     "/users/import",
     response_model=ImportJobResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_permission("users.import"))],
+    dependencies=[
+        Depends(require_permission("users.import")),
+        Depends(limit_users_import),
+    ],
 )
 async def import_users(
     request: Request,
@@ -177,8 +191,8 @@ async def import_users(
 )
 async def list_import_jobs(
     request: Request,
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     job_service: Annotated[JobAdminService, Depends(get_job_service)] = None,  # type: ignore[assignment]
     current_user: Annotated[User, Depends(get_current_user)] = None,  # type: ignore[assignment]
 ) -> ImportJobListResponse:
@@ -228,7 +242,10 @@ async def get_import_job(
     "/users/export",
     response_model=ExportJobResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_permission("users.export"))],
+    dependencies=[
+        Depends(require_permission("users.export")),
+        Depends(limit_users_export),
+    ],
 )
 async def export_users(
     request: Request,
@@ -269,8 +286,8 @@ async def export_users(
 )
 async def list_export_jobs(
     request: Request,
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     job_service: Annotated[JobAdminService, Depends(get_job_service)] = None,  # type: ignore[assignment]
     current_user: Annotated[User, Depends(get_current_user)] = None,  # type: ignore[assignment]
 ) -> ExportJobListResponse:

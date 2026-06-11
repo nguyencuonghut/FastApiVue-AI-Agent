@@ -15,12 +15,18 @@ from app.auth.service import (
     RefreshTokenError,
 )
 from app.core.config import Settings, get_settings
+from app.core.rate_limit import build_rate_limit_dependency
 from app.db.session import get_db_session
 from app.models import User
 from app.schemas.auth import AccessTokenResponse, CurrentUserResponse, LoginRequest
 from app.services import AuditLogContext, AuditLogService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+limit_auth_login = build_rate_limit_dependency(
+    scope="auth.login",
+    limit_setting="rate_limit_auth_login",
+)
 
 
 def get_auth_service(
@@ -35,7 +41,11 @@ def get_audit_log_service(
     return AuditLogService(session)
 
 
-@router.post("/login", response_model=AccessTokenResponse)
+@router.post(
+    "/login",
+    response_model=AccessTokenResponse,
+    dependencies=[Depends(limit_auth_login)],
+)
 async def login(
     payload: LoginRequest,
     request: Request,

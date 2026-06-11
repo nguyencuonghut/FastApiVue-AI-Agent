@@ -10,6 +10,7 @@ from fastapi import (
     Depends,
     Form,
     HTTPException,
+    Query,
     Request,
     UploadFile,
     status,
@@ -22,6 +23,7 @@ from app.auth.dependencies import get_current_user, require_permission
 from app.auth.jwt import decode_access_token
 from app.auth.permissions import has_permission
 from app.auth.service import AuthService
+from app.core.rate_limit import build_rate_limit_dependency
 from app.db.session import get_db_session
 from app.models import File, User
 from app.schemas.file import FileListResponse, FileResponse
@@ -33,6 +35,11 @@ from app.services.file_admin import (
 )
 
 router = APIRouter(prefix="/files", tags=["files"])
+
+limit_files_upload = build_rate_limit_dependency(
+    scope="files.upload",
+    limit_setting="rate_limit_files_upload",
+)
 
 
 def get_file_admin_service(
@@ -80,7 +87,10 @@ def _build_file_response(db_file: File) -> FileResponse:
     "/upload",
     response_model=FileResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_permission("files.upload"))],
+    dependencies=[
+        Depends(require_permission("files.upload")),
+        Depends(limit_files_upload),
+    ],
 )
 async def upload_file(
     request: Request,
@@ -151,8 +161,8 @@ async def upload_file(
 )
 async def list_files(
     request: Request,
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     search: str | None = None,
     file_admin_service: Annotated[FileAdminService, Depends(get_file_admin_service)] = None,  # type: ignore[assignment]
     current_user: Annotated[User, Depends(get_current_user)] = None,  # type: ignore[assignment]

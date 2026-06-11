@@ -43,9 +43,12 @@ The repository has been prepared with:
 37. Browser-facing file/avatar URLs are now emitted as relative same-origin API paths to avoid leaking Docker/internal hostnames into frontend previews and download links.
 38. The shared admin topbar now uses an avatar-trigger account menu: email text and the standalone logout button are removed, avatar is shown beside the theme toggle, and account actions are exposed through a dropdown with `Hồ sơ` and `Logout`.
 39. The mobile admin shell now avoids overflow clipping on sticky ancestors, and router navigation now restores scroll predictably; this prevents the shared topbar from disappearing on longer non-dashboard pages in mobile view.
+40. Phase 5 hardening baseline is now implemented in code: backend security headers middleware, in-memory rate limiting for sensitive endpoints, list-query caps, hardening tests, coverage outputs, GitHub Actions CI workflow, dependency-audit commands, and performance smoke scripts all exist in the repository.
+41. Phase 5 backend and frontend local quality gates were re-verified on 11/06/2026: backend `pytest` + `ruff` + `mypy` pass, and frontend `lint` + `typecheck` + `test:unit` pass.
+42. Phase 5 external verification is still environment-sensitive: dependency audits need outbound DNS to `pypi.org` / `registry.npmjs.org`, and host-side perf smoke scripts need localhost socket access to the running API. In the current sandbox those checks are blocked even though the local command wiring has been fixed.
 
 ## Next Useful Steps
 
-1. Start `Phase 5: Hardening`, focusing on CI workflow, security scans, rate-limit/security tests, performance tests, and coverage/reporting discipline.
+1. Re-run `make backend-dependency-audit`, `make frontend-dependency-audit`, `make perf-users-list`, and `make perf-users-export` in an unrestricted environment so Phase 5 external verification is complete.
 2. Formulate audit log UI viewer pages for administrative inspection.
 3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.

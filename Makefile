@@ -9,6 +9,7 @@ DOCKER_TEST_COMPOSE := docker compose -f docker-compose.test.yml
 	backend-typecheck \
 	backend-test \
 	backend-security \
+	backend-dependency-audit \
 	backend-seed-auth \
 	backend-check \
 	frontend-lint \
@@ -16,9 +17,13 @@ DOCKER_TEST_COMPOSE := docker compose -f docker-compose.test.yml
 	frontend-typecheck \
 	frontend-test-unit \
 	frontend-test-e2e \
+	frontend-dependency-audit \
 	frontend-check \
+	security-check \
 	frontend-check-e2e \
 	check \
+	perf-users-list \
+	perf-users-export \
 	docker-test-backend \
 	docker-test-frontend \
 	docker-test-e2e \
@@ -42,6 +47,9 @@ backend-test:
 backend-security:
 	cd backend && if [ -x .venv/bin/bandit ]; then .venv/bin/bandit -c pyproject.toml -r app; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run bandit -c pyproject.toml -r app; fi
 
+backend-dependency-audit:
+	cd backend && if [ -x .venv/bin/pip-audit ]; then XDG_CACHE_HOME=/tmp/.cache .venv/bin/pip-audit; else XDG_CACHE_HOME=/tmp/.cache UV_CACHE_DIR=$(UV_CACHE_DIR) uv run pip-audit; fi
+
 backend-seed-auth:
 	cd backend && if [ -x .venv/bin/python ]; then .venv/bin/python scripts/seed_auth_rbac.py; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run python scripts/seed_auth_rbac.py; fi
 
@@ -62,11 +70,22 @@ frontend-test-unit:
 frontend-test-e2e:
 	npm --prefix frontend run test:e2e
 
+frontend-dependency-audit:
+	NPM_CONFIG_CACHE=/tmp/.npm npm --prefix frontend audit --audit-level=high
+
 frontend-check: frontend-lint frontend-format-check frontend-typecheck frontend-test-unit
+
+security-check: backend-security backend-dependency-audit frontend-dependency-audit
 
 frontend-check-e2e: frontend-check frontend-test-e2e
 
 check: backend-check frontend-check
+
+perf-users-list:
+	cd backend && if [ -x .venv/bin/python ]; then .venv/bin/python ../scripts/perf/check_users_list.py; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run python ../scripts/perf/check_users_list.py; fi
+
+perf-users-export:
+	cd backend && if [ -x .venv/bin/python ]; then .venv/bin/python ../scripts/perf/check_users_export.py; else UV_CACHE_DIR=$(UV_CACHE_DIR) uv run python ../scripts/perf/check_users_export.py; fi
 
 docker-test-backend:
 	$(DOCKER_TEST_COMPOSE) run --rm backend-test
