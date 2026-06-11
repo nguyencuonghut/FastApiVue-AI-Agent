@@ -42,7 +42,8 @@ services:
       target: dev
     command: sh -lc "npm install && npm run dev -- --host 0.0.0.0 --port 4173"
     environment:
-      VITE_API_BASE_URL: http://backend-e2e:8000/api/v1
+      VITE_API_BASE_URL: /api/v1
+      VITE_PROXY_TARGET: http://backend-e2e:8000
     depends_on:
       backend-e2e:
         condition: service_healthy
@@ -67,6 +68,8 @@ services:
       target: dev
     command: >
       sh -lc "uv sync &&
+      uv run alembic upgrade head &&
+      uv run python scripts/seed_auth_rbac.py &&
       uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
     env_file:
       - .env

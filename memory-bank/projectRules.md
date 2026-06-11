@@ -113,3 +113,30 @@ For user-facing dates and times:
 - do not send ambiguous datetime strings between frontend and backend
 
 When the system stores UTC internally, conversion to `Asia/Ho_Chi_Minh` must be explicit at display and date-filter boundaries.
+
+## Rule 14: Strict Integration & Browser Verification
+
+Never claim a bug is fixed based on static analysis, unit tests, or compile success alone if the issue involves browser security, CORS, cookies, local storage, network routing, or integration behavior. 
+
+Such boundaries (like SameSite cookie rules, cross-origin restrictions, or docker network resolution) are heavily mocked in unit/store tests, which can lead to false-positive success reports.
+
+For all integration or browser-facing bug fixes, the agent must perform at least one of:
+1. **Automated E2E Verification**: Execute the actual browser-driven E2E tests (`make docker-test-e2e` or similar suite).
+2. **Interactive Browser Verification**: Launch a `browser_subagent` to load the application, perform the action, and verify the console/network logs or page state.
+
+The walkthrough must explicitly cite the E2E or browser verification steps performed to prove the fix.
+
+## Rule 15: Cookie-Based Session Initialization
+
+Client-side login state verification must rely exclusively on backend-provided cookie markers (e.g., `fastapivue_logged_in`). 
+
+Do not write or check localStorage state flags to decide whether to trigger silent token refreshes. Because localStorage lacks expiration, it easily goes out-of-sync with actual cookie lifetime, resulting in redundant and failed `/auth/refresh` API calls that pollute the browser console with 401 errors.
+
+Additionally, on any failed silent refresh (401/403 errors) or when logging out/clearing authentication state, the frontend application must actively clear the `fastapivue_logged_in` cookie by setting its expiration to `max-age=0`. This breaks the infinite loop of failed token refresh requests on subsequent page reloads.
+
+
+## Rule 16: Automatic Database Migrations in Dev/Test Containers
+
+To prevent database errors (such as `UndefinedTableError`) when client-side applications load and immediately hit backend endpoints on startup (e.g. during auto-refresh), all local Docker Compose and Docker Test backend targets must run database migrations (`alembic upgrade head`) and data seeding script (`seed_auth_rbac.py`) automatically in their container startup commands prior to launching the ASGI/Uvicorn server.
+
+

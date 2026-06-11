@@ -29,6 +29,12 @@ export const useAuthStore = defineStore('auth', {
     clearAuthState() {
       this.accessToken = null
       this.currentUser = null
+      try {
+        document.cookie =
+          'fastapivue_logged_in=; path=/; max-age=0; samesite=lax'
+      } catch {
+        // ignore in non-browser environments
+      }
     },
     setAccessToken(token: string) {
       this.accessToken = token

@@ -60,6 +60,22 @@ Khi nhập liệu, lưu trữ, parse, format và hiển thị thời gian, phả
    - dùng lẫn lộn `date` và `datetime`
    - filter từ ngày/đến ngày bị lệch biên đầu ngày hoặc cuối ngày
 
+13. Bắt buộc xác minh tích hợp & E2E thực tế.
+Không bao giờ được kết luận một bug đã sửa xong dựa trên việc unit test hoặc static check (lint, compile) vượt qua, đặc biệt là các lỗi liên quan đến cookie, CORS, bảo mật trình duyệt, Local Storage, hoặc định tuyến Docker network.
+Các lớp bảo mật và hạ tầng này thường bị mock trong unit test nên dễ gây báo cáo thành công giả (false positive).
+Đối với các lỗi tích hợp hoặc giao diện, bắt buộc phải thực hiện tối thiểu một trong hai hình thức:
+   - Chạy suite test E2E thực tế (`make docker-test-e2e` hoặc lệnh tương đương).
+   - Sử dụng `browser_subagent` để mở trình duyệt, thao tác thực tế và kiểm tra console/network logs.
+
+14. Khởi tạo phiên làm việc (Session Initialization / Silent Refresh) không được dựa vào Local Storage.
+Trạng thái đăng nhập ở client-side phải được xác thực trực tiếp thông qua sự tồn tại của Cookie từ backend (ví dụ: `fastapivue_logged_in`). Tuyệt đối không dùng cờ trạng thái trong Local Storage để tự động trigger `/auth/refresh` cho người dùng chưa đăng nhập. Việc sử dụng Local Storage có thể dẫn đến lệch trạng thái với cookie thực tế (do Local Storage không có cơ chế tự hết hạn), từ đó tạo ra các yêu cầu refresh dư thừa và phát sinh lỗi `401 Unauthorized` không đáng có trong browser console.
+Đặc biệt, khi phiên làm việc bị từ chối bởi backend (lỗi 401/403) hoặc khi clear trạng thái xác thực, frontend bắt buộc phải xóa cookie `fastapivue_logged_in` bằng cách đặt `max-age=0` để tránh tạo ra vòng lặp gửi yêu cầu refresh vô hạn trong các lần reload trang tiếp theo.
+
+
+15. Tự động chạy migrations và seeding trong Docker dev/test:
+Để tránh lỗi `UndefinedTableError` khi trình duyệt tự động gọi API (như silent refresh) ngay khi frontend khởi động trên một volume database rỗng, các dịch vụ backend chạy trong Docker dev (`docker-compose.yml`) hoặc test/E2E (`docker-compose.test.yml`) bắt buộc phải khai báo lệnh khởi động chạy tự động `alembic upgrade head` và file seeding dữ liệu trước khi chạy server Uvicorn.
+
 ## Kết quả mong muốn
+
 
 Agent phải hành xử như một thành viên trong team có hệ thống ghi nhớ bằng văn bản, không phải như một chat model chỉ dựa vào context ngắn hạn.

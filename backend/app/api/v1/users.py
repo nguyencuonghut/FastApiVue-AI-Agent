@@ -106,6 +106,7 @@ async def create_user(
     current_user: Annotated[User, Depends(require_permission("users.create"))],
     user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> UserResponse:
     try:
         created_user = await user_admin_service.create_user(
@@ -146,6 +147,8 @@ async def create_user(
         ),
     )
 
+    await session.commit()
+
     return _build_user_response(created_user)
 
 
@@ -160,6 +163,7 @@ async def update_user(
     current_user: Annotated[User, Depends(require_permission("users.update"))],
     user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> UserResponse:
     try:
         user_status = UserStatus(payload.status)
@@ -209,6 +213,8 @@ async def update_user(
         ),
     )
 
+    await session.commit()
+
     return _build_user_response(updated_user)
 
 
@@ -223,6 +229,7 @@ async def update_user_roles(
     current_user: Annotated[User, Depends(require_permission("users.update"))],
     user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> UserResponse:
     try:
         updated_user = await user_admin_service.update_user_roles(
@@ -254,6 +261,8 @@ async def update_user_roles(
         ),
     )
 
+    await session.commit()
+
     return _build_user_response(updated_user)
 
 
@@ -267,6 +276,7 @@ async def delete_user(
     current_user: Annotated[User, Depends(require_permission("users.delete"))],
     user_admin_service: Annotated[UserAdminService, Depends(get_user_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> None:
     if current_user.id == user_id:
         raise HTTPException(
@@ -296,6 +306,8 @@ async def delete_user(
             },
         ),
     )
+
+    await session.commit()
 
 
 def _build_user_response(user: User) -> UserResponse:

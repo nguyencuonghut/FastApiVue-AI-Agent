@@ -231,3 +231,38 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: User Profile Fields - Required Full Name Types
 - Tom tat: Enforced full_name/fullName as non-optional required fields inside frontend DTO and domain interfaces, aligned them fully with database non-nullable columns and backend Pydantic validation models, and validated with passing quality check gates.
+
+## 2026-06-11 01:56:39Z - gemini
+
+- Tieu de: Fix logout on page refresh
+- Tom tat: Fixed page refresh logout bug in cross-origin local dev environment by syncing and checking fastapivue_logged_in flag in localStorage alongside document.cookie.
+
+## 2026-06-11 02:02:08Z - gemini
+
+- Tieu de: Vite Dev Proxy Integration
+- Tom tat: Integrated same-origin proxy pattern for development and test compose profiles to avoid cross-origin SameSite cookie blockages on /auth/refresh.
+
+## 2026-06-11 02:04:14Z - gemini
+
+- Tieu de: Mandatory Browser/E2E Verification Rule
+- Tom tat: Created Rule 14 in projectRules.md and Rule 13 in docs/agent-rules.md specifying that agents must never claim a bug involving browser/network integration is fixed based on unit tests alone. They must run automated E2E or interactive browser validation, logging verification steps in their walkthrough.
+
+## 2026-06-11 02:14:27Z - gemini
+
+- Tieu de: fix-local-dev-cors-cookie-fallback
+- Tom tat: Changed the default API base URL fallback in frontend/src/api/runtime.ts from 'http://127.0.0.1:8000/api/v1' to '/api/v1'. This ensures same-origin proxying is the default behavior in all local development environments, preventing cross-site cookie restrictions from blocking session refreshes.
+
+## 2026-06-11 02:18:53Z - gemini
+
+- Tieu de: prevent-redundant-auth-refresh-401
+- Tom tat: Removed localStorage usage for session initialization, relying exclusively on backend cookie markers. This prevents redundant refresh requests that cause 401 console errors for anonymous users. Updated project rules (Rule 15) and agent rules (Rule 14).
+
+## 2026-06-11 02:23:28Z - gemini
+
+- Tieu de: auto-run-migrations-on-container-startup
+- Tom tat: Configured docker-compose.yml and docker-compose.test.yml backend startup commands to automatically run alembic upgrade head and seed_auth_rbac.py. This prevents UndefinedTableError when clients hit endpoints (like silent refresh) on empty database volumes. Added Rule 16 to projectRules.md and Rule 15 to agent-rules.md.
+
+## 2026-06-11 02:28:17Z - gemini
+
+- Tieu de: prevent-infinite-401-refresh-loop-on-stale-cookie
+- Tom tat: Modified auth.store.ts to actively expire fastapivue_logged_in cookie on refresh rejection. This prevents infinite refresh token retry loops and 401 console logs when sessions are invalid or database is wiped.

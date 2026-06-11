@@ -215,6 +215,22 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: Whenever Python enums back PostgreSQL enum columns, verify whether ORM persistence uses member names or member values, and align migrations/models before seeding or writing data.
 - Related files: `backend/app/models/user.py`, `backend/alembic/versions/20260610_0205_create_auth_rbac_foundation.py`, `backend/app/services/auth_seed.py`
 
+### 2026-06-11: Logout on page refresh in cross-origin dev environment
+
+- Area: Frontend authentication store & initialization
+- Trigger: Successfully logged in, but refreshing the page logged out the user and redirected them back to the login page.
+- Root cause: In local development, the frontend runs on `http://localhost:5173` while the backend runs on `http://127.0.0.1:8000`. This cross-site boundary caused two distinct issues:
+  1. Frontend JS on `localhost` could not read the `fastapivue_logged_in` cookie set on `127.0.0.1` by the backend (blocking the initialization check).
+  2. Even after bypassing the check, modern browsers block sending the `fastapivue_refresh_token` cookie (configured with `SameSite=Lax` and `Secure=False` in non-HTTPS local dev) on cross-site subresource requests (e.g. AJAX/Fetch calls from `localhost` to `127.0.0.1`), causing `POST /auth/refresh` to return `401 Unauthorized` (missing refresh token).
+  3. When running the frontend locally outside of Docker (without VITE_API_BASE_URL env var explicitly set), the default API base URL in `frontend/src/api/runtime.ts` fell back to `'http://127.0.0.1:8000/api/v1'`. This caused requests to bypass the Vite proxy and query the backend port directly, recreating the cross-origin cookie blockage.
+- Fix: 
+  1. Synchronize and check the `fastapivue_logged_in` state in `localStorage` in `auth.store.ts`.
+  2. Implement a same-origin dev proxy using Vite's `server.proxy` to forward `/api` requests to the backend server, and set `VITE_API_BASE_URL` to `/api/v1` for both dev and test compose environments. This unifies all frontend and API requests under the exact same hostname/origin in the browser, eliminating all cross-site cookie restrictions.
+  3. Change the fallback value of `getApiBaseUrl()` in `frontend/src/api/runtime.ts` from `'http://127.0.0.1:8000/api/v1'` to `'/api/v1'` so same-origin proxy routing is the default behavior in all local development contexts.
+- Regression guard: Keep dev and production stacks configured under the same-origin proxy paradigm to avoid cross-origin cookie blocking, and ensure any client-side default base URL defaults to a relative path (`/api/v1`).
+- Related files: `frontend/vite.config.ts`, `frontend/src/stores/auth.store.ts`, `frontend/src/api/runtime.ts`, `docker-compose.yml`, `docker-compose.test.yml`, `.env`, `.env.example`
+
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

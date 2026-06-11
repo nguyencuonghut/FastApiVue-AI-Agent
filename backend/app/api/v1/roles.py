@@ -99,6 +99,7 @@ async def create_role(
     current_user: Annotated[User, Depends(require_permission("roles.create"))],
     role_admin_service: Annotated[RoleAdminService, Depends(get_role_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> RoleResponse:
     try:
         role = await role_admin_service.create_role(
@@ -122,6 +123,8 @@ async def create_role(
             ),
         )
 
+        await session.commit()
+
         return _build_role_response(role)
     except RoleAlreadyExistsError as exc:
         raise HTTPException(
@@ -143,6 +146,7 @@ async def update_role(
     current_user: Annotated[User, Depends(require_permission("roles.update"))],
     role_admin_service: Annotated[RoleAdminService, Depends(get_role_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> RoleResponse:
     try:
         role = await role_admin_service.update_role(
@@ -167,6 +171,8 @@ async def update_role(
             ),
         )
 
+        await session.commit()
+
         return _build_role_response(role)
     except RoleNotFoundError as exc:
         raise HTTPException(
@@ -187,6 +193,7 @@ async def delete_role(
     current_user: Annotated[User, Depends(require_permission("roles.delete"))],
     role_admin_service: Annotated[RoleAdminService, Depends(get_role_admin_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> None:
     try:
         role = await role_admin_service.get_role_by_id(role_id)
@@ -205,6 +212,8 @@ async def delete_role(
                 },
             ),
         )
+
+        await session.commit()
     except RoleNotFoundError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

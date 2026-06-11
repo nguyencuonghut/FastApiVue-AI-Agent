@@ -87,6 +87,8 @@ async def login(
         ),
     )
 
+    await auth_service.session.commit()
+
     return _build_access_token_response(
         auth_bundle.access_token,
         auth_bundle.access_token_expires_at,
@@ -136,6 +138,8 @@ async def refresh(
         ),
     )
 
+    await auth_service.session.commit()
+
     return _build_access_token_response(
         auth_bundle.access_token,
         auth_bundle.access_token_expires_at,
@@ -169,6 +173,7 @@ async def logout(
             },
         ),
     )
+    await auth_service.session.commit()
     return response
 
 
