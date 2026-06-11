@@ -90,6 +90,16 @@ class Settings(BaseSettings):
     minio_bucket: str = Field(default="app-local", alias="MINIO_BUCKET")
     minio_secure: bool = Field(default=False, alias="MINIO_SECURE")
 
+    smtp_host: str = Field(default="mailpit", alias="SMTP_HOST")
+    smtp_port: int = Field(default=1025, alias="SMTP_PORT")
+    smtp_user: str | None = Field(default=None, alias="SMTP_USER")
+    smtp_password: str | None = Field(default=None, alias="SMTP_PASSWORD")
+    smtp_secure: bool = Field(default=False, alias="SMTP_SECURE")
+    smtp_from_email: str = Field(default="noreply@fastapivue.local", alias="SMTP_FROM_EMAIL")
+    admin_email_for_backups: str = Field(
+        default="admin@fastapivue.local", alias="ADMIN_EMAIL_FOR_BACKUPS"
+    )
+
     redis_host: str = Field(default="redis", alias="REDIS_HOST")
     redis_port: int = Field(default=6379, alias="REDIS_PORT")
     redis_url: str = Field(default="redis://redis:6379/0", alias="REDIS_URL")

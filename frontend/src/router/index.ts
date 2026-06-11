@@ -7,6 +7,7 @@ import LoginPage from '@/pages/LoginPage.vue'
 import ProfilePage from '@/pages/ProfilePage.vue'
 import RolesPage from '@/pages/RolesPage.vue'
 import UsersPage from '@/pages/UsersPage.vue'
+import BackupsPage from '@/pages/BackupsPage.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -63,6 +64,15 @@ export const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermission: 'files.read',
+      },
+    },
+    {
+      path: '/backups',
+      name: 'backups',
+      component: BackupsPage,
+      meta: {
+        requiresAuth: true,
+        requiredPermission: 'backups.read',
       },
     },
     {

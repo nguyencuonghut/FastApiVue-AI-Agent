@@ -76,6 +76,16 @@
           <i class="pi pi-file admin-layout__nav-icon" aria-hidden="true" />
           <span class="admin-layout__nav-label">Quản lý tập tin</span>
         </RouterLink>
+
+        <RouterLink
+          v-if="permissionStore.can('backups.read')"
+          class="admin-layout__nav-link"
+          to="/backups"
+          @click="layoutStore.closeMobileSidebar"
+        >
+          <i class="pi pi-database admin-layout__nav-icon" aria-hidden="true" />
+          <span class="admin-layout__nav-label">Quản lý sao lưu</span>
+        </RouterLink>
       </nav>
     </aside>
 

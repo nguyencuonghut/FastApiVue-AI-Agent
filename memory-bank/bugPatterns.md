@@ -301,6 +301,36 @@ Agents must read the relevant entries before changing behavior in the same area,
 - Related files: `Makefile`, `backend/README.md`
 
 
+### 2026-06-11: Failed to resolve component: Select in BackupsPage.vue
+
+- Area: Frontend PrimeVue component import
+- Trigger: Browser console error: `[Vue warn]: Failed to resolve component: Select`.
+- Root cause: The PrimeVue `<Select>` component was used in `BackupsPage.vue` but was not imported from `'primevue/select'` under the `<script setup>` tag.
+- Fix: Added `import Select from 'primevue/select'` to the top of `BackupsPage.vue`.
+- Regression guard: Ensure that any PrimeVue components used in Vue SFC templates are explicitly imported inside the component script block.
+- Related files: `frontend/src/pages/BackupsPage.vue`
+
+
+### 2026-06-11: pg_dump server version mismatch on Backup Now
+
+- Area: Backend Docker / Database client backup tool
+- Trigger: Error message `pg_dump failed with exit code 1: pg_dump: error: aborting because of server version mismatch` when running a backup.
+- Root cause: The PostgreSQL database server runs version 16, but the base stage of the backend Dockerfile installed `postgresql-client` via standard APT, which defaulted to version 15 on Debian Bookworm. Since lower-version pg_dump tools cannot dump higher-version servers, it aborted.
+- Fix: Configured the official PostgreSQL APT repository in `docker/backend/Dockerfile` and explicitly installed `postgresql-client-16`.
+- Regression guard: Ensure the client database backup binaries in backend container images match or exceed the version of the running database container.
+- Related files: `docker/backend/Dockerfile`, `docker-compose.yml`
+
+
+### 2026-06-11: Datetime timezone offset mismatch in backup email alerts
+
+- Area: Backend Email notification / Datetime formatting
+- Trigger: Backup alerts printed the naive UTC timestamps formatted directly via `.strftime()` while labeled as `(GMT+7)` (yielding a 7-hour discrepancy).
+- Root cause: The database logs store timezone-aware UTC timestamps, but direct template string interpolation using `.strftime()` formats the naive/UTC offset value directly without converting it to the system's local timezone.
+- Fix: Imported `zoneinfo`, localized datetimes to the configured setting `self.settings.app_timezone` (e.g. `Asia/Ho_Chi_Minh`), and then formatted the localized datetime objects in the subject line and email body.
+- Regression guard: Always explicitly localize timezone-aware datetime objects to `app_timezone` before rendering them in user-facing views, logs, or emails.
+- Related files: `backend/app/services/email.py`
+
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

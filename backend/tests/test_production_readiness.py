@@ -33,9 +33,7 @@ async def test_metrics_endpoint_exposes_prometheus_payload(client: AsyncClient) 
 
 
 @pytest.mark.asyncio
-async def test_ready_endpoint_uses_readiness_service(
-    app: FastAPI, client: AsyncClient
-) -> None:
+async def test_ready_endpoint_uses_readiness_service(app: FastAPI, client: AsyncClient) -> None:
     app.state.readiness_service = HealthyReadinessService()
 
     response = await client.get("/ready")

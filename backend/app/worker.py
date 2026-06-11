@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import asyncio
 import csv
 import io
 import logging
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 try:
     from arq.connections import RedisSettings
@@ -15,12 +16,19 @@ except ImportError:
             pass
 
 
+from datetime import UTC, datetime
+
+from arq import cron
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from app.core.config import get_settings
 from app.db.session import get_sessionmaker
 from app.models import ExportJob, ImportJob, User, UserStatus
+from app.models.backup_log import BackupLog
+from app.models.backup_schedule import BackupSchedule
+from app.services.backup_admin import calculate_next_run
+from app.services.email import EmailService
 from app.services.file_admin import FileAdminService
 from app.services.user_admin import RoleNotFoundError, UserAdminService
 from app.storage.minio import build_minio_client
@@ -242,11 +250,214 @@ async def export_users_task(ctx: dict[str, Any], job_id: UUID) -> None:
             await session.commit()
 
 
+async def run_backup_task(ctx: dict[str, Any], backup_log_id: UUID) -> None:
+    session_factory = ctx["session_factory"]
+    minio_client = ctx["minio_client"]
+    settings = get_settings()
+    email_service = EmailService(settings)
+
+    async with session_factory() as session:
+        # Fetch backup log
+        stmt = select(BackupLog).where(BackupLog.id == backup_log_id)
+        result = await session.execute(stmt)
+        log = result.scalar_one_or_none()
+
+        if not log:
+            logger.error(f"Backup log {backup_log_id} not found.")
+            return
+
+        log.status = "running"
+        await session.commit()
+
+        started_at = log.started_at
+        try:
+            # 1. Parse DB URL
+            from sqlalchemy.engine.url import make_url
+
+            url = make_url(settings.database_url)
+            db_host = url.host or "postgres"
+            db_port = url.port or 5432
+            db_user = url.username or "postgres"
+            db_password = url.password or "postgres"
+            db_name = url.database or "app"
+
+            # 2. Formulate filename
+            timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
+            filename = f"postgres_{timestamp}.sql.gz"
+
+            # Ensure local backups folder exists
+            backups_dir = "/app/backups"  # mounted volume
+            import os
+
+            os.makedirs(backups_dir, exist_ok=True)
+            output_file = os.path.join(backups_dir, filename)
+
+            # 3. Run pg_dump
+            env = os.environ.copy()
+            env["PGPASSWORD"] = db_password
+
+            logger.info(f"Running pg_dump for database {db_name} on {db_host}:{db_port}")
+            process = await asyncio.create_subprocess_exec(
+                "pg_dump",
+                "-h",
+                db_host,
+                "-p",
+                str(db_port),
+                "-U",
+                db_user,
+                "-d",
+                db_name,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                env=env,
+            )
+            stdout, stderr = await process.communicate()
+
+            if process.returncode != 0:
+                raise Exception(
+                    f"pg_dump failed with exit code {process.returncode}: {stderr.decode()}"
+                )
+
+            # 4. Compress via gzip
+            import gzip
+
+            logger.info(f"Writing compressed backup to {output_file}")
+            with gzip.open(output_file, "wb") as f:
+                f.write(stdout)
+
+            file_size = os.path.getsize(output_file)  # noqa: ASYNC240
+
+            # 5. Upload to MinIO
+            storage_path = f"backups/{filename}"
+            logger.info(
+                f"Uploading backup {filename} to MinIO bucket "
+                f"{settings.minio_bucket} at path {storage_path}"
+            )
+
+            # Ensure bucket exists
+            if not minio_client.bucket_exists(settings.minio_bucket):
+                minio_client.make_bucket(settings.minio_bucket)
+
+            # Use fput_object
+            minio_client.fput_object(
+                bucket_name=settings.minio_bucket,
+                object_name=storage_path,
+                file_path=output_file,
+            )
+
+            # 6. Update log
+            completed_at = datetime.now(UTC)
+            log.status = "completed"
+            log.filename = filename
+            log.file_size = file_size
+            log.storage_path = storage_path
+            log.completed_at = completed_at
+            await session.commit()
+
+            # 7. Send notification
+            await email_service.send_backup_notification(
+                status="success",
+                backup_type=log.backup_type,
+                filename=filename,
+                file_size_bytes=file_size,
+                started_at=started_at,
+                completed_at=completed_at,
+            )
+
+        except Exception as e:
+            logger.exception(f"Backup task failed for log {backup_log_id}")
+            completed_at = datetime.now(UTC)
+            log.status = "failed"
+            log.error_message = str(e)
+            log.completed_at = completed_at
+            await session.commit()
+
+            # Send failure notification
+            try:
+                await email_service.send_backup_notification(
+                    status="failed",
+                    backup_type=log.backup_type,
+                    filename=None,
+                    file_size_bytes=None,
+                    started_at=started_at,
+                    completed_at=completed_at,
+                    error_message=str(e),
+                )
+            except Exception:
+                logger.exception("Failed to send failure notification email")
+
+
+async def poll_and_run_scheduled_backups(ctx: dict[str, Any]) -> None:
+    session_factory = ctx["session_factory"]
+    settings = get_settings()
+
+    redis = ctx.get("redis")
+    if not redis:
+        logger.error("Arq redis client not found in context.")
+        return
+
+    async with session_factory() as session:
+        now = datetime.now(UTC)
+
+        # Select active schedules that are due (next_run_at <= now)
+        stmt = (
+            select(BackupSchedule)
+            .where(BackupSchedule.is_active)
+            .where(BackupSchedule.next_run_at <= now)
+            .with_for_update(skip_locked=True)
+        )
+        res = await session.execute(stmt)
+        due_schedules = res.scalars().all()
+
+        for schedule in due_schedules:
+            logger.info(
+                f"Triggering scheduled backup for schedule: {schedule.name} ({schedule.id})"
+            )
+
+            # Create a pending backup log
+            log = BackupLog(
+                id=uuid4(),
+                backup_type="scheduled",
+                status="pending",
+                started_at=now,
+                created_at=now,
+            )
+            session.add(log)
+            await session.commit()
+
+            # Enqueue the actual backup task
+            await redis.enqueue_job("run_backup_task", log.id)
+
+            # Update schedule run metrics and next_run_at
+            schedule.last_run_at = now
+            next_run = calculate_next_run(
+                frequency=schedule.frequency,
+                time_of_day=schedule.time_of_day,
+                day_of_week=schedule.day_of_week,
+                one_off_datetime=schedule.one_off_datetime,
+                current_time=now,
+                tz_name=settings.app_timezone,
+            )
+
+            schedule.next_run_at = next_run
+            if schedule.frequency == "one_off":
+                schedule.is_active = False
+
+            await session.commit()
+            logger.info(f"Schedule {schedule.name} updated. Next run: {next_run}")
+
+
 settings = get_settings()
 
 
 class WorkerSettings:
     redis_settings = RedisSettings(host=settings.redis_host, port=settings.redis_port)
-    functions = [import_users_task, export_users_task]
+    functions = [
+        import_users_task,
+        export_users_task,
+        run_backup_task,
+        poll_and_run_scheduled_backups,
+    ]
+    cron_jobs = [cron(poll_and_run_scheduled_backups, second=0)]
     on_startup = startup
     on_shutdown = shutdown

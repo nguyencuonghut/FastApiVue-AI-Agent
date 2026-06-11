@@ -41,14 +41,10 @@ class ReadinessService:
             self._check_minio(),
         )
         dependencies = {name: payload for name, payload in checks}
-        all_dependencies_ok = all(
-            item["status"] == "ok" for item in dependencies.values()
-        )
+        all_dependencies_ok = all(item["status"] == "ok" for item in dependencies.values())
         overall_status = "ok" if all_dependencies_ok else "degraded"
         status_code = (
-            status.HTTP_200_OK
-            if overall_status == "ok"
-            else status.HTTP_503_SERVICE_UNAVAILABLE
+            status.HTTP_200_OK if overall_status == "ok" else status.HTTP_503_SERVICE_UNAVAILABLE
         )
 
         return {

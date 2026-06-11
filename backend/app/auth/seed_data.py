@@ -12,6 +12,8 @@ BASE_PERMISSION_CODES = [
     "files.read",
     "files.upload",
     "audit.read",
+    "backups.read",
+    "backups.write",
 ]
 
 ADMIN_ROLE_NAME = "admin"

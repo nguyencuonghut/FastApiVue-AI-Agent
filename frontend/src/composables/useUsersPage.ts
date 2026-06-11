@@ -261,12 +261,10 @@ export function useUsersPage() {
     file: File,
     mode: 'create' | 'edit',
   ): Promise<void> {
-    const errorRef =
-      mode === 'create' ? createAvatarError : editAvatarError
+    const errorRef = mode === 'create' ? createAvatarError : editAvatarError
     const uploadingRef =
       mode === 'create' ? isCreateAvatarUploading : isEditAvatarUploading
-    const avatarRef =
-      mode === 'create' ? createAvatarUrl : editAvatarUrl
+    const avatarRef = mode === 'create' ? createAvatarUrl : editAvatarUrl
 
     uploadingRef.value = true
     errorRef.value = null

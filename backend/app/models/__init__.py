@@ -1,6 +1,8 @@
 """ORM models package."""
 
 from app.models.audit_log import AuditLog
+from app.models.backup_log import BackupLog
+from app.models.backup_schedule import BackupSchedule
 from app.models.export_job import ExportJob
 from app.models.file import File
 from app.models.import_job import ImportJob
@@ -11,6 +13,8 @@ from app.models.user import User, UserStatus, user_roles
 
 __all__ = [
     "AuditLog",
+    "BackupLog",
+    "BackupSchedule",
     "File",
     "ImportJob",
     "ExportJob",

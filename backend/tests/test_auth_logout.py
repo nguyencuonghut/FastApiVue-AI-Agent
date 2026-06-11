@@ -27,6 +27,5 @@ def test_clear_refresh_cookie_sets_deletion_headers() -> None:
     assert any("fastapivue_refresh_token=" in header for header in set_cookie_headers)
     assert any("fastapivue_logged_in=" in header for header in set_cookie_headers)
     assert all(
-        "Max-Age=0" in header or "expires=" in header.lower()
-        for header in set_cookie_headers
+        "Max-Age=0" in header or "expires=" in header.lower() for header in set_cookie_headers
     )

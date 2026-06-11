@@ -1,6 +1,8 @@
 """Application services package."""
 
 from app.services.audit_log import AuditLogContext, AuditLogService
+from app.services.backup_admin import BackupAdminService, BackupScheduleNotFoundError
+from app.services.email import EmailService
 from app.services.file_admin import (
     FileAdminService,
     FileMetadataNotFoundError,
@@ -23,7 +25,10 @@ from app.services.user_admin import (
 __all__ = [
     "AuditLogContext",
     "AuditLogService",
+    "BackupAdminService",
+    "BackupScheduleNotFoundError",
     "EmailAlreadyExistsError",
+    "EmailService",
     "FileAdminService",
     "FileMetadataNotFoundError",
     "FilePermissionDeniedError",

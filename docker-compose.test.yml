@@ -18,14 +18,17 @@ services:
       PYTHONPATH: /app
       POSTGRES_HOST: postgres-test
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
-      MINIO_ENDPOINT: minio-test:9000
       REDIS_URL: redis://redis-test:6379/0
+      SMTP_HOST: mailpit-test
+      SMTP_PORT: 1025
     depends_on:
       postgres-test:
         condition: service_healthy
       minio-test:
         condition: service_healthy
       redis-test:
+        condition: service_healthy
+      mailpit-test:
         condition: service_healthy
 
   frontend-test:
@@ -79,14 +82,17 @@ services:
       PYTHONPATH: /app
       POSTGRES_HOST: postgres-test
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
-      MINIO_ENDPOINT: minio-test:9000
       REDIS_URL: redis://redis-test:6379/0
+      SMTP_HOST: mailpit-test
+      SMTP_PORT: 1025
     depends_on:
       postgres-test:
         condition: service_healthy
       minio-test:
         condition: service_healthy
       redis-test:
+        condition: service_healthy
+      mailpit-test:
         condition: service_healthy
     healthcheck:
       test:
@@ -157,6 +163,14 @@ services:
     volumes:
       - redis_test_data:/data
 
+  mailpit-test:
+    image: axllent/mailpit:v1.21
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8025/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   worker-test:
     build:
       context: .
@@ -172,6 +186,8 @@ services:
         condition: service_healthy
       redis-test:
         condition: service_healthy
+      mailpit-test:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -182,9 +198,12 @@ services:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres-test:5432/app_test
       MINIO_ENDPOINT: minio-test:9000
       REDIS_URL: redis://redis-test:6379/0
+      SMTP_HOST: mailpit-test
+      SMTP_PORT: 1025
     volumes:
       - ./backend:/app
       - backend_venv:/app/.venv
+      - ./backups:/app/backups
 
 volumes:
   postgres_test_data:

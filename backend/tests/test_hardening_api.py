@@ -12,11 +12,7 @@ from app.core.rate_limit import InMemoryRateLimiter
 
 def get_route_dependency_calls(app: FastAPI, *, path: str, method: str) -> set[object]:
     for route in app.routes:
-        if (
-            isinstance(route, APIRoute)
-            and route.path == path
-            and method.upper() in route.methods
-        ):
+        if isinstance(route, APIRoute) and route.path == path and method.upper() in route.methods:
             return {dependency.call for dependency in route.dependant.dependencies}
     raise AssertionError(f"Route {method} {path} not found.")
 
@@ -95,21 +91,15 @@ def test_user_export_route_has_permission_dependency(app: FastAPI) -> None:
 
 def test_users_list_route_caps_limit_at_100(app: FastAPI) -> None:
     for route in app.routes:
-        if (
-            isinstance(route, APIRoute)
-            and route.path == "/api/v1/users"
-            and "GET" in route.methods
-        ):
+        if isinstance(route, APIRoute) and route.path == "/api/v1/users" and "GET" in route.methods:
             limit_param = next(
                 query for query in route.dependant.query_params if query.name == "limit"
             )
             assert any(
-                getattr(metadata, "ge", None) == 1
-                for metadata in limit_param.field_info.metadata
+                getattr(metadata, "ge", None) == 1 for metadata in limit_param.field_info.metadata
             )
             assert any(
-                getattr(metadata, "le", None) == 100
-                for metadata in limit_param.field_info.metadata
+                getattr(metadata, "le", None) == 100 for metadata in limit_param.field_info.metadata
             )
             return
 

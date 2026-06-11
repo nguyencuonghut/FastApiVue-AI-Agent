@@ -336,3 +336,23 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Phase 6 production readiness baseline
 - Tom tat: Implemented Phase 6 production-readiness baseline: structured JSON logging, metrics and readiness endpoints, OpenTelemetry instrumentation baseline, observability compose/config assets, secret-file settings support, backup/restore scripts, restore-drill helper, compliance gate script, production env example, and deploy/backup runbooks. Verified backend pytest/ruff/mypy, frontend lint/typecheck/test:unit, targeted production-readiness tests, and compliance compose validation. Real observability stack startup and restore drill remain pending in a suitable runtime environment.
+
+## 2026-06-11 08:03:54Z - gemini
+
+- Tieu de: Admin Backup & Restore System
+- Tom tat: Created BackupsPage.vue and styles. Registered routes and sidebar navigation. Added backend tests for services and APIs, fully passing quality gates.
+
+## 2026-06-11 08:09:39Z - gemini
+
+- Tieu de: Fix Select Import in BackupsPage
+- Tom tat: Imported missing Select component from 'primevue/select' in BackupsPage.vue and verified with passing quality gates.
+
+## 2026-06-11 08:11:42Z - gemini
+
+- Tieu de: Upgrade pg_dump Client Version
+- Tom tat: Upgraded the apt-get postgresql-client in docker/backend/Dockerfile to postgresql-client-16 to match the database server version and avoid pg_dump server version mismatch.
+
+## 2026-06-11 08:40:45Z - gemini
+
+- Tieu de: Fix Email Notification Timezone Offset
+- Tom tat: Imported zoneinfo and converted started_at/completed_at datetimes to the local Asia/Ho_Chi_Minh timezone before constructing the email subject and template content.
