@@ -17,7 +17,7 @@
         @submit.prevent="onSubmit"
       >
         <label class="quick-filter__field">
-          <span class="quick-filter__field-label">Keyword</span>
+          <span class="quick-filter__field-label required">Keyword</span>
           <InputText
             v-model="keywordModel"
             v-bind="keywordProps"
@@ -27,7 +27,7 @@
         </label>
 
         <label class="quick-filter__field">
-          <span class="quick-filter__field-label">Owner Email</span>
+          <span class="quick-filter__field-label required">Owner Email</span>
           <InputText
             v-model="ownerEmailModel"
             v-bind="ownerEmailProps"

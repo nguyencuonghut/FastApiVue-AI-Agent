@@ -49,7 +49,7 @@ describe('http client (apiRequest)', () => {
     }
     vi.spyOn(global, 'fetch').mockResolvedValue(mockResponse as Response)
 
-    const result = await apiRequest<any>('/empty-json')
+    const result = await apiRequest<unknown>('/empty-json')
 
     expect(result).toBeNull()
   })
@@ -68,7 +68,12 @@ describe('http client (apiRequest)', () => {
 
     try {
       await apiRequest('/failed')
-    } catch (error: any) {
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(ApiError)
+      if (!(error instanceof ApiError)) {
+        throw error
+      }
+
       expect(error.status).toBe(400)
       expect(error.message).toBe('Invalid input parameters.')
     }

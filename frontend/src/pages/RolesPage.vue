@@ -108,7 +108,7 @@
           </div>
 
           <div class="roles-page__form-field">
-            <label for="create-name" class="roles-page__form-label"
+            <label for="create-name" class="roles-page__form-label required"
               >Tên vai trò</label
             >
             <InputText
@@ -140,7 +140,10 @@
           </div>
 
           <div class="roles-page__form-field">
-            <label for="create-permissions" class="roles-page__form-label"
+            <label
+              for="create-permissions"
+              class="roles-page__form-label required"
+            >
               >Quyền hạn</label
             >
             <MultiSelect
@@ -188,7 +191,7 @@
           </div>
 
           <div class="roles-page__form-field">
-            <label for="edit-name" class="roles-page__form-label"
+            <label for="edit-name" class="roles-page__form-label required"
               >Tên vai trò</label
             >
             <InputText
@@ -219,7 +222,10 @@
           </div>
 
           <div class="roles-page__form-field">
-            <label for="edit-permissions" class="roles-page__form-label"
+            <label
+              for="edit-permissions"
+              class="roles-page__form-label required"
+            >
               >Quyền hạn</label
             >
             <MultiSelect

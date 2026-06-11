@@ -149,7 +149,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-email" class="users-page__form-label"
+            <label for="create-email" class="users-page__form-label required"
               >Email</label
             >
             <InputText
@@ -165,7 +165,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-fullname" class="users-page__form-label"
+            <label for="create-fullname" class="users-page__form-label required"
               >Họ và tên</label
             >
             <InputText
@@ -197,7 +197,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-password" class="users-page__form-label"
+            <label for="create-password" class="users-page__form-label required"
               >Mật khẩu</label
             >
             <InputText
@@ -214,7 +214,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-status" class="users-page__form-label"
+            <label for="create-status" class="users-page__form-label required"
               >Trạng thái</label
             >
             <Select
@@ -232,7 +232,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-roles" class="users-page__form-label"
+            <label for="create-roles" class="users-page__form-label required"
               >Vai trò</label
             >
             <MultiSelect
@@ -280,7 +280,9 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="edit-email" class="users-page__form-label">Email</label>
+            <label for="edit-email" class="users-page__form-label required"
+              >Email</label
+            >
             <InputText
               id="edit-email"
               v-model="editEmail"
@@ -294,7 +296,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="edit-fullname" class="users-page__form-label"
+            <label for="edit-fullname" class="users-page__form-label required"
               >Họ và tên</label
             >
             <InputText
@@ -343,7 +345,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="edit-status" class="users-page__form-label"
+            <label for="edit-status" class="users-page__form-label required"
               >Trạng thái</label
             >
             <Select
@@ -361,7 +363,7 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="edit-roles" class="users-page__form-label"
+            <label for="edit-roles" class="users-page__form-label required"
               >Vai trò</label
             >
             <MultiSelect
@@ -444,7 +446,9 @@
       >
         <div class="users-page__import-form">
           <div class="users-page__form-field">
-            <label class="users-page__form-label">Chọn tệp tài liệu CSV</label>
+            <label class="users-page__form-label required"
+              >Chọn tệp tài liệu CSV</label
+            >
             <FileUpload
               mode="basic"
               name="file"

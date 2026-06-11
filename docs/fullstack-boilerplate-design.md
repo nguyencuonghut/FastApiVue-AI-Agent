@@ -78,6 +78,7 @@ Boilerplate phải có:
 - Responsive-first layout behavior cho mobile, tablet và desktop.
 - Typography chuẩn toàn hệ thống: `Be Vietnam Pro`.
 - Mọi formatter ngày giờ phải nhận timezone rõ ràng, mặc định là `Asia/Ho_Chi_Minh`.
+- Mọi field bắt buộc trong form phải có dấu sao đỏ ở label để nhắc người dùng trước khi submit.
 
 ### Infrastructure
 

@@ -55,6 +55,12 @@ Use shared responsive rules for:
 
 Do not rely on page-by-page fixes for mobile. Responsive behavior should come from centralized layout/component styles and tested breakpoints.
 
+## Required Field Marker Pattern
+
+Mandatory form fields must communicate that requirement before user interaction.
+
+Add a visible red asterisk at label level for any required field, including create/edit dialogs, upload forms, and required filter inputs. Do not rely only on placeholders or validation errors after submit.
+
 ## Typography Pattern
 
 Frontend typography is centralized.

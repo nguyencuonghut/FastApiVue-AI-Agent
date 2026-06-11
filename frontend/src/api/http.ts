@@ -62,7 +62,7 @@ export async function apiRequest<T>(
   const hasNoBody = response.status === 204 || response.status === 205
   const contentType = response.headers.get('content-type') ?? ''
   const isJson = contentType.includes('application/json')
-  let payload: any = null
+  let payload: unknown = null
 
   if (isJson && !hasNoBody) {
     try {

@@ -47,6 +47,7 @@
 - Fixed frontend auth login regression on 10/06/2026: added backend CORS middleware and a preflight regression test so browser `OPTIONS /api/v1/auth/login` no longer fails with `405`.
 - Fixed dev auth bootstrap/runtime on 10/06/2026: corrected Alembic Docker path + async env, fixed duplicate enum creation in the first migration, fixed async relationship initialization in auth seed, fixed enum value persistence for `UserStatus`, ran migrations successfully, and seeded the local admin account.
 - Implemented user profile fields (`full_name` and `avatar_url`) on 11/06/2026: updated initial Alembic migration directly, mapped attributes in User ORM model, exposed them through backend Pydantic schemas (UserResponse, CurrentUserResponse), updated UserAdminService, populated them in auth endpoints, and wired frontend types, normalizer mappers, useUsersPage composable form states/validation, and UsersPage DataTable columns and dialog fields.
+- Audited required-field markers on 11/06/2026 and extended the red-asterisk convention beyond Login/Users to Roles, Files upload, and the dashboard Quick Filter form. Project rules and design docs now treat the marker as a mandatory form UX contract.
 
 ## Open
 

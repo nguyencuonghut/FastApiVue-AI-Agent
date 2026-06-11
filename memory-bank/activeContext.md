@@ -38,6 +38,7 @@ The repository has been prepared with:
 32. Docker dev startup is currently verified again on 10/06/2026 after removing the default Redis host-port binding; `docker compose up --build -d` now succeeds even when host port `6379` is already occupied by another local service.
 33. Backend browser-facing auth routes now include CORS middleware coverage; `OPTIONS /api/v1/auth/login` has a regression test and no longer fails with `405` for the dev frontend origin.
 34. Docker dev auth runtime is now verified end-to-end on 10/06/2026: Alembic migrations run successfully in-container, auth seed works with a non-placeholder local password override, and `/api/v1/auth/login` returns `200` plus the expected CORS and refresh-cookie headers for `http://localhost:5173`.
+35. Frontend form UX contract now explicitly requires a red required-marker on any mandatory input label; the convention is already applied in Login, Users, Roles, Files upload, and the dashboard quick-filter demo form.
 
 ## Next Useful Steps
 

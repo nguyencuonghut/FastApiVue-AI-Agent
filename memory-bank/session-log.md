@@ -291,3 +291,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: add-lifecycle-verification-rule
 - Tom tat: Added Rule 19 to projectRules.md and Rule 18 to agent-rules.md specifying that agents must verify the entire feature lifecycle in the browser instead of just testing the modified line of code.
+
+## 2026-06-11 04:21:53Z - codex
+
+- Tieu de: Audit required field markers across frontend forms
+- Tom tat: Audited required-field labels across frontend forms and formalized the red-asterisk marker as a mandatory UX contract. Extended markers to Roles create/edit, Files upload, Users CSV import, and the dashboard Quick Filter form; updated docs and project memory; cleaned unrelated frontend any-typing lint issues in http.ts and http.spec.ts; verified with frontend lint, typecheck, and unit tests.

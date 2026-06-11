@@ -28,3 +28,18 @@ textarea {
 a {
   color: inherit;
 }
+
+/* Required field indicator utility */
+.required::after,
+label.required::after,
+.required label::after,
+.required .login-page__label::after,
+.required .users-page__form-label::after,
+.required .files-page__form-label::after,
+.required .roles-page__form-label::after,
+.required .quick-filter__field-label::after {
+  content: ' *';
+  color: var(--app-danger);
+  margin-left: 0.125rem;
+  font-weight: bold;
+}

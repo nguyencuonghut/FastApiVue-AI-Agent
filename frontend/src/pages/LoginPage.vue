@@ -21,7 +21,9 @@
         <template #content>
           <form class="login-page__form" @submit.prevent="submitLogin">
             <div class="login-page__field">
-              <label class="login-page__label" for="email">Email</label>
+              <label class="login-page__label required" for="email"
+                >Email</label
+              >
               <InputText
                 id="email"
                 v-model="email"
@@ -37,7 +39,9 @@
             </div>
 
             <div class="login-page__field">
-              <label class="login-page__label" for="password">Mật khẩu</label>
+              <label class="login-page__label required" for="password"
+                >Mật khẩu</label
+              >
               <Password
                 id="password"
                 v-model="password"

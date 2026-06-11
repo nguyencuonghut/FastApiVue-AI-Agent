@@ -113,7 +113,7 @@
           </div>
 
           <div class="files-page__form-field">
-            <label class="files-page__form-label">Chọn tập tin</label>
+            <label class="files-page__form-label required">Chọn tập tin</label>
             <FileUpload
               mode="basic"
               name="file"

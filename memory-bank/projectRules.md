@@ -154,6 +154,11 @@ When consuming API endpoints on the frontend, do not automatically parse respons
 When resolving any bug in a feature module (such as Authentication, File Storage, or User Administration), the agent must not limit verification to the modified line of code or specific function. The agent must verify the entire user journey/lifecycle of that feature in the browser environment.
 For example, if the agent modifies the login or token refresh mechanism, it is mandatory to test the complete sequence: Login -> F5 Page Reload -> Navigate to protected routes -> Perform Logout -> Verify redirection back to the login page. The agent must verify the entire flow is fully operational before concluding the task.
 
+## Rule 20: Required Fields Must Be Marked Visually
+
+Any user-facing form field that is mandatory must display a visible red asterisk on its label.
+
+Do not rely solely on placeholder text, runtime validation messages, or disabled submit behavior to communicate required input. The required-state visual marker is part of the base UI contract and must be added consistently across create, edit, filter, upload, and dialog forms whenever the field is truly required by the validation or business rule.
 
 
 
