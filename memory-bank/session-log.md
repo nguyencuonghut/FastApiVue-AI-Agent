@@ -281,3 +281,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: fix-logout-client-side-json-parse-crash
 - Tom tat: Enhanced frontend http client (apiRequest) in http.ts to read response body as text first and safely parse JSON in a try-catch block, preventing SyntaxError crashes on 204 No Content or empty 200 responses. Added Rule 18 to projectRules.md and Rule 17 to agent-rules.md, and verified clean logout behavior using interactive browser subagent.
+
+## 2026-06-11 02:45:14Z - gemini
+
+- Tieu de: root-cause-analysis-auth-bugs
+- Tom tat: Created root cause analysis report documenting the cascading issues during Login/Logout implementation. Updated projectRules.md, agent-rules.md, and bugPatterns.md to establish mandatory integration/E2E browser checks and defend against ASGI conflicts and empty body parses.
+
+## 2026-06-11 02:48:54Z - gemini
+
+- Tieu de: add-lifecycle-verification-rule
+- Tom tat: Added Rule 19 to projectRules.md and Rule 18 to agent-rules.md specifying that agents must verify the entire feature lifecycle in the browser instead of just testing the modified line of code.

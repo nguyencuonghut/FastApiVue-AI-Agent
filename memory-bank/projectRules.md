@@ -149,6 +149,12 @@ Returning a `Response` instance (which defaults to a 200 OK status) causes an AS
 
 When consuming API endpoints on the frontend, do not automatically parse response bodies with `response.json()` directly without safety checks, even if the response `content-type` header is `application/json`. Various successful endpoints (e.g. 204 No Content, 205 Reset Content, or empty 200 OK responses) do not contain a body, which triggers `SyntaxError: Unexpected end of JSON input`. The frontend HTTP utility (`frontend/src/api/http.ts`) must read the body as text (`response.text()`) first, verify that the string is non-empty before calling `JSON.parse(...)`, and wrap the parsing operation inside a robust try-catch block falling back to `null` to ensure the application does not crash.
 
+## Rule 19: Full Feature Lifecycle Verification
+
+When resolving any bug in a feature module (such as Authentication, File Storage, or User Administration), the agent must not limit verification to the modified line of code or specific function. The agent must verify the entire user journey/lifecycle of that feature in the browser environment.
+For example, if the agent modifies the login or token refresh mechanism, it is mandatory to test the complete sequence: Login -> F5 Page Reload -> Navigate to protected routes -> Perform Logout -> Verify redirection back to the login page. The agent must verify the entire flow is fully operational before concluding the task.
+
+
 
 
 

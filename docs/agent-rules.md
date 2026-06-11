@@ -81,7 +81,12 @@ Khi thiết kế API trả về mã `204 No Content`, tuyệt đối không đư
 17. Parse body response an toàn ở frontend:
 Khi nhận response từ API, không được tự động parse JSON trực tiếp bằng `response.json()` mà không kiểm tra độ dài hoặc cấu trúc body, kể cả khi header trả về là `application/json`. Nhiều trường hợp API trả về mã thành công (ví dụ 204, 205 hoặc 200 rỗng) nhưng không đi kèm nội dung body, dẫn đến lỗi `SyntaxError: Unexpected end of JSON input`. Client HTTP (`frontend/src/api/http.ts`) phải đọc body dưới dạng text (`response.text()`) và chỉ gọi `JSON.parse` khi text đó không rỗng, đồng thời bọc trong khối try-catch an toàn để tránh crash ứng dụng.
 
+18. Kiểm thử toàn bộ vòng đời tính năng (Full Feature Lifecycle Verification):
+Khi sửa bất kỳ lỗi nào trong một module (như Authentication, File Upload, Users CRUD), không được phép chỉ kiểm tra một hàm hoặc một dòng code được sửa. Agent bắt buộc phải chạy thử toàn bộ vòng đời của tính năng đó trên trình duyệt thực tế. 
+Ví dụ: Khi sửa lỗi refresh token hoặc login, bắt buộc phải test chuỗi hành động: Đăng nhập -> F5 reload trang -> Truy cập trang bảo mật -> Thực hiện đăng xuất -> Kiểm tra việc bị đá về trang login. Không được bỏ qua bất kỳ bước nào trong chu trình sử dụng của người dùng.
+
 ## Kết quả mong muốn
+
 
 
 
