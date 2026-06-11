@@ -216,3 +216,18 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Fix dev auth runtime beyond CORS
 - Tom tat: Da debug het chuoi loi login tren dev stack: sua Alembic Docker path, doi env.py sang async migration pattern, sua migration enum tao type hai lan, sua auth seed bi MissingGreenlet khi gan permissions cho role moi, sua ORM enum mapping de UserStatus persist dung lowercase values, chay migrate + seed thanh cong, va verify POST /api/v1/auth/login tra 200 voi CORS header va refresh cookie.
+
+## 2026-06-11 01:47:51Z - gemini
+
+- Tieu de: User Profile Fields
+- Tom tat: Them thong tin ho ten (full_name) va anh dai dien (avatar_url) cho User, dong bo tu migrations, model, API schema, tests cho toi frontend UI
+
+## 2026-06-11 01:51:00Z - gemini
+
+- Tieu de: User Profile Fields - Required Full Name
+- Tom tat: Make full_name a required field across migrations, database models, backend Pydantic schemas, unit tests, bulk CSV import tasks, and frontend Vue forms validation schemas.
+
+## 2026-06-11 01:52:51Z - gemini
+
+- Tieu de: User Profile Fields - Required Full Name Types
+- Tom tat: Enforced full_name/fullName as non-optional required fields inside frontend DTO and domain interfaces, aligned them fully with database non-nullable columns and backend Pydantic validation models, and validated with passing quality check gates.

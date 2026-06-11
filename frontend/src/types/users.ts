@@ -5,6 +5,8 @@ export interface UserDto {
   roles: string[]
   permissions: string[]
   last_login_at: string | null
+  full_name: string
+  avatar_url?: string | null
 }
 
 export interface UserListDto {
@@ -19,6 +21,8 @@ export interface UserDomain {
   roles: string[]
   permissions: string[]
   lastLoginAt: string | null
+  fullName: string
+  avatarUrl?: string | null
 }
 
 export interface UserListDomain {
@@ -31,6 +35,8 @@ export interface UserCreatePayload {
   password?: string
   status: string
   role_names: string[]
+  full_name: string
+  avatar_url?: string
 }
 
 export interface UserUpdatePayload {
@@ -38,6 +44,8 @@ export interface UserUpdatePayload {
   status: string
   password?: string
   role_names: string[]
+  full_name: string
+  avatar_url?: string
 }
 
 export interface UserListQueryParams {

@@ -112,11 +112,15 @@ async def test_create_user_hashes_password_and_assigns_roles() -> None:
         password="Secret123!",
         status=UserStatus.ACTIVE,
         role_names=["admin"],
+        full_name="Operations Manager",
+        avatar_url="https://example.com/avatar.png",
     )
 
     assert user.email == "ops@example.com"
     assert verify_password("Secret123!", user.password_hash) is True
     assert [role.name for role in user.roles] == ["admin"]
+    assert user.full_name == "Operations Manager"
+    assert user.avatar_url == "https://example.com/avatar.png"
     assert len(session.added) == 1
 
 
@@ -127,6 +131,7 @@ async def test_create_user_rejects_duplicate_email() -> None:
         email="ops@example.com",
         password_hash="hashed",
         status=UserStatus.ACTIVE,
+        full_name="Existing User",
     )
     session = FakeAsyncSession(users_by_email={existing_user.email: existing_user})
     service = UserAdminService(session)  # type: ignore[arg-type]
@@ -137,6 +142,7 @@ async def test_create_user_rejects_duplicate_email() -> None:
             password="Secret123!",
             status=UserStatus.ACTIVE,
             role_names=[],
+            full_name="Duplicate Test",
         )
 
 
@@ -214,6 +220,8 @@ async def test_update_user_details_and_password() -> None:
         email="old@example.com",
         password_hash="old-hash",
         status=UserStatus.ACTIVE,
+        full_name="Old Name",
+        avatar_url="https://old.url",
     )
     admin_role = build_role("admin")
     session = FakeAsyncSession(
@@ -229,18 +237,34 @@ async def test_update_user_details_and_password() -> None:
         status=UserStatus.LOCKED,
         password="NewPassword123!",
         role_names=["admin"],
+        full_name="New Name",
+        avatar_url="https://new.url",
     )
 
     assert updated.email == "new@example.com"
     assert updated.status == UserStatus.LOCKED
     assert verify_password("NewPassword123!", updated.password_hash) is True
     assert [r.name for r in updated.roles] == ["admin"]
+    assert updated.full_name == "New Name"
+    assert updated.avatar_url == "https://new.url"
 
 
 @pytest.mark.asyncio
 async def test_update_user_rejects_duplicate_email() -> None:
-    u1 = User(id=uuid4(), email="user1@example.com", password_hash="h1", status=UserStatus.ACTIVE)
-    u2 = User(id=uuid4(), email="user2@example.com", password_hash="h2", status=UserStatus.ACTIVE)
+    u1 = User(
+        id=uuid4(),
+        email="user1@example.com",
+        password_hash="h1",
+        status=UserStatus.ACTIVE,
+        full_name="User One",
+    )
+    u2 = User(
+        id=uuid4(),
+        email="user2@example.com",
+        password_hash="h2",
+        status=UserStatus.ACTIVE,
+        full_name="User Two",
+    )
     session = FakeAsyncSession(
         users_by_id={u1.id: u1, u2.id: u2},
         users_by_email={u1.email: u1, u2.email: u2},
@@ -253,6 +277,7 @@ async def test_update_user_rejects_duplicate_email() -> None:
             email="user2@example.com",
             status=UserStatus.ACTIVE,
             role_names=[],
+            full_name="User One Updated",
         )
 
 

@@ -113,9 +113,9 @@ async def test_import_users_task_success() -> None:
     minio_client = MagicMock()
     # CSV with 1 header, 2 rows (1 success, 1 failure due to short password)
     csv_data = (
-        b"email,password,status,roles\n"
-        b"success@example.com,pass12345,active,user\n"
-        b"fail@example.com,short,active,user"
+        b"email,password,status,roles,full_name\n"
+        b"success@example.com,pass12345,active,user,Success User\n"
+        b"fail@example.com,short,active,user,Fail User"
     )
     minio_client.get_object.return_value = FakeMinioResponse(csv_data)
 
@@ -146,7 +146,13 @@ async def test_export_users_task_success() -> None:
         filters={"status": "active"},
     )
 
-    u1 = User(id=uuid4(), email="u1@example.com", status=UserStatus.ACTIVE, created_at=MagicMock())
+    u1 = User(
+        id=uuid4(),
+        email="u1@example.com",
+        status=UserStatus.ACTIVE,
+        full_name="User One",
+        created_at=MagicMock(),
+    )
     u1.roles = []
     session = FakeAsyncSession(export_job=job, users=[u1])
     session_factory = MagicMock()

@@ -34,6 +34,8 @@ class UserAdminService:
         password: str,
         status: UserStatus,
         role_names: Sequence[str],
+        full_name: str,
+        avatar_url: str | None = None,
     ) -> User:
         existing_user = await self._get_user_by_email(email)
         if existing_user is not None:
@@ -44,6 +46,8 @@ class UserAdminService:
             email=email,
             password_hash=hash_password(password),
             status=status,
+            full_name=full_name,
+            avatar_url=avatar_url,
         )
         user.roles = roles
         self.session.add(user)
@@ -100,6 +104,8 @@ class UserAdminService:
         status: UserStatus,
         password: str | None = None,
         role_names: Sequence[str],
+        full_name: str,
+        avatar_url: str | None = None,
     ) -> User:
         user = await self._get_user_by_id(user_id)
         if user is None:
@@ -112,6 +118,8 @@ class UserAdminService:
             user.email = email
 
         user.status = status
+        user.full_name = full_name
+        user.avatar_url = avatar_url
         if password is not None and password.strip():
             user.password_hash = hash_password(password)
 

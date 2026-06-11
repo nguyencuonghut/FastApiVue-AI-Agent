@@ -133,12 +133,14 @@ class AuthSeedService:
                 email=self.settings.auth_seed_admin_email,
                 password_hash=hash_password(self.settings.auth_seed_admin_password),
                 status=UserStatus.ACTIVE,
+                full_name="System Administrator",
             )
             admin_user.roles = [admin_role]
             self.session.add(admin_user)
             created_admin_user = True
         else:
             admin_user.status = UserStatus.ACTIVE
+            admin_user.full_name = "System Administrator"
             if not any(role.name == ADMIN_ROLE_NAME for role in admin_user.roles):
                 admin_user.roles.append(admin_role)
             if self.settings.auth_seed_update_admin_password:

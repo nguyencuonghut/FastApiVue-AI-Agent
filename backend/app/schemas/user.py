@@ -11,6 +11,8 @@ class UserCreateRequest(BaseModel):
     password: str = Field(min_length=8)
     status: str = "active"
     role_names: list[str] = Field(default_factory=list)
+    full_name: str
+    avatar_url: str | None = None
 
 
 class UserRoleUpdateRequest(BaseModel):
@@ -22,6 +24,8 @@ class UserUpdateRequest(BaseModel):
     status: str
     password: str | None = Field(default=None, min_length=8)
     role_names: list[str] = Field(default_factory=list)
+    full_name: str
+    avatar_url: str | None = None
 
 
 class UserResponse(BaseModel):
@@ -31,6 +35,8 @@ class UserResponse(BaseModel):
     roles: list[str]
     permissions: list[str]
     last_login_at: datetime | None
+    full_name: str
+    avatar_url: str | None = None
 
 
 class UserListResponse(BaseModel):

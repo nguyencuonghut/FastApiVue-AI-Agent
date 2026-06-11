@@ -83,6 +83,8 @@ export function useUsersPage() {
         .min(8, 'Mật khẩu phải có ít nhất 8 ký tự để đúng baseline bảo mật.'),
       status: z.enum(['active', 'inactive', 'locked']),
       roleNames: z.array(z.string()).min(1, 'Chọn ít nhất 1 vai trò.'),
+      fullName: z.string().min(1, 'Họ và tên là bắt buộc.'),
+      avatarUrl: z.string().optional().or(z.literal('')),
     }),
   )
 
@@ -92,6 +94,8 @@ export function useUsersPage() {
       password: '',
       status: 'active',
       roleNames: [] as string[],
+      fullName: '',
+      avatarUrl: '',
     },
     validationSchema: createSchema,
   })
@@ -102,6 +106,10 @@ export function useUsersPage() {
   const [createStatus, createStatusProps] = createForm.defineField('status')
   const [createRoleNames, createRoleNamesProps] =
     createForm.defineField('roleNames')
+  const [createFullName, createFullNameProps] =
+    createForm.defineField('fullName')
+  const [createAvatarUrl, createAvatarUrlProps] =
+    createForm.defineField('avatarUrl')
 
   const submitCreate = createForm.handleSubmit(async (values) => {
     submitError.value = null
@@ -112,6 +120,8 @@ export function useUsersPage() {
           password: values.password,
           status: values.status,
           role_names: values.roleNames,
+          full_name: values.fullName,
+          avatar_url: values.avatarUrl || undefined,
         },
         authStore.accessToken,
       )
@@ -141,6 +151,8 @@ export function useUsersPage() {
         .or(z.literal('')),
       status: z.enum(['active', 'inactive', 'locked']),
       roleNames: z.array(z.string()).min(1, 'Chọn ít nhất 1 vai trò.'),
+      fullName: z.string().min(1, 'Họ và tên là bắt buộc.'),
+      avatarUrl: z.string().optional().or(z.literal('')),
     }),
   )
 
@@ -150,6 +162,8 @@ export function useUsersPage() {
       password: '',
       status: 'active',
       roleNames: [] as string[],
+      fullName: '',
+      avatarUrl: '',
     },
     validationSchema: editSchema,
   })
@@ -158,6 +172,8 @@ export function useUsersPage() {
   const [editPassword, editPasswordProps] = editForm.defineField('password')
   const [editStatus, editStatusProps] = editForm.defineField('status')
   const [editRoleNames, editRoleNamesProps] = editForm.defineField('roleNames')
+  const [editFullName, editFullNameProps] = editForm.defineField('fullName')
+  const [editAvatarUrl, editAvatarUrlProps] = editForm.defineField('avatarUrl')
 
   const submitEdit = editForm.handleSubmit(async (values) => {
     if (!selectedUser.value) return
@@ -170,6 +186,8 @@ export function useUsersPage() {
           status: values.status,
           password: values.password || undefined,
           role_names: values.roleNames,
+          full_name: values.fullName,
+          avatar_url: values.avatarUrl || undefined,
         },
         authStore.accessToken,
       )
@@ -194,6 +212,8 @@ export function useUsersPage() {
         password: '',
         status: 'active',
         roleNames: [],
+        fullName: '',
+        avatarUrl: '',
       },
     })
     createDialogVisible.value = true
@@ -208,6 +228,8 @@ export function useUsersPage() {
         password: '',
         status: user.status as 'active' | 'inactive' | 'locked',
         roleNames: user.roles,
+        fullName: user.fullName || '',
+        avatarUrl: user.avatarUrl || '',
       },
     })
     editDialogVisible.value = true
@@ -422,6 +444,10 @@ export function useUsersPage() {
     createStatusProps,
     createRoleNames,
     createRoleNamesProps,
+    createFullName,
+    createFullNameProps,
+    createAvatarUrl,
+    createAvatarUrlProps,
     createErrors: createForm.errors,
     submitCreate,
     createFormSubmitting: createForm.isSubmitting,
@@ -435,6 +461,10 @@ export function useUsersPage() {
     editStatusProps,
     editRoleNames,
     editRoleNamesProps,
+    editFullName,
+    editFullNameProps,
+    editAvatarUrl,
+    editAvatarUrlProps,
     editErrors: editForm.errors,
     submitEdit,
     editFormSubmitting: editForm.isSubmitting,

@@ -37,6 +37,8 @@ class User(Base):
         ),
         default=UserStatus.ACTIVE,
     )
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    avatar_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

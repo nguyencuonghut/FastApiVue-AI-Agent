@@ -113,6 +113,8 @@ async def create_user(
             password=payload.password,
             status=UserStatus(payload.status),
             role_names=payload.role_names,
+            full_name=payload.full_name,
+            avatar_url=payload.avatar_url,
         )
     except ValueError as exc:
         raise HTTPException(
@@ -174,6 +176,8 @@ async def update_user(
             status=user_status,
             password=payload.password,
             role_names=payload.role_names,
+            full_name=payload.full_name,
+            avatar_url=payload.avatar_url,
         )
     except UserNotFoundError as exc:
         raise HTTPException(
@@ -303,4 +307,6 @@ def _build_user_response(user: User) -> UserResponse:
         roles=current_user_payload.roles,
         permissions=current_user_payload.permissions,
         last_login_at=current_user_payload.last_login_at,
+        full_name=current_user_payload.full_name,
+        avatar_url=current_user_payload.avatar_url,
     )

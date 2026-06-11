@@ -24,3 +24,5 @@ class CurrentUserResponse(BaseModel):
     roles: list[str]
     permissions: list[str]
     last_login_at: datetime | None
+    full_name: str
+    avatar_url: str | None = None

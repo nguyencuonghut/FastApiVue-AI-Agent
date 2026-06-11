@@ -97,6 +97,7 @@ async def import_users_task(ctx: dict[str, Any], job_id: UUID) -> None:
             password = row.get("password") or ""
             status_str = (row.get("status") or "").strip().lower()
             roles_str = row.get("roles") or ""
+            full_name = (row.get("full_name") or row.get("fullName") or "").strip()
 
             # Standard defaults
             status = UserStatus.ACTIVE
@@ -125,6 +126,8 @@ async def import_users_task(ctx: dict[str, Any], job_id: UUID) -> None:
                 row_errors.append("Email is required.")
             if not password or len(password) < 8:
                 row_errors.append("Password must be at least 8 characters long.")
+            if not full_name:
+                row_errors.append("Full name is required.")
 
             if row_errors:
                 errors_list.append({"row": idx, "email": email, "errors": row_errors})
@@ -139,6 +142,7 @@ async def import_users_task(ctx: dict[str, Any], job_id: UUID) -> None:
                         password=password,
                         status=status,
                         role_names=role_names,
+                        full_name=full_name,
                     )
                 processed_rows += 1
             except RoleNotFoundError as e:

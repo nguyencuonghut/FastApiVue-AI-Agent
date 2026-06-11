@@ -45,6 +45,8 @@ class MockUserAdminService:
             raise UserNotFoundError(f"User {user_id} does not exist.")
         user.email = kwargs.get("email", user.email)
         user.status = kwargs.get("status", user.status)
+        user.full_name = kwargs.get("full_name", user.full_name)
+        user.avatar_url = kwargs.get("avatar_url", user.avatar_url)
         return user
 
     async def delete_user(self, user_id: UUID) -> None:
@@ -61,10 +63,20 @@ class MockAuditLogService:
 @pytest.fixture
 def override_dependencies(app: FastAPI) -> Generator[MockUserAdminService, None, None]:
     role = Role(id=uuid4(), name="admin", is_system=True)
-    admin_user = User(id=uuid4(), email="admin@example.com", status=UserStatus.ACTIVE)
+    admin_user = User(
+        id=uuid4(),
+        email="admin@example.com",
+        status=UserStatus.ACTIVE,
+        full_name="Admin",
+    )
     admin_user.roles = [role]
 
-    u1 = User(id=uuid4(), email="u1@example.com", status=UserStatus.ACTIVE)
+    u1 = User(
+        id=uuid4(),
+        email="u1@example.com",
+        status=UserStatus.ACTIVE,
+        full_name="User One",
+    )
     u1.roles = []
 
     mock_admin_service = MockUserAdminService([admin_user, u1])
@@ -121,12 +133,16 @@ async def test_update_user_api(
         "status": "locked",
         "password": "NewPassword123!",
         "role_names": [],
+        "full_name": "Updated Full Name",
+        "avatar_url": "https://new.avatar/image.png",
     }
     response = await client.put(f"/api/v1/users/{user_id}", json=payload)
     assert response.status_code == 200
     data = response.json()
     assert data["email"] == "u1-updated@example.com"
     assert data["status"] == "locked"
+    assert data["full_name"] == "Updated Full Name"
+    assert data["avatar_url"] == "https://new.avatar/image.png"
 
 
 @pytest.mark.asyncio

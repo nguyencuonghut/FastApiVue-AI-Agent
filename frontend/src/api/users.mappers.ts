@@ -14,6 +14,8 @@ export function mapUserDtoToDomain(dto: UserDto): UserDomain {
     roles: dto.roles,
     permissions: dto.permissions,
     lastLoginAt: dto.last_login_at,
+    fullName: dto.full_name,
+    avatarUrl: dto.avatar_url,
   }
 }
 

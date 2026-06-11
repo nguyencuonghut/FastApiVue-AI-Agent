@@ -35,6 +35,8 @@ def upgrade() -> None:
         sa.Column("email", sa.String(length=320), nullable=False),
         sa.Column("password_hash", sa.String(length=255), nullable=False),
         sa.Column("status", user_status_enum, nullable=False, server_default="active"),
+        sa.Column("full_name", sa.String(length=150), nullable=False),
+        sa.Column("avatar_url", sa.String(length=2048), nullable=True),
         sa.Column("last_login_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column(
             "created_at",

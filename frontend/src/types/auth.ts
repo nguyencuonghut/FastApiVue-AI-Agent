@@ -16,6 +16,8 @@ export interface CurrentUserDto {
   roles: string[]
   permissions: string[]
   last_login_at: string | null
+  full_name: string
+  avatar_url?: string | null
 }
 
 export interface AuthSession {
@@ -31,6 +33,8 @@ export interface CurrentUser {
   roles: string[]
   permissions: string[]
   lastLoginAt: string | null
+  fullName: string
+  avatarUrl?: string | null
 }
 
 export interface LoginFormValues {

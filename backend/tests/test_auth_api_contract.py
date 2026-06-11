@@ -25,6 +25,7 @@ def test_build_current_user_response_includes_roles_and_permissions() -> None:
         email="manager@example.com",
         password_hash=hash_password("Secret123!"),
         status=UserStatus.ACTIVE,
+        full_name="Manager User",
     )
     user.roles = [role]
 

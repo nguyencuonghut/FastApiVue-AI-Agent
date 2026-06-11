@@ -195,6 +195,8 @@ def _build_current_user_response(user: User) -> CurrentUserResponse:
         roles=sorted(resolve_role_names(user)),
         permissions=sorted(resolve_permission_codes(user)),
         last_login_at=user.last_login_at,
+        full_name=user.full_name,
+        avatar_url=user.avatar_url,
     )
 
 

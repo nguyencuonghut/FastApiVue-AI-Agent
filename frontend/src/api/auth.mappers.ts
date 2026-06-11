@@ -21,5 +21,7 @@ export function mapCurrentUserDto(dto: CurrentUserDto): CurrentUser {
     roles: dto.roles,
     permissions: dto.permissions,
     lastLoginAt: dto.last_login_at,
+    fullName: dto.full_name,
+    avatarUrl: dto.avatar_url,
   }
 }

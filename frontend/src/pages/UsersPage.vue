@@ -77,6 +77,11 @@
           @sort="onSortChange"
         >
           <Column field="email" header="Email" sortable />
+          <Column field="full_name" header="Họ và tên" sortable>
+            <template #body="{ data }">
+              {{ data.fullName || '-' }}
+            </template>
+          </Column>
           <Column field="status" header="Trạng thái">
             <template #body="{ data }">
               <Tag
@@ -156,6 +161,38 @@
             />
             <small class="users-page__field-error">{{
               createErrors.email
+            }}</small>
+          </div>
+
+          <div class="users-page__form-field">
+            <label for="create-fullname" class="users-page__form-label"
+              >Họ và tên</label
+            >
+            <InputText
+              id="create-fullname"
+              v-model="createFullName"
+              v-bind="createFullNameProps"
+              fluid
+              placeholder="Nguyễn Văn A"
+            />
+            <small class="users-page__field-error">{{
+              createErrors.fullName
+            }}</small>
+          </div>
+
+          <div class="users-page__form-field">
+            <label for="create-avatarurl" class="users-page__form-label"
+              >Ảnh đại diện (URL)</label
+            >
+            <InputText
+              id="create-avatarurl"
+              v-model="createAvatarUrl"
+              v-bind="createAvatarUrlProps"
+              fluid
+              placeholder="https://example.com/avatar.jpg"
+            />
+            <small class="users-page__field-error">{{
+              createErrors.avatarUrl
             }}</small>
           </div>
 
@@ -253,6 +290,38 @@
             />
             <small class="users-page__field-error">{{
               editErrors.email
+            }}</small>
+          </div>
+
+          <div class="users-page__form-field">
+            <label for="edit-fullname" class="users-page__form-label"
+              >Họ và tên</label
+            >
+            <InputText
+              id="edit-fullname"
+              v-model="editFullName"
+              v-bind="editFullNameProps"
+              fluid
+              placeholder="Nguyễn Văn A"
+            />
+            <small class="users-page__field-error">{{
+              editErrors.fullName
+            }}</small>
+          </div>
+
+          <div class="users-page__form-field">
+            <label for="edit-avatarurl" class="users-page__form-label"
+              >Ảnh đại diện (URL)</label
+            >
+            <InputText
+              id="edit-avatarurl"
+              v-model="editAvatarUrl"
+              v-bind="editAvatarUrlProps"
+              fluid
+              placeholder="https://example.com/avatar.jpg"
+            />
+            <small class="users-page__field-error">{{
+              editErrors.avatarUrl
             }}</small>
           </div>
 
@@ -593,6 +662,10 @@ const {
   createStatusProps,
   createRoleNames,
   createRoleNamesProps,
+  createFullName,
+  createFullNameProps,
+  createAvatarUrl,
+  createAvatarUrlProps,
   createErrors,
   submitCreate,
   createFormSubmitting,
@@ -604,6 +677,10 @@ const {
   editStatusProps,
   editRoleNames,
   editRoleNamesProps,
+  editFullName,
+  editFullNameProps,
+  editAvatarUrl,
+  editAvatarUrlProps,
   editErrors,
   submitEdit,
   editFormSubmitting,
