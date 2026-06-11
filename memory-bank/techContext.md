@@ -125,12 +125,17 @@
   - `docker compose ps`
   - `docker compose exec backend` health call to `http://127.0.0.1:8000/health`
   - `docker compose exec frontend` fetch to `http://127.0.0.1:5173`
+- Re-verified Docker dev auth runtime on 2026-06-10:
+  - `docker compose exec backend sh -lc "cd /app && uv run alembic upgrade head"`
+  - `docker compose exec backend sh -lc "cd /app && AUTH_SEED_ADMIN_PASSWORD='<local override>' uv run python scripts/seed_auth_rbac.py"`
+  - `POST /api/v1/auth/login` returns `200`, `Access-Control-Allow-Origin: http://localhost:5173`, and `Set-Cookie` for the refresh token
 - Verified host port defaults for Docker dev:
   - backend `8000`
   - frontend `5173`
   - postgres `55432`
   - minio API `59000`
   - minio console `59001`
+  - redis is internal-only by default and is not published to a host port
 - Verified `.env.example` exposes `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `POSTGRES_HOST_PORT`, `MINIO_API_HOST_PORT`, `MINIO_CONSOLE_HOST_PORT`
 - Verified timezone baseline from `.env.example` and `backend/app/core/config.py`: `APP_TIMEZONE=Asia/Ho_Chi_Minh`, `VITE_APP_TIMEZONE=Asia/Ho_Chi_Minh`
 - Verified Phase 2 auth config baseline from `.env.example` and `backend/app/core/config.py`: `AUTH_TOKEN_TRANSPORT=hybrid`, refresh cookie settings, `ACCESS_TOKEN_EXPIRE_MINUTES`, and `REFRESH_TOKEN_EXPIRE_DAYS`

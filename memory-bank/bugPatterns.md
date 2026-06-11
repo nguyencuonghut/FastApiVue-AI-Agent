@@ -161,6 +161,60 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Regression guard: When providing offline fallbacks for optional third-party integrations, do not redefine imported callables with different signatures. Wrap them behind a project-local function/protocol boundary instead.
 - Related files: `backend/app/services/job_admin.py`
 
+### 2026-06-10: Docker dev compose should not bind Redis host port by default
+
+- Area: Docker dev runtime networking
+- Trigger: Running `docker compose up --build` failed with `failed to bind host port 0.0.0.0:6379/tcp: address already in use`.
+- Root cause: `docker-compose.yml` published Redis to host port `6379` even though backend and worker only use Redis over the internal Docker network.
+- Fix: Remove the Redis `ports:` mapping from `docker-compose.yml` so the default dev stack no longer depends on a free host `6379`.
+- Regression guard: Only publish infra service ports to the host when there is a verified local operator need. Internal-only dependencies like Redis should stay on the Compose network by default.
+- Related files: `docker-compose.yml`, `README.md`
+
+### 2026-06-10: Missing CORS middleware makes auth login look like FE connectivity failure
+
+- Area: Backend API middleware / frontend auth bootstrap
+- Trigger: FE login showed `Không thể kết nối tới dịch vụ xác thực.` while backend logs showed `OPTIONS /api/v1/auth/login 405 Method Not Allowed` and a separate `POST /api/v1/auth/refresh 401 Unauthorized`.
+- Root cause: Backend had no `CORSMiddleware`, so browser preflight for cross-origin `POST /api/v1/auth/login` failed before the actual login request reached auth logic. The `401 /auth/refresh` was a normal anonymous-bootstrap outcome and not the root failure.
+- Fix: Add `CORSMiddleware` in `backend/app/core/application.py` using configured `CORS_ORIGINS`, and add a regression test asserting `OPTIONS /api/v1/auth/login` returns CORS headers for the dev frontend origin.
+- Regression guard: When frontend reports generic auth connectivity issues, inspect browser-triggered `OPTIONS` requests before debugging token logic. Any browser-facing POST auth endpoint must pass a real preflight test.
+- Related files: `backend/app/core/application.py`, `backend/tests/test_health.py`
+
+### 2026-06-10: Alembic asyncpg migration path was broken in Docker dev
+
+- Area: Backend migration runtime in Docker
+- Trigger: `uv run alembic upgrade head` failed first because `alembic.ini` pointed to `backend/alembic` inside the container, then failed again with `MissingGreenlet` when trying to connect with `asyncpg`.
+- Root cause: The container layout is `/app`, so `script_location = backend/alembic` is wrong there. In addition, `alembic/env.py` used sync `engine_from_config` against an async PostgreSQL URL.
+- Fix: Change `script_location` to `alembic` in `backend/alembic.ini` and convert `backend/alembic/env.py` to the async Alembic pattern using `async_engine_from_config` plus `connection.run_sync(...)`.
+- Regression guard: Any Docker dev verification for auth/login must include a real migration run, because health checks can still pass while the database schema is missing.
+- Related files: `backend/alembic.ini`, `backend/alembic/env.py`
+
+### 2026-06-10: Initial auth migration created PostgreSQL enum twice
+
+- Area: Alembic revision `20260610_0205`
+- Trigger: After fixing async Alembic, `alembic upgrade head` failed with `DuplicateObjectError: type "user_status_enum" already exists`.
+- Root cause: The revision explicitly called `user_status_enum.create(...)` and also reused the same enum object in `users.status`, so SQLAlchemy attempted a second implicit enum creation during table creation.
+- Fix: Mark the enum object in the migration with `create_type=False` and keep the explicit `create(..., checkfirst=True)` as the single creation path.
+- Regression guard: In PostgreSQL migrations, do not both explicitly create a named enum and leave implicit type creation enabled on the same enum object.
+- Related files: `backend/alembic/versions/20260610_0205_create_auth_rbac_foundation.py`
+
+### 2026-06-10: Auth seed hit MissingGreenlet when assigning permissions to new roles
+
+- Area: Backend auth seed service
+- Trigger: `uv run python scripts/seed_auth_rbac.py` failed with `MissingGreenlet` while setting `admin_role.permissions` and `user_role.permissions`.
+- Root cause: Newly created `Role` entities in an `AsyncSession` had relationship collections that were not initialized, so assigning to them caused SQLAlchemy to attempt an async lazy load in a sync attribute path.
+- Fix: Initialize the relationship collections for new roles with `set_committed_value(..., "permissions", [])` before assigning the permission lists.
+- Regression guard: In async SQLAlchemy code, initialize relationship collections on new objects before bulk assignment if the attribute might otherwise trigger lazy loading.
+- Related files: `backend/app/services/auth_seed.py`
+
+### 2026-06-10: UserStatus enum persisted member names instead of business values
+
+- Area: Backend ORM enum mapping
+- Trigger: Auth seed failed with `invalid input value for enum user_status_enum: "ACTIVE"`.
+- Root cause: SQLAlchemy `Enum(UserStatus, ...)` persisted the enum member name (`ACTIVE`) while the PostgreSQL enum values created by migration are lowercase business values (`active`, `inactive`, `locked`).
+- Fix: Configure `backend/app/models/user.py` with `values_callable=lambda enum_cls: [member.value for member in enum_cls]` so ORM writes the business values expected by PostgreSQL.
+- Regression guard: Whenever Python enums back PostgreSQL enum columns, verify whether ORM persistence uses member names or member values, and align migrations/models before seeding or writing data.
+- Related files: `backend/app/models/user.py`, `backend/alembic/versions/20260610_0205_create_auth_rbac_foundation.py`, `backend/app/services/auth_seed.py`
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.

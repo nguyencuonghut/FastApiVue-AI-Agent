@@ -30,7 +30,11 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     status: Mapped[UserStatus] = mapped_column(
-        Enum(UserStatus, name="user_status_enum"),
+        Enum(
+            UserStatus,
+            name="user_status_enum",
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
         default=UserStatus.ACTIVE,
     )
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

@@ -25,6 +25,7 @@ def upgrade() -> None:
         "inactive",
         "locked",
         name="user_status_enum",
+        create_type=False,
     )
     user_status_enum.create(op.get_bind(), checkfirst=True)
 

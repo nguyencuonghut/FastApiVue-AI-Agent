@@ -201,3 +201,18 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Audit phase status va chot Phase 2-4
 - Tom tat: Da doi chieu codebase voi docs/fullstack-boilerplate-design.md, xac nhan Phase 2, 3, 4 da hoan thanh theo scope hien tai, sua regression mypy trong backend/app/services/job_admin.py cho ARQ fallback typing, va cap nhat docs/memory de Phase 5 tro thanh phase tiep theo.
+
+## 2026-06-10 09:44:09Z - codex
+
+- Tieu de: Fix docker compose up build Redis port conflict
+- Tom tat: Da reproduce loi docker compose up --build fail do Redis bind host port 6379 bi trung, sua docker-compose.yml de Redis chi chay noi bo trong Docker network, verify lai bang docker compose up --build -d va docker compose ps, va cap nhat README cung memory-bank/bugPatterns/progress/activeContext/techContext.
+
+## 2026-06-10 09:48:02Z - codex
+
+- Tieu de: Fix FE login CORS preflight failure
+- Tom tat: Da reproduce case FE login bao khong ket noi dich vu xac thuc, xac dinh root cause la backend thieu CORSMiddleware nen OPTIONS /api/v1/auth/login bi 405, them CORS middleware theo CORS_ORIGINS, them regression test preflight, restart backend, va cap nhat memory bug/progress/activeContext.
+
+## 2026-06-10 09:57:36Z - codex
+
+- Tieu de: Fix dev auth runtime beyond CORS
+- Tom tat: Da debug het chuoi loi login tren dev stack: sua Alembic Docker path, doi env.py sang async migration pattern, sua migration enum tao type hai lan, sua auth seed bi MissingGreenlet khi gan permissions cho role moi, sua ORM enum mapping de UserStatus persist dung lowercase values, chay migrate + seed thanh cong, va verify POST /api/v1/auth/login tra 200 voi CORS header va refresh cookie.

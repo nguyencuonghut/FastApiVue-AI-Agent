@@ -43,6 +43,9 @@
 - Completed full Users CRUD interface (listing, pagination, filter, search, sorting, details, creation, updates, and deletion) along with the system Roles list endpoint, and verified with passing frontend lint, typecheck, unit tests, and API contract unit tests.
 - Completed Phase 4 Storage & Audit integration: implemented database `File` ORM model, Alembic table migration, lifespan auto-bootstrap bucket setup, file services, files API controllers (with FastAPI streaming download proxy), audit logging triggers, frontend types/mappers/api client, vue composables, responsive FilesPage with FileUpload interface, and verified with passing backend unit/contract tests and frontend checks.
 - Re-verified on 10/06/2026 that Phases 2, 3, and 4 are complete against the current design doc scope. Backend `pytest`, `ruff`, and `mypy` pass; frontend `typecheck`, `lint`, `test:unit`, and `build` pass.
+- Fixed Docker dev startup regression on 10/06/2026: removed the default Redis host-port binding from `docker-compose.yml`, so `docker compose up --build` no longer fails when local port `6379` is already occupied.
+- Fixed frontend auth login regression on 10/06/2026: added backend CORS middleware and a preflight regression test so browser `OPTIONS /api/v1/auth/login` no longer fails with `405`.
+- Fixed dev auth bootstrap/runtime on 10/06/2026: corrected Alembic Docker path + async env, fixed duplicate enum creation in the first migration, fixed async relationship initialization in auth seed, fixed enum value persistence for `UserStatus`, ran migrations successfully, and seeded the local admin account.
 
 ## Open
 

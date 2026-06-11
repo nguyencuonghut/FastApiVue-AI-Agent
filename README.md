@@ -48,6 +48,7 @@ Services mặc định:
 - Postgres: `127.0.0.1:55432`
 - MinIO API: `http://127.0.0.1:59000`
 - MinIO Console: `http://127.0.0.1:59001`
+- Redis: chỉ dùng nội bộ trong Docker network, không bind host port mặc định
 
 Các host port có thể đổi qua `.env`:
 

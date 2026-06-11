@@ -35,6 +35,9 @@ The repository has been prepared with:
 29. Users CRUD and Roles API/UI are now fully implemented. Backend endpoints (GET list/detail, PUT update, DELETE delete for users, and GET roles list) are secure and wired to audit logs. Frontend features DataTable lazy loading, form validations, dialogs, router guards, and sidebar navigation.
 30. Phase 4 MinIO Storage & Audit integration is fully implemented. Features include a Postgres `files` metadata table, Alembic revision, automatic bucket bootstrap on startup lifespan, `FileAdminService` operations, and audit-logged API routes. Client downloads are handled via a chunk-by-chunk FastAPI streaming proxy, supporting token authorization for private files. The frontend includes a responsive FilesPage with drag-and-drop file uploaders, paginated listings, and secure download triggers.
 31. As of 10/06/2026, Phases 2, 3, and 4 are now treated as completed against the current design doc scope. This was re-verified against code routes/pages/services and current backend/frontend quality gates.
+32. Docker dev startup is currently verified again on 10/06/2026 after removing the default Redis host-port binding; `docker compose up --build -d` now succeeds even when host port `6379` is already occupied by another local service.
+33. Backend browser-facing auth routes now include CORS middleware coverage; `OPTIONS /api/v1/auth/login` has a regression test and no longer fails with `405` for the dev frontend origin.
+34. Docker dev auth runtime is now verified end-to-end on 10/06/2026: Alembic migrations run successfully in-container, auth seed works with a non-placeholder local password override, and `/api/v1/auth/login` returns `200` plus the expected CORS and refresh-cookie headers for `http://localhost:5173`.
 
 ## Next Useful Steps
 

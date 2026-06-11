@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.orm.attributes import set_committed_value
 
 from app.auth.hashing import hash_password
 from app.auth.seed_data import ADMIN_ROLE_NAME, BASE_PERMISSION_CODES, USER_ROLE_NAME
@@ -87,6 +88,7 @@ class AuthSeedService:
                 description="System administrator with full access.",
                 is_system=True,
             )
+            set_committed_value(admin_role, "permissions", [])
             self.session.add(admin_role)
             created_roles += 1
 
@@ -97,6 +99,7 @@ class AuthSeedService:
                 description="Baseline application user.",
                 is_system=True,
             )
+            set_committed_value(user_role, "permissions", [])
             self.session.add(user_role)
             created_roles += 1
 
