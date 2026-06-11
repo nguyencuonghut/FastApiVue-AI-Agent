@@ -331,6 +331,17 @@ Agents must read the relevant entries before changing behavior in the same area,
 - Related files: `backend/app/services/email.py`
 
 
+### 2026-06-11: Roles lookup query validation error 422 (limit cap exceeded)
+
+- Area: Backend API query validation / Frontend API query params
+- Trigger: Opening the Users Page throws a `422 (Unprocessable Entity)` on `GET /api/v1/roles?limit=1000&...`
+- Root cause: The backend API enforces a list-query cap of `limit <= 100` as part of Phase 5 security hardening, but the frontend lookup function `listRolesLookup` was hardcoded to request `limit=1000`.
+- Fix: Updated `listRolesLookup` in `frontend/src/api/roles.api.ts` to query with `limit=100` instead of `limit=1000` to satisfy the backend validation limit.
+- Regression guard: Ensure that frontend lookup APIs and general queries request limits that are lower than or equal to the backend's allowed maximum (typically `100` for hardening list endpoints).
+- Related files: `frontend/src/api/roles.api.ts`, `backend/app/api/v1/roles.py`
+
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
+

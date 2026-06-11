@@ -38,7 +38,7 @@ export function listRolesLookup(
   accessToken?: string | null,
 ): Promise<RoleDomain[]> {
   return apiRequest<RoleListDto>(
-    '/roles?limit=1000&sort_by=name&sort_order=asc',
+    '/roles?limit=100&sort_by=name&sort_order=asc',
     {
       accessToken,
     },
