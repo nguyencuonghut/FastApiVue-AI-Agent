@@ -47,6 +47,7 @@ services:
     environment:
       VITE_API_BASE_URL: /api/v1
       VITE_PROXY_TARGET: http://backend-e2e:8000
+      VITE_APP_NAME: "${VITE_APP_NAME:-FastApiVue}"
     depends_on:
       backend-e2e:
         condition: service_healthy

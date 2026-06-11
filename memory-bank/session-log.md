@@ -366,3 +366,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Sửa lỗi 422 limit roles query
 - Tom tat: Sửa lỗi 422 Unprocessable Entity khi listRolesLookup truy vấn limit=1000 vượt quá giới hạn le=100 của backend. Đã đổi limit thành 100 và ghi nhận bug memory.
+
+## 2026-06-11 08:58:01Z - gemini
+
+- Tieu de: Cấu hình dynamic APP_NAME cho frontend
+- Tom tat: Đã chuyển đổi các chỗ hardcode nhãn FastApiVue trên giao diện và tiêu đề trang sang sử dụng biến môi trường VITE_APP_NAME. Cập nhật cấu hình .env và compose tương ứng.
+
+## 2026-06-11 09:01:57Z - gemini
+
+- Tieu de: Bo ten app khoi page title
+- Tom tat: Cap nhat logic router.afterEach de document.title chi chua to.meta.title truc tiep, khong tu dong ghep ten du an dang sau.

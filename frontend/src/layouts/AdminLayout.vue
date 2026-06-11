@@ -28,7 +28,7 @@
           </div>
 
           <div class="admin-layout__brand-copy">
-            <h1 class="admin-layout__brand-title">FastApiVue</h1>
+            <h1 class="admin-layout__brand-title">{{ appName }}</h1>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@
 
       <footer class="admin-layout__footer">
         <p class="admin-layout__footer-copy">
-          © {{ currentYear }} FastApiVueBoilerplate. Sakai-inspired admin shell.
+          © {{ currentYear }} {{ appName }}. Sakai-inspired admin shell.
         </p>
         <p class="admin-layout__footer-meta">
           Timezone mặc định: {{ appTimezone }}
@@ -183,6 +183,7 @@ const permissionStore = usePermissionStore()
 const router = useRouter()
 const profileMenuRef = ref<InstanceType<typeof Menu> | null>(null)
 const appTimezone = import.meta.env.VITE_APP_TIMEZONE ?? 'Asia/Ho_Chi_Minh'
+const appName = import.meta.env.VITE_APP_NAME || 'FastApiVue'
 const currentYear = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: appTimezone,

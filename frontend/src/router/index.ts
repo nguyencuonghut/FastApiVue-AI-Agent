@@ -117,15 +117,14 @@ export const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const defaultTitle = 'FastAPI Vue Boilerplate'
+  const defaultTitle = import.meta.env.VITE_APP_NAME || 'FastApiVue'
   const title =
     typeof to.meta.title === 'string'
-      ? `${to.meta.title}`
+      ? to.meta.title
       : defaultTitle
   document.title = title
 
-  const defaultDescription =
-    'FastAPI Vue Boilerplate - A modern, secure, and production-ready enterprise boilerplate.'
+  const defaultDescription = `${defaultTitle} - A modern, secure, and production-ready enterprise boilerplate.`
   const description =
     typeof to.meta.description === 'string'
       ? to.meta.description
