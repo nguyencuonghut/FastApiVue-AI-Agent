@@ -7,12 +7,12 @@
   background:
     radial-gradient(
       circle at top left,
-      rgba(43, 138, 117, 0.18),
+      var(--app-bg-gradient-top-left),
       transparent 28%
     ),
     radial-gradient(
       circle at bottom right,
-      rgba(16, 25, 39, 0.14),
+      var(--app-bg-gradient-bottom-right),
       transparent 30%
     ),
     var(--app-surface-ground);
@@ -31,8 +31,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  border-right: 1px solid var(--app-border-strong);
-  background: var(--app-surface-panel);
+  border-right: 1px solid var(--app-border-soft);
+  background: var(--app-sidebar-bg);
   padding: 1.5rem 1rem;
   min-width: 0;
   overflow: hidden;
@@ -63,10 +63,10 @@
   border-radius: 1.35rem;
   background: linear-gradient(
     145deg,
-    rgba(43, 138, 117, 0.14),
-    rgba(43, 138, 117, 0.04)
+    rgba(79, 70, 229, 0.12),
+    rgba(79, 70, 229, 0.02)
   );
-  box-shadow: 0 0.7rem 1.8rem rgba(19, 51, 44, 0.14);
+  box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.15);
 }
 
 .admin-layout__brand-logo-image {
@@ -107,12 +107,18 @@
   align-items: center;
   gap: 0.875rem;
   min-width: 0;
-  padding: 0.9rem 1rem;
-  border-radius: 1rem;
-  color: var(--app-text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: var(--app-text-secondary);
   text-decoration: none;
-  background: var(--app-surface-muted);
+  background: transparent;
   border: 1px solid transparent;
+  transition: all 160ms ease;
+
+  &:hover {
+    background: var(--app-surface-highlight);
+    color: var(--app-accent);
+  }
 }
 
 .admin-layout__nav-icon {
@@ -130,9 +136,22 @@
 }
 
 .admin-layout__nav-link.router-link-active {
-  border-color: var(--app-border-accent);
   background: var(--app-surface-highlight);
   color: var(--app-accent);
+  font-weight: 600;
+  box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.05);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%;
+    bottom: 25%;
+    width: 3px;
+    background: var(--app-accent);
+    border-radius: 0 4px 4px 0;
+  }
 }
 
 .admin-layout__surface {
@@ -256,14 +275,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 2rem 1.35rem;
+  padding: 1.25rem 2rem;
   border-top: 1px solid var(--app-border-soft);
   color: var(--app-text-muted);
-  background: linear-gradient(
-    180deg,
-    rgba(17, 28, 25, 0.08),
-    rgba(17, 28, 25, 0.22)
-  );
+  background: var(--app-surface-panel);
   min-width: 0;
   overflow-x: hidden;
 }

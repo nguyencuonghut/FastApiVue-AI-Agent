@@ -376,3 +376,23 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Bo ten app khoi page title
 - Tom tat: Cap nhat logic router.afterEach de document.title chi chua to.meta.title truc tiep, khong tu dong ghep ten du an dang sau.
+
+## 2026-06-11 09:06:42Z - gemini
+
+- Tieu de: Nang cap he mau FE sang Slate-Indigo
+- Tom tat: Da thay the toan bo bien mau CSS trong theme.scss va preset PrimeVue sang he mau Indigo & Slate cao cap va hoan thien cac bien trang thai text-danger/text-success thieu.
+
+## 2026-06-11 09:12:06Z - gemini
+
+- Tieu de: Tinh chinh Light Mode theme va Sidebar layout
+- Tom tat: Tang tuong phan Light Mode bang cach doi nen ve Slate-100, xoa bo vien va nen xam co dinh kho chiu o cac sidebar link khong active, them thanh chi huong active trai va doi cac grad tieng xanh cua logo sang Indigo.
+
+## 2026-06-11 09:15:12Z - gemini
+
+- Tieu de: Doi Light Mode sang tone am Zinc va Apple
+- Tom tat: Da thay the tong mau Light Mode tu xam-xanh lanh (slate) sang tong mau xam trung tinh am (Zinc/Apple #f5f5f7), kem phan bo giau chieu sau voi dải mau gradient hong/tim nhe.
+
+## 2026-06-11 09:19:18Z - gemini
+
+- Tieu de: Tinh chinh Light Mode sang tone trang tinh khiet
+- Tom tat: Thay doi nen trang Light Mode ve trang tinh khiet (#ffffff), su dung sidebar mau xam nhe sieu sang (#f9fafb) va cac duong vien manh xam tinh te (#eaeaea) de xoa bo hoan toan cam giac nang ne cua tone xam am cu.

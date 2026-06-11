@@ -8,17 +8,17 @@ import ToastService from 'primevue/toastservice'
 const FastApiVuePreset = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '#ecf8f6',
-      100: '#d1efe9',
-      200: '#a8ddd3',
-      300: '#74c6b7',
-      400: '#46a891',
-      500: '#2b8a75',
-      600: '#216f5f',
-      700: '#1d594d',
-      800: '#1a473e',
-      900: '#173a34',
-      950: '#0b201c',
+      50: '#eef2ff',
+      100: '#e0e7ff',
+      200: '#c7d2fe',
+      300: '#a5b4fc',
+      400: '#818cf8',
+      500: '#6366f1',
+      600: '#4f46e5',
+      700: '#4338ca',
+      800: '#3730a3',
+      900: '#312e81',
+      950: '#1e1b4b',
     },
   },
 })
