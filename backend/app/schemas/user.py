@@ -28,6 +28,11 @@ class UserUpdateRequest(BaseModel):
     avatar_url: str | None = None
 
 
+class UserAvatarUploadResponse(BaseModel):
+    avatar_url: str
+    filename: str
+
+
 class UserResponse(BaseModel):
     id: UUID
     email: str

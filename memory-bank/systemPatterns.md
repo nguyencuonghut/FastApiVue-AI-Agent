@@ -163,6 +163,17 @@ Import/export flows use asynchronous jobs:
 5. write output or error report to MinIO
 6. audit the operation
 
+## User Avatar Upload Pattern
+
+User avatars should not be entered as raw external URLs in admin forms.
+
+1. the Users module owns avatar upload UX and permission checks
+2. avatar binaries are still stored through the shared file-storage service and MinIO adapter
+3. the Users API exposes a dedicated avatar-upload endpoint so user administration does not depend on generic `files.upload` UI permissions
+4. create/edit user forms upload the image first, receive an `avatar_url`, then submit normal JSON payloads to create/update the user
+5. current avatar rendering relies on a directly displayable URL suitable for `<img>` preview in the admin UI
+6. browser-facing file/avatar URLs should be returned as same-origin relative API paths, not absolute URLs derived from backend host metadata
+
 ## Production Readiness Pattern
 
 Production readiness is part of the architecture, not a deployment afterthought.

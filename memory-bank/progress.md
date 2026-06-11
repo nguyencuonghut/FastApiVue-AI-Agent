@@ -48,6 +48,8 @@
 - Fixed dev auth bootstrap/runtime on 10/06/2026: corrected Alembic Docker path + async env, fixed duplicate enum creation in the first migration, fixed async relationship initialization in auth seed, fixed enum value persistence for `UserStatus`, ran migrations successfully, and seeded the local admin account.
 - Implemented user profile fields (`full_name` and `avatar_url`) on 11/06/2026: updated initial Alembic migration directly, mapped attributes in User ORM model, exposed them through backend Pydantic schemas (UserResponse, CurrentUserResponse), updated UserAdminService, populated them in auth endpoints, and wired frontend types, normalizer mappers, useUsersPage composable form states/validation, and UsersPage DataTable columns and dialog fields.
 - Audited required-field markers on 11/06/2026 and extended the red-asterisk convention beyond Login/Users to Roles, Files upload, and the dashboard Quick Filter form. Project rules and design docs now treat the marker as a mandatory form UX contract.
+- Replaced manual avatar URL entry in Users management with image upload flow on 11/06/2026: added backend `/api/v1/users/avatar-upload`, reused file storage + MinIO, updated Users create/edit dialogs to upload images instead of typing links, and verified backend route tests in-container plus frontend lint/typecheck/unit/build.
+- Fixed avatar preview URL regression on 11/06/2026 by switching backend file/avatar/job payloads from absolute URLs to relative `/api/v1/...` paths, preventing browser `ERR_NAME_NOT_RESOLVED` when the backend runs behind Docker/Vite proxy hostnames.
 
 ## Open
 

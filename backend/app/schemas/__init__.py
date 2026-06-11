@@ -16,6 +16,7 @@ from app.schemas.role import (
     RoleUpdateRequest,
 )
 from app.schemas.user import (
+    UserAvatarUploadResponse,
     UserCreateRequest,
     UserListResponse,
     UserResponse,
@@ -38,6 +39,7 @@ __all__ = [
     "RoleListResponse",
     "RoleResponse",
     "RoleUpdateRequest",
+    "UserAvatarUploadResponse",
     "UserCreateRequest",
     "UserListResponse",
     "UserResponse",

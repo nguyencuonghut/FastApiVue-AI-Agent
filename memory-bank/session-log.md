@@ -296,3 +296,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Audit required field markers across frontend forms
 - Tom tat: Audited required-field labels across frontend forms and formalized the red-asterisk marker as a mandatory UX contract. Extended markers to Roles create/edit, Files upload, Users CSV import, and the dashboard Quick Filter form; updated docs and project memory; cleaned unrelated frontend any-typing lint issues in http.ts and http.spec.ts; verified with frontend lint, typecheck, and unit tests.
+
+## 2026-06-11 04:32:10Z - codex
+
+- Tieu de: Replace user avatar URL input with image upload flow
+- Tom tat: Replaced manual avatar URL entry in Users management with an image-upload flow. Added backend POST /api/v1/users/avatar-upload using Users permissions and shared FileAdminService/MinIO storage, updated Users create/edit dialogs to upload avatar images and persist returned avatar_url in normal JSON payloads, and updated memory/design docs. Verified frontend lint/typecheck/unit/build and backend users API tests, ruff, and mypy in-container.
+
+## 2026-06-11 04:38:09Z - codex
+
+- Tieu de: Fix avatar preview URLs to avoid internal hostnames
+- Tom tat: Fixed user-avatar preview/download URL generation by switching backend file, jobs, and avatar-upload responses from absolute request.base_url URLs to same-origin relative /api/v1/files/{id}/download paths. This prevents browser ERR_NAME_NOT_RESOLVED when Docker/Vite proxy flows expose internal hostnames. Verified backend tests, ruff, mypy, and frontend lint/typecheck. Browser-level verification was blocked in this session by missing Playwright browser extension and existing Docker E2E network issues.

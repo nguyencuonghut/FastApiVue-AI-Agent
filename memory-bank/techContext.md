@@ -58,6 +58,11 @@
 - Verified backend framework/tooling: FastAPI `0.136.3`, SQLAlchemy `2.0.50`, Alembic `1.18.4`, Pydantic Settings `2.14.1`, MinIO `7.2.20`, pytest `9.0.3`, pytest-asyncio `1.4.0`, Ruff `0.15.16`, mypy `1.20.2`
 - Verified backend auth dependency declarations now include `argon2-cffi` and `PyJWT` in `backend/pyproject.toml`
 - Verified current auth service pattern: user fetches for auth/authz eager-load `roles -> permissions` via `selectinload`
+- Verified Users avatar-upload pattern at code level on 2026-06-11:
+  - backend route `POST /api/v1/users/avatar-upload` exists in `backend/app/api/v1/users.py`
+  - the route reuses `FileAdminService` and MinIO-backed file storage rather than introducing a second upload stack
+  - frontend create/edit user dialogs no longer rely on manual avatar URL input; `frontend/src/composables/useUsersPage.ts` uploads avatar images first and then sends the returned `avatar_url` through normal user create/update JSON payloads
+  - file and avatar responses now return same-origin relative paths like `/api/v1/files/{id}/download` instead of absolute URLs built from `request.base_url`
 - Verified auth API shape at code level: login/refresh/logout/me live under `/api/v1/auth`, refresh token is read from cookie in the route layer, and `me` returns resolved role/permission data
 - Verified auth seed pattern at code level: bootstrap data is seeded through an idempotent service that creates baseline permissions, `admin`/`user` roles, and an initial admin account while refusing to run with the placeholder password from `.env.example`
 - Verified auth audit pattern at code level: auth routes log `auth.login_failed`, `auth.login_succeeded`, `auth.session_refreshed`, and `auth.logout` through a shared `AuditLogService`; request id comes from the request-id context middleware and client IP is extracted from `X-Forwarded-For` or `request.client`

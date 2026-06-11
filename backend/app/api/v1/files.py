@@ -17,6 +17,7 @@ from fastapi import (
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.url_utils import build_api_file_download_path
 from app.auth.dependencies import get_current_user, require_permission
 from app.auth.jwt import decode_access_token
 from app.auth.permissions import has_permission
@@ -62,9 +63,7 @@ async def get_optional_current_user(
         return None
 
 
-def _build_file_response(db_file: File, base_url: str) -> FileResponse:
-    # Build a clean download URL pointing to this API
-    download_url = f"{base_url}/api/v1/files/{db_file.id}/download"
+def _build_file_response(db_file: File) -> FileResponse:
     return FileResponse(
         id=db_file.id,
         filename=db_file.filename,
@@ -73,7 +72,7 @@ def _build_file_response(db_file: File, base_url: str) -> FileResponse:
         is_public=db_file.is_public,
         uploaded_by_id=db_file.uploaded_by_id,
         created_at=db_file.created_at,
-        url=download_url,
+        url=build_api_file_download_path(str(db_file.id)),
     )
 
 
@@ -142,7 +141,7 @@ async def upload_file(
     # Commit changes on the request lifecycle
     await file_admin_service.session.commit()
 
-    return _build_file_response(db_file, str(request.base_url).rstrip("/"))
+    return _build_file_response(db_file)
 
 
 @router.get(
@@ -168,8 +167,7 @@ async def list_files(
         read_all=read_all,
     )
 
-    base_url = str(request.base_url).rstrip("/")
-    items = [_build_file_response(f, base_url) for f in files]
+    items = [_build_file_response(f) for f in files]
 
     return FileListResponse(items=items, total=total)
 
@@ -202,7 +200,7 @@ async def get_file_metadata(
                 detail="You do not have permission to view this file metadata.",
             )
 
-    return _build_file_response(db_file, str(request.base_url).rstrip("/"))
+    return _build_file_response(db_file)
 
 
 @router.get(

@@ -2,6 +2,7 @@ import { apiRequest } from '@/api/http'
 import { mapUserDtoToDomain, mapUserListDtoToDomain } from '@/api/users.mappers'
 import type {
   UserCreatePayload,
+  UserAvatarUploadDto,
   UserDto,
   UserDomain,
   UserListDto,
@@ -71,4 +72,18 @@ export function deleteUser(
     method: 'DELETE',
     accessToken,
   })
+}
+
+export function uploadUserAvatar(
+  file: File,
+  accessToken?: string | null,
+): Promise<string> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return apiRequest<UserAvatarUploadDto>('/users/avatar-upload', {
+    method: 'POST',
+    body: formData,
+    accessToken,
+  }).then((dto) => dto.avatar_url)
 }

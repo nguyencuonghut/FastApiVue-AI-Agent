@@ -39,6 +39,8 @@ The repository has been prepared with:
 33. Backend browser-facing auth routes now include CORS middleware coverage; `OPTIONS /api/v1/auth/login` has a regression test and no longer fails with `405` for the dev frontend origin.
 34. Docker dev auth runtime is now verified end-to-end on 10/06/2026: Alembic migrations run successfully in-container, auth seed works with a non-placeholder local password override, and `/api/v1/auth/login` returns `200` plus the expected CORS and refresh-cookie headers for `http://localhost:5173`.
 35. Frontend form UX contract now explicitly requires a red required-marker on any mandatory input label; the convention is already applied in Login, Users, Roles, Files upload, and the dashboard quick-filter demo form.
+36. User avatar handling has moved away from raw URL entry: the Users module now uploads avatar images through a dedicated `/api/v1/users/avatar-upload` endpoint, reusing the shared file-storage/MinIO service and then persisting the returned `avatar_url` in normal user create/update payloads.
+37. Browser-facing file/avatar URLs are now emitted as relative same-origin API paths to avoid leaking Docker/internal hostnames into frontend previews and download links.
 
 ## Next Useful Steps
 

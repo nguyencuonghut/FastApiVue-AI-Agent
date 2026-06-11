@@ -16,6 +16,7 @@ from fastapi import (
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.url_utils import build_api_file_download_path
 from app.auth.dependencies import get_current_user, require_permission
 from app.auth.permissions import has_permission
 from app.db.session import get_db_session
@@ -57,8 +58,7 @@ class ExportRequest(BaseModel):
     status: str | None = None
 
 
-def _build_file_response(db_file: File, base_url: str) -> FileResponse:
-    download_url = f"{base_url}/api/v1/files/{db_file.id}/download"
+def _build_file_response(db_file: File) -> FileResponse:
     return FileResponse(
         id=db_file.id,
         filename=db_file.filename,
@@ -67,11 +67,11 @@ def _build_file_response(db_file: File, base_url: str) -> FileResponse:
         is_public=db_file.is_public,
         uploaded_by_id=db_file.uploaded_by_id,
         created_at=db_file.created_at,
-        url=download_url,
+        url=build_api_file_download_path(str(db_file.id)),
     )
 
 
-def _build_import_job_response(job: ImportJob, base_url: str) -> ImportJobResponse:
+def _build_import_job_response(job: ImportJob) -> ImportJobResponse:
     return ImportJobResponse(
         id=job.id,
         file_id=job.file_id,
@@ -84,11 +84,11 @@ def _build_import_job_response(job: ImportJob, base_url: str) -> ImportJobRespon
         created_by_id=job.created_by_id,
         created_at=job.created_at,
         updated_at=job.updated_at,
-        file=_build_file_response(job.file, base_url) if job.file else None,
+        file=_build_file_response(job.file) if job.file else None,
     )
 
 
-def _build_export_job_response(job: ExportJob, base_url: str) -> ExportJobResponse:
+def _build_export_job_response(job: ExportJob) -> ExportJobResponse:
     return ExportJobResponse(
         id=job.id,
         status=job.status,
@@ -98,7 +98,7 @@ def _build_export_job_response(job: ExportJob, base_url: str) -> ExportJobRespon
         created_by_id=job.created_by_id,
         created_at=job.created_at,
         updated_at=job.updated_at,
-        file=_build_file_response(job.file, base_url) if job.file else None,
+        file=_build_file_response(job.file) if job.file else None,
     )
 
 
@@ -167,8 +167,7 @@ async def import_users(
     )
 
     await job_service.session.commit()
-    base_url = str(request.base_url).rstrip("/")
-    return _build_import_job_response(db_job, base_url)
+    return _build_import_job_response(db_job)
 
 
 @router.get(
@@ -191,8 +190,7 @@ async def list_import_jobs(
         is_admin=is_admin,
     )
 
-    base_url = str(request.base_url).rstrip("/")
-    items = [_build_import_job_response(j, base_url) for j in jobs]
+    items = [_build_import_job_response(j) for j in jobs]
     return ImportJobListResponse(items=items, total=total)
 
 
@@ -223,8 +221,7 @@ async def get_import_job(
             detail="You do not have permission to view this import job.",
         )
 
-    base_url = str(request.base_url).rstrip("/")
-    return _build_import_job_response(job, base_url)
+    return _build_import_job_response(job)
 
 
 @router.post(
@@ -262,8 +259,7 @@ async def export_users(
     )
 
     await job_service.session.commit()
-    base_url = str(request.base_url).rstrip("/")
-    return _build_export_job_response(db_job, base_url)
+    return _build_export_job_response(db_job)
 
 
 @router.get(
@@ -286,8 +282,7 @@ async def list_export_jobs(
         is_admin=is_admin,
     )
 
-    base_url = str(request.base_url).rstrip("/")
-    items = [_build_export_job_response(j, base_url) for j in jobs]
+    items = [_build_export_job_response(j) for j in jobs]
     return ExportJobListResponse(items=items, total=total)
 
 
@@ -317,5 +312,4 @@ async def get_export_job(
             detail="You do not have permission to view this export job.",
         )
 
-    base_url = str(request.base_url).rstrip("/")
-    return _build_export_job_response(job, base_url)
+    return _build_export_job_response(job)

@@ -25,6 +25,11 @@ export interface UserDomain {
   avatarUrl?: string | null
 }
 
+export interface UserAvatarUploadDto {
+  avatar_url: string
+  filename: string
+}
+
 export interface UserListDomain {
   items: UserDomain[]
   total: number

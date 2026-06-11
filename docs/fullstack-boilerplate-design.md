@@ -173,6 +173,8 @@ Boilerplate hỗ trợ:
 
 User mới chỉ được tạo bởi admin có quyền phù hợp.
 
+Trong module quản lý user, ảnh đại diện phải hỗ trợ upload ảnh thật qua storage của hệ thống. Không dùng pattern nhập tay `avatar URL` từ nguồn bên ngoài làm UX mặc định cho create/edit user.
+
 ### Authorization
 
 RBAC tối thiểu:

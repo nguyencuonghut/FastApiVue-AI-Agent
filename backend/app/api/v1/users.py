@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+import io
+import typing
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.url_utils import build_api_file_download_path
 from app.api.v1.auth import _build_current_user_response, _extract_client_ip
-from app.auth.dependencies import require_permission
-from app.auth.permissions import resolve_role_names
+from app.auth.dependencies import get_current_user, require_permission
+from app.auth.permissions import has_permission, resolve_role_names
 from app.db.session import get_db_session
 from app.models import User, UserStatus
 from app.schemas import (
+    UserAvatarUploadResponse,
     UserCreateRequest,
     UserListResponse,
     UserResponse,
@@ -22,6 +26,7 @@ from app.services import (
     AuditLogContext,
     AuditLogService,
     EmailAlreadyExistsError,
+    FileAdminService,
     RoleNotFoundError,
     UserAdminService,
     UserNotFoundError,
@@ -40,6 +45,27 @@ def get_audit_log_service(
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> AuditLogService:
     return AuditLogService(session)
+
+
+def get_file_admin_service(
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> FileAdminService:
+    return FileAdminService(session)
+
+
+def require_user_avatar_upload_permission(
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    if has_permission(current_user, "users.create") or has_permission(
+        current_user,
+        "users.update",
+    ):
+        return current_user
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="You do not have permission to upload user avatars.",
+    )
 
 
 @router.get("", response_model=UserListResponse)
@@ -93,6 +119,80 @@ async def get_user(
             detail=str(exc),
         ) from exc
     return _build_user_response(user)
+
+
+@router.post(
+    "/avatar-upload",
+    response_model=UserAvatarUploadResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_user_avatar(
+    request: Request,
+    file: UploadFile,
+    current_user: Annotated[User, Depends(require_user_avatar_upload_permission)],
+    file_admin_service: Annotated[FileAdminService, Depends(get_file_admin_service)],
+    audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
+) -> UserAvatarUploadResponse:
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Filename is missing.",
+        )
+
+    content_type = file.content_type or "application/octet-stream"
+    if not content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Only image uploads are supported for user avatars.",
+        )
+
+    file_size = file.size
+    data_stream: io.BytesIO | typing.BinaryIO
+    if file_size is None or file_size <= 0:
+        file_content = await file.read()
+        file_size = len(file_content)
+        data_stream = io.BytesIO(file_content)
+    else:
+        data_stream = file.file
+
+    try:
+        db_file = await file_admin_service.upload_file(
+            filename=file.filename,
+            content_type=content_type,
+            size_bytes=file_size,
+            data_stream=data_stream,
+            is_public=True,
+            uploaded_by_id=current_user.id,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to upload avatar image: {exc}",
+        ) from exc
+
+    await audit_log_service.log_event(
+        action="users.avatar_uploaded",
+        entity_type="file",
+        context=AuditLogContext(
+            actor_user_id=current_user.id,
+            entity_id=str(db_file.id),
+            ip_address=_extract_client_ip(request),
+            metadata_json={
+                "filename": db_file.filename,
+                "content_type": db_file.content_type,
+                "size_bytes": db_file.size_bytes,
+                "purpose": "user_avatar",
+                "is_public": db_file.is_public,
+            },
+        ),
+    )
+
+    await file_admin_service.session.commit()
+
+    return UserAvatarUploadResponse(
+        avatar_url=build_api_file_download_path(str(db_file.id)),
+        filename=db_file.filename,
+    )
 
 
 @router.post(

@@ -246,8 +246,16 @@ That means agents must not assume there were no bugs. It means bug memory has no
   2. Ensure the frontend HTTP client reads bodies as text first and safely parses JSON only when the body is not empty.
 - Related files: `backend/app/api/v1/auth.py`, `frontend/src/api/http.ts`, `frontend/tests/unit/http.spec.ts`
 
+### 2026-06-11: Browser preview/download breaks when backend returns internal absolute URLs
+
+- Area: Backend file/avatar response URLs and frontend browser rendering
+- Trigger: Uploading a user avatar succeeded, but the preview image failed in the browser with `Failed to load resource: net::ERR_NAME_NOT_RESOLVED`.
+- Root cause: Backend endpoints built absolute URLs from `request.base_url`. In proxy/Docker dev flows, that base URL can resolve to an internal hostname or non-browser-facing origin, so the browser receives an unusable `src`/download URL.
+- Fix: Stop emitting absolute file URLs for browser-facing payloads. Return same-origin relative paths such as `/api/v1/files/{id}/download` from files, jobs, and user-avatar upload responses.
+- Regression guard: For browser-consumed resource URLs behind same-origin proxy architecture, prefer relative API paths over absolute URLs derived from backend request metadata.
+- Related files: `backend/app/api/url_utils.py`, `backend/app/api/v1/files.py`, `backend/app/api/v1/jobs.py`, `backend/app/api/v1/users.py`
+
 
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
-

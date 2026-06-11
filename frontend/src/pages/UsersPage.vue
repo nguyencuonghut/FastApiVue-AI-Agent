@@ -181,18 +181,46 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="create-avatarurl" class="users-page__form-label"
-              >Ảnh đại diện (URL)</label
+            <span class="users-page__form-label">Ảnh đại diện</span>
+            <div class="users-page__avatar-field">
+              <div class="users-page__avatar-preview-shell">
+                <img
+                  v-if="createAvatarUrl"
+                  :src="createAvatarUrl"
+                  alt="Xem trước ảnh đại diện mới"
+                  class="users-page__avatar-preview-image"
+                />
+                <div v-else class="users-page__avatar-placeholder">
+                  <i class="pi pi-user" aria-hidden="true" />
+                </div>
+              </div>
+
+              <div class="users-page__avatar-actions">
+                <FileUpload
+                  mode="basic"
+                  name="avatar"
+                  accept="image/*"
+                  :max-file-size="5242880"
+                  custom-upload
+                  auto
+                  choose-label="Tải ảnh đại diện"
+                  @uploader="handleCreateAvatarUpload"
+                />
+                <Button
+                  v-if="createAvatarUrl"
+                  label="Gỡ ảnh"
+                  severity="secondary"
+                  outlined
+                  @click="clearCreateAvatar"
+                />
+              </div>
+            </div>
+            <small class="users-page__field-hint"
+              >Chỉ chấp nhận tệp ảnh. Ảnh sẽ được lưu vào MinIO và gắn vào tài
+              khoản sau khi lưu form.</small
             >
-            <InputText
-              id="create-avatarurl"
-              v-model="createAvatarUrl"
-              v-bind="createAvatarUrlProps"
-              fluid
-              placeholder="https://example.com/avatar.jpg"
-            />
             <small class="users-page__field-error">{{
-              createErrors.avatarUrl
+              createAvatarError || createErrors.avatarUrl
             }}</small>
           </div>
 
@@ -259,7 +287,8 @@
               @click="createDialogVisible = false"
             />
             <Button
-              :loading="createFormSubmitting"
+              :loading="createFormSubmitting || isCreateAvatarUploading"
+              :disabled="isCreateAvatarUploading"
               label="Lưu tài khoản"
               type="submit"
             />
@@ -312,18 +341,46 @@
           </div>
 
           <div class="users-page__form-field">
-            <label for="edit-avatarurl" class="users-page__form-label"
-              >Ảnh đại diện (URL)</label
+            <span class="users-page__form-label">Ảnh đại diện</span>
+            <div class="users-page__avatar-field">
+              <div class="users-page__avatar-preview-shell">
+                <img
+                  v-if="editAvatarUrl"
+                  :src="editAvatarUrl"
+                  alt="Xem trước ảnh đại diện"
+                  class="users-page__avatar-preview-image"
+                />
+                <div v-else class="users-page__avatar-placeholder">
+                  <i class="pi pi-user" aria-hidden="true" />
+                </div>
+              </div>
+
+              <div class="users-page__avatar-actions">
+                <FileUpload
+                  mode="basic"
+                  name="avatar"
+                  accept="image/*"
+                  :max-file-size="5242880"
+                  custom-upload
+                  auto
+                  choose-label="Thay ảnh đại diện"
+                  @uploader="handleEditAvatarUpload"
+                />
+                <Button
+                  v-if="editAvatarUrl"
+                  label="Gỡ ảnh"
+                  severity="secondary"
+                  outlined
+                  @click="clearEditAvatar"
+                />
+              </div>
+            </div>
+            <small class="users-page__field-hint"
+              >Chỉ chấp nhận tệp ảnh. Nếu không tải ảnh mới, hệ thống giữ nguyên
+              ảnh hiện tại.</small
             >
-            <InputText
-              id="edit-avatarurl"
-              v-model="editAvatarUrl"
-              v-bind="editAvatarUrlProps"
-              fluid
-              placeholder="https://example.com/avatar.jpg"
-            />
             <small class="users-page__field-error">{{
-              editErrors.avatarUrl
+              editAvatarError || editErrors.avatarUrl
             }}</small>
           </div>
 
@@ -390,7 +447,8 @@
               @click="editDialogVisible = false"
             />
             <Button
-              :loading="editFormSubmitting"
+              :loading="editFormSubmitting || isEditAvatarUploading"
+              :disabled="isEditAvatarUploading"
               label="Cập nhật"
               type="submit"
             />
@@ -669,8 +727,11 @@ const {
   createFullName,
   createFullNameProps,
   createAvatarUrl,
-  createAvatarUrlProps,
   createErrors,
+  createAvatarError,
+  isCreateAvatarUploading,
+  handleCreateAvatarUpload,
+  clearCreateAvatar,
   submitCreate,
   createFormSubmitting,
   editEmail,
@@ -684,8 +745,11 @@ const {
   editFullName,
   editFullNameProps,
   editAvatarUrl,
-  editAvatarUrlProps,
   editErrors,
+  editAvatarError,
+  isEditAvatarUploading,
+  handleEditAvatarUpload,
+  clearEditAvatar,
   submitEdit,
   editFormSubmitting,
   importDialogVisible,

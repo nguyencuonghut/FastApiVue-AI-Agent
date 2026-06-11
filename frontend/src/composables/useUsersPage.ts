@@ -5,7 +5,13 @@ import { z } from 'zod'
 
 import { ApiError } from '@/api/http'
 import { listRolesLookup } from '@/api/roles.api'
-import { createUser, deleteUser, listUsers, updateUser } from '@/api/users.api'
+import {
+  createUser,
+  deleteUser,
+  listUsers,
+  updateUser,
+  uploadUserAvatar,
+} from '@/api/users.api'
 import {
   importUsers,
   listImportJobs,
@@ -108,8 +114,9 @@ export function useUsersPage() {
     createForm.defineField('roleNames')
   const [createFullName, createFullNameProps] =
     createForm.defineField('fullName')
-  const [createAvatarUrl, createAvatarUrlProps] =
-    createForm.defineField('avatarUrl')
+  const [createAvatarUrl] = createForm.defineField('avatarUrl')
+  const createAvatarError = ref<string | null>(null)
+  const isCreateAvatarUploading = ref(false)
 
   const submitCreate = createForm.handleSubmit(async (values) => {
     submitError.value = null
@@ -173,7 +180,9 @@ export function useUsersPage() {
   const [editStatus, editStatusProps] = editForm.defineField('status')
   const [editRoleNames, editRoleNamesProps] = editForm.defineField('roleNames')
   const [editFullName, editFullNameProps] = editForm.defineField('fullName')
-  const [editAvatarUrl, editAvatarUrlProps] = editForm.defineField('avatarUrl')
+  const [editAvatarUrl] = editForm.defineField('avatarUrl')
+  const editAvatarError = ref<string | null>(null)
+  const isEditAvatarUploading = ref(false)
 
   const submitEdit = editForm.handleSubmit(async (values) => {
     if (!selectedUser.value) return
@@ -206,6 +215,7 @@ export function useUsersPage() {
   // Dialog Open/Close Helpers
   function openCreateDialog() {
     submitError.value = null
+    createAvatarError.value = null
     createForm.resetForm({
       values: {
         email: '',
@@ -221,6 +231,7 @@ export function useUsersPage() {
 
   function openEditDialog(user: UserDomain) {
     submitError.value = null
+    editAvatarError.value = null
     selectedUser.value = user
     editForm.resetForm({
       values: {
@@ -239,6 +250,54 @@ export function useUsersPage() {
     submitError.value = null
     selectedUser.value = user
     deleteDialogVisible.value = true
+  }
+
+  async function uploadAvatarImage(
+    file: File,
+    mode: 'create' | 'edit',
+  ): Promise<void> {
+    const errorRef =
+      mode === 'create' ? createAvatarError : editAvatarError
+    const uploadingRef =
+      mode === 'create' ? isCreateAvatarUploading : isEditAvatarUploading
+    const avatarRef =
+      mode === 'create' ? createAvatarUrl : editAvatarUrl
+
+    uploadingRef.value = true
+    errorRef.value = null
+
+    try {
+      const avatarUrl = await uploadUserAvatar(file, authStore.accessToken)
+      avatarRef.value = avatarUrl
+    } catch (err) {
+      const apiErr = err as { message?: string }
+      errorRef.value =
+        apiErr?.message || 'Không thể tải ảnh đại diện lên hệ thống.'
+    } finally {
+      uploadingRef.value = false
+    }
+  }
+
+  async function handleCreateAvatarUpload(event: { files: File | File[] }) {
+    const file = Array.isArray(event.files) ? event.files[0] : event.files
+    if (!file) return
+    await uploadAvatarImage(file, 'create')
+  }
+
+  async function handleEditAvatarUpload(event: { files: File | File[] }) {
+    const file = Array.isArray(event.files) ? event.files[0] : event.files
+    if (!file) return
+    await uploadAvatarImage(file, 'edit')
+  }
+
+  function clearCreateAvatar() {
+    createAvatarUrl.value = ''
+    createAvatarError.value = null
+  }
+
+  function clearEditAvatar() {
+    editAvatarUrl.value = ''
+    editAvatarError.value = null
   }
 
   async function submitDelete() {
@@ -447,8 +506,11 @@ export function useUsersPage() {
     createFullName,
     createFullNameProps,
     createAvatarUrl,
-    createAvatarUrlProps,
     createErrors: createForm.errors,
+    createAvatarError,
+    isCreateAvatarUploading,
+    handleCreateAvatarUpload,
+    clearCreateAvatar,
     submitCreate,
     createFormSubmitting: createForm.isSubmitting,
 
@@ -464,8 +526,11 @@ export function useUsersPage() {
     editFullName,
     editFullNameProps,
     editAvatarUrl,
-    editAvatarUrlProps,
     editErrors: editForm.errors,
+    editAvatarError,
+    isEditAvatarUploading,
+    handleEditAvatarUpload,
+    clearEditAvatar,
     submitEdit,
     editFormSubmitting: editForm.isSubmitting,
 

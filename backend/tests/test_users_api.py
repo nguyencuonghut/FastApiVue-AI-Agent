@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -8,10 +9,14 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from app.api.v1.users import get_audit_log_service, get_user_admin_service
+from app.api.v1.users import (
+    get_audit_log_service,
+    get_file_admin_service,
+    get_user_admin_service,
+)
 from app.auth.dependencies import get_current_user
 from app.db.session import get_db_session
-from app.models import Role, User, UserStatus
+from app.models import File, Role, User, UserStatus
 from app.services import UserNotFoundError
 
 
@@ -60,6 +65,24 @@ class MockAuditLogService:
         pass
 
 
+class MockFileAdminService:
+    def __init__(self) -> None:
+        self.session = MockSession()
+
+    async def upload_file(self, **kwargs: Any) -> File:
+        return File(
+            id=uuid4(),
+            filename=kwargs["filename"],
+            storage_path=f"avatars/{uuid4()}-{kwargs['filename']}",
+            bucket="fastapivue",
+            content_type=kwargs["content_type"],
+            size_bytes=kwargs["size_bytes"],
+            is_public=kwargs["is_public"],
+            uploaded_by_id=kwargs["uploaded_by_id"],
+            created_at=datetime.now(UTC),
+        )
+
+
 @pytest.fixture
 def override_dependencies(app: FastAPI) -> Generator[MockUserAdminService, None, None]:
     role = Role(id=uuid4(), name="admin", is_system=True)
@@ -81,10 +104,12 @@ def override_dependencies(app: FastAPI) -> Generator[MockUserAdminService, None,
 
     mock_admin_service = MockUserAdminService([admin_user, u1])
     mock_audit_service = MockAuditLogService()
+    mock_file_service = MockFileAdminService()
 
     app.dependency_overrides[get_current_user] = lambda: admin_user
     app.dependency_overrides[get_user_admin_service] = lambda: mock_admin_service
     app.dependency_overrides[get_audit_log_service] = lambda: mock_audit_service
+    app.dependency_overrides[get_file_admin_service] = lambda: mock_file_service
     app.dependency_overrides[get_db_session] = lambda: MockSession()
 
     yield mock_admin_service
@@ -143,6 +168,31 @@ async def test_update_user_api(
     assert data["status"] == "locked"
     assert data["full_name"] == "Updated Full Name"
     assert data["avatar_url"] == "https://new.avatar/image.png"
+
+
+@pytest.mark.asyncio
+async def test_upload_user_avatar_api_success(
+    app: FastAPI, client: AsyncClient, override_dependencies: MockUserAdminService
+) -> None:
+    files = {"file": ("avatar.png", b"fake-image-content", "image/png")}
+    response = await client.post("/api/v1/users/avatar-upload", files=files)
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["filename"] == "avatar.png"
+    assert "/api/v1/files/" in data["avatar_url"]
+    assert data["avatar_url"].endswith("/download")
+
+
+@pytest.mark.asyncio
+async def test_upload_user_avatar_rejects_non_image_files(
+    app: FastAPI, client: AsyncClient, override_dependencies: MockUserAdminService
+) -> None:
+    files = {"file": ("avatar.txt", b"plain-text", "text/plain")}
+    response = await client.post("/api/v1/users/avatar-upload", files=files)
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Only image uploads are supported for user avatars."
 
 
 @pytest.mark.asyncio
