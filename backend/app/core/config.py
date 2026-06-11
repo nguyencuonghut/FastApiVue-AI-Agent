@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field
@@ -24,9 +25,14 @@ class Settings(BaseSettings):
     backend_port: int = Field(default=8000, alias="BACKEND_PORT")
     api_v1_prefix: str = Field(default="/api/v1", alias="API_V1_PREFIX")
     jwt_secret_key: str = Field(default="change-me", alias="JWT_SECRET_KEY")
+    jwt_secret_key_file: str | None = Field(default=None, alias="JWT_SECRET_KEY_FILE")
     jwt_refresh_secret_key: str = Field(
         default="change-me-too",
         alias="JWT_REFRESH_SECRET_KEY",
+    )
+    jwt_refresh_secret_key_file: str | None = Field(
+        default=None,
+        alias="JWT_REFRESH_SECRET_KEY_FILE",
     )
     access_token_expire_minutes: int = Field(
         default=30,
@@ -74,10 +80,13 @@ class Settings(BaseSettings):
         default="postgresql+asyncpg://postgres:postgres@postgres:5432/app",
         alias="DATABASE_URL",
     )
+    database_url_file: str | None = Field(default=None, alias="DATABASE_URL_FILE")
 
     minio_endpoint: str = Field(default="minio:9000", alias="MINIO_ENDPOINT")
     minio_access_key: str = Field(default="minioadmin", alias="MINIO_ACCESS_KEY")
+    minio_access_key_file: str | None = Field(default=None, alias="MINIO_ACCESS_KEY_FILE")
     minio_secret_key: str = Field(default="minioadmin", alias="MINIO_SECRET_KEY")
+    minio_secret_key_file: str | None = Field(default=None, alias="MINIO_SECRET_KEY_FILE")
     minio_bucket: str = Field(default="app-local", alias="MINIO_BUCKET")
     minio_secure: bool = Field(default=False, alias="MINIO_SECURE")
 
@@ -90,6 +99,7 @@ class Settings(BaseSettings):
         alias="CORS_ORIGINS",
     )
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
+    log_format: Literal["plain", "json"] = Field(default="json", alias="LOG_FORMAT")
     security_headers_enabled: bool = Field(
         default=True,
         alias="SECURITY_HEADERS_ENABLED",
@@ -122,6 +132,56 @@ class Settings(BaseSettings):
         default=10,
         alias="RATE_LIMIT_USERS_EXPORT",
     )
+    observability_enabled: bool = Field(default=True, alias="OBSERVABILITY_ENABLED")
+    metrics_enabled: bool = Field(default=True, alias="METRICS_ENABLED")
+    metrics_path: str = Field(default="/metrics", alias="METRICS_PATH")
+    readiness_path: str = Field(default="/ready", alias="READINESS_PATH")
+    otel_enabled: bool = Field(default=True, alias="OTEL_ENABLED")
+    otel_service_name: str = Field(
+        default="fastapivue-backend",
+        alias="OTEL_SERVICE_NAME",
+    )
+    otel_exporter_otlp_endpoint: str | None = Field(
+        default=None,
+        alias="OTEL_EXPORTER_OTLP_ENDPOINT",
+    )
+    otel_exporter_otlp_insecure: bool = Field(
+        default=True,
+        alias="OTEL_EXPORTER_OTLP_INSECURE",
+    )
+    otel_exporter_otlp_headers: str | None = Field(
+        default=None,
+        alias="OTEL_EXPORTER_OTLP_HEADERS",
+    )
+    slo_api_availability_target: float = Field(
+        default=99.9,
+        alias="SLO_API_AVAILABILITY_TARGET",
+    )
+    slo_api_p95_ms: int = Field(default=400, alias="SLO_API_P95_MS")
+    slo_auth_login_p95_ms: int = Field(default=500, alias="SLO_AUTH_LOGIN_P95_MS")
+    slo_import_job_success_rate: float = Field(
+        default=99.0,
+        alias="SLO_IMPORT_JOB_SUCCESS_RATE",
+    )
+    backup_root: str = Field(default="./backups", alias="BACKUP_ROOT")
+    backup_retention_days: int = Field(default=14, alias="BACKUP_RETENTION_DAYS")
+
+    def model_post_init(self, __context: object) -> None:
+        self._apply_secret_file("jwt_secret_key", self.jwt_secret_key_file)
+        self._apply_secret_file("jwt_refresh_secret_key", self.jwt_refresh_secret_key_file)
+        self._apply_secret_file("database_url", self.database_url_file)
+        self._apply_secret_file("minio_access_key", self.minio_access_key_file)
+        self._apply_secret_file("minio_secret_key", self.minio_secret_key_file)
+
+    def _apply_secret_file(self, field_name: str, secret_file: str | None) -> None:
+        if not secret_file:
+            return
+
+        secret_path = Path(secret_file)
+        secret_value = secret_path.read_text(encoding="utf-8").strip()
+        if not secret_value:
+            raise ValueError(f"Secret file for {field_name} is empty: {secret_file}")
+        object.__setattr__(self, field_name, secret_value)
 
 
 @lru_cache

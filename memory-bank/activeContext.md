@@ -46,9 +46,12 @@ The repository has been prepared with:
 40. Phase 5 hardening baseline is now implemented in code: backend security headers middleware, in-memory rate limiting for sensitive endpoints, list-query caps, hardening tests, coverage outputs, GitHub Actions CI workflow, dependency-audit commands, and performance smoke scripts all exist in the repository.
 41. Phase 5 backend and frontend local quality gates were re-verified on 11/06/2026: backend `pytest` + `ruff` + `mypy` pass, and frontend `lint` + `typecheck` + `test:unit` pass.
 42. Phase 5 external verification is still environment-sensitive: dependency audits need outbound DNS to `pypi.org` / `registry.npmjs.org`, and host-side perf smoke scripts need localhost socket access to the running API. In the current sandbox those checks are blocked even though the local command wiring has been fixed.
+43. Phase 6 production-readiness baseline is now implemented in code and operations assets: backend structured JSON logging, `/metrics`, `/ready`, OpenTelemetry baseline, observability compose/config files, secret-file config support, backup/restore scripts, restore-drill helper, compliance gate script, and deploy/backup runbooks all exist in the repository.
+44. Phase 6 local verification is complete at repo level on 11/06/2026: targeted production-readiness backend tests pass, full backend `pytest` + `ruff` + `mypy` pass, frontend `lint` + `typecheck` + `test:unit` pass, and the compliance script validates both production and observability compose files.
 
 ## Next Useful Steps
 
 1. Re-run `make backend-dependency-audit`, `make frontend-dependency-audit`, `make perf-users-list`, and `make perf-users-export` in an unrestricted environment so Phase 5 external verification is complete.
-2. Formulate audit log UI viewer pages for administrative inspection.
-3. Keep `techContext.md` and `projectRules.md` synchronized with real project discoveries.
+2. Bring up `docker-compose.observability.yml` in a runtime environment and verify real OTEL trace export, Prometheus scraping, and alert behavior.
+3. Execute a real restore drill from generated backups in an isolated environment and record the timings/outcome in the runbook.
+4. Formulate audit log UI viewer pages for administrative inspection.

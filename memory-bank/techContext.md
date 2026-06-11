@@ -193,6 +193,35 @@
   - `perf-users-list` and `perf-users-export` now execute through the backend Python environment instead of host `python3`
   - `backend-dependency-audit` now uses `XDG_CACHE_HOME=/tmp/.cache`
   - `frontend-dependency-audit` now uses `NPM_CONFIG_CACHE=/tmp/.npm`
+- Verified Phase 6 production-readiness files exist on 2026-06-11:
+  - `backend/app/core/observability.py`
+  - `docker-compose.observability.yml`
+  - `docker/observability/otel-collector.yaml`
+  - `docker/observability/prometheus.yml`
+  - `docker/observability/alert_rules.yml`
+  - `scripts/compliance/check-production-readiness.sh`
+  - `scripts/ops/backup-postgres.sh`
+  - `scripts/ops/backup-minio.sh`
+  - `scripts/ops/restore-postgres.sh`
+  - `scripts/ops/restore-minio.sh`
+  - `scripts/ops/restore-drill.sh`
+  - `.env.production.example`
+  - `docs/phase-6-production-readiness.md`
+  - `docs/runbooks/backup-restore.md`
+  - `docs/runbooks/deploy-rollback-restore.md`
+- Verified Phase 6 backend/runtime configuration on 2026-06-11:
+  - `backend/app/core/config.py` supports secret-file inputs for JWT, database URL, and MinIO credentials
+  - backend exposes `/metrics` and `/ready`
+  - backend logging supports `LOG_FORMAT=json`
+  - OTEL baseline packages are installed in backend env and instrumentation hooks exist for FastAPI, HTTPX, and SQLAlchemy
+- Verified Phase 6 local checks on 2026-06-11:
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv sync`
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv run pytest tests/test_health.py tests/test_production_readiness.py -q`
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv run pytest`
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv run ruff check .`
+  - `cd backend && UV_CACHE_DIR=/tmp/uv-cache uv run mypy .`
+  - `bash scripts/compliance/check-production-readiness.sh`
+  - `cd frontend && npm run lint && npm run typecheck && npm run test:unit`
 
 ## Planned Stack
 
@@ -208,7 +237,7 @@
 - Time handling constraint: business-facing date/time behavior defaults to `Asia/Ho_Chi_Minh` (`GMT+7`) and must not depend on host/browser runtime timezone implicitly
 - Auth strategy constraint: Phase 2 uses a hybrid browser-first model with short-lived Bearer access token plus `httpOnly` refresh cookie
 - Enterprise features: async User import/export jobs, large DataTable performance, heavy file import/export handling, RBAC, audit logging, rate limiting, dependency/container scanning
-- Current phase status: Phases 2, 3, and 4 are complete against the current design-doc scope; Phase 5 Hardening is implemented and locally verified, with unrestricted dependency-audit/perf verification still pending
+- Current phase status: Phases 2, 3, and 4 are complete; Phase 5 Hardening is implemented and locally verified, with unrestricted dependency-audit/perf verification still pending; Phase 6 Production Readiness baseline is implemented and locally verified
 - Production readiness: OpenTelemetry, structured logs, metrics/tracing, backup/restore, secret management, SLO, compliance gates
 
 ## Unverified
@@ -224,6 +253,8 @@
 - `make backend-dependency-audit` is wired correctly but remained unverified against live advisories in this session because sandbox DNS could not resolve `pypi.org`.
 - `make frontend-dependency-audit` is wired correctly but remained unverified against live advisories in this session because sandbox DNS could not resolve `registry.npmjs.org`.
 - `make perf-users-list` and `make perf-users-export` are wired correctly to the backend Python environment, but host-side runtime verification remained blocked in this session because localhost socket access returned `Operation not permitted`.
+- `docker compose -f docker-compose.observability.yml up` has not been exercised yet in this session; only config validation and asset existence were verified.
+- Backup/restore scripts and runbooks have been added, but a real restore drill against isolated runtime data has not been executed yet in this session.
 
 ## Important Note
 

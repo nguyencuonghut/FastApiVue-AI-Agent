@@ -57,8 +57,11 @@
 - Started and substantially implemented `Phase 5: Hardening` on 11/06/2026: added backend security headers middleware, in-memory rate limiting for sensitive endpoints, query caps for list APIs, backend hardening tests, frontend/backend coverage output, GitHub Actions CI workflow, dependency-audit targets, and performance smoke scripts.
 - Re-verified Phase 5 local quality gates on 11/06/2026: backend `pytest`, `ruff`, and `mypy` pass; frontend `lint`, `typecheck`, and `test:unit` pass.
 - Fixed Phase 5 tooling regressions on 11/06/2026: hardening tests no longer hang on unstable ASGI multipart/export request paths, performance smoke targets now run with the backend Python environment instead of host `python3`, and dependency-audit targets now use writable cache directories under `/tmp`.
+- Started and substantially implemented `Phase 6: Production Readiness` on 11/06/2026: added backend structured JSON logging, `/metrics`, `/ready`, OpenTelemetry baseline, observability compose/config assets, production env example, backup/restore scripts, restore-drill helper, compliance gate script, and deploy/backup runbooks.
+- Verified Phase 6 local gates on 11/06/2026: targeted backend tests for metrics/readiness/secret-file loading pass, full backend `pytest` pass, backend `ruff` + `mypy` pass, frontend `lint` + `typecheck` + `test:unit` pass, and production-readiness compliance script validates compose/assets.
 
 ## Open
 
 - Finish unrestricted verification for Phase 5 dependency audits and host-side performance smoke outside the current sandbox DNS/socket limits
+- Verify Phase 6 observability stack `up` flow and execute a real restore drill in an isolated runtime environment
 - Optionally install Bun and run the upstream `agent-memory` CLI locally

@@ -331,3 +331,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Phase 5 hardening baseline
 - Tom tat: Implemented Phase 5 hardening baseline with security headers, in-memory rate limiting, CI workflow, coverage outputs, hardening tests, performance smoke scripts, and audit command wiring. Re-verified backend pytest/ruff/mypy and frontend lint/typecheck/test:unit. Documented that dependency audits and host-side perf smoke remain environment-dependent because sandbox DNS and localhost socket access are blocked.
+
+## 2026-06-11 06:39:44Z - codex
+
+- Tieu de: Phase 6 production readiness baseline
+- Tom tat: Implemented Phase 6 production-readiness baseline: structured JSON logging, metrics and readiness endpoints, OpenTelemetry instrumentation baseline, observability compose/config assets, secret-file settings support, backup/restore scripts, restore-drill helper, compliance gate script, production env example, and deploy/backup runbooks. Verified backend pytest/ruff/mypy, frontend lint/typecheck/test:unit, targeted production-readiness tests, and compliance compose validation. Real observability stack startup and restore drill remain pending in a suitable runtime environment.

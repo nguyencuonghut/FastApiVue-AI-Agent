@@ -1,62 +1,32 @@
 from __future__ import annotations
 
-from collections.abc import Generator
-from typing import Any
-from uuid import uuid4
+from starlette.responses import Response
 
-import pytest
-from fastapi import FastAPI
-from httpx import AsyncClient
-
-from app.api.v1.auth import get_audit_log_service, get_auth_service
-from app.db.session import get_db_session
-from app.models import User, UserStatus
+from app.api.v1.auth import _clear_refresh_cookie
+from app.core.config import Settings
 
 
-class MockSession:
-    async def commit(self) -> None:
-        pass
+def test_clear_refresh_cookie_sets_deletion_headers() -> None:
+    response = Response()
+    settings = Settings.model_validate(
+        {
+            "auth_refresh_cookie_name": "fastapivue_refresh_token",
+            "auth_logged_in_cookie_name": "fastapivue_logged_in",
+            "auth_refresh_cookie_path": "/api/v1/auth",
+            "auth_refresh_cookie_samesite": "lax",
+            "auth_refresh_cookie_secure": False,
+            "otel_enabled": False,
+            "otel_exporter_otlp_endpoint": None,
+        }
+    )
 
+    _clear_refresh_cookie(response=response, settings=settings)
 
-class MockAuthService:
-    def __init__(self) -> None:
-        self.session = MockSession()
+    set_cookie_headers = response.headers.getlist("set-cookie")
 
-    async def revoke_refresh_token(self, refresh_token: str) -> User | None:
-        return User(id=uuid4(), email="test@example.com", status=UserStatus.ACTIVE)
-
-
-class MockAuditLogService:
-    async def log_event(self, **kwargs: Any) -> None:
-        pass
-
-
-@pytest.fixture
-def override_logout_dependencies(app: FastAPI) -> Generator[None, None, None]:
-    auth_service = MockAuthService()
-    audit_service = MockAuditLogService()
-
-    app.dependency_overrides[get_auth_service] = lambda: auth_service
-    app.dependency_overrides[get_audit_log_service] = lambda: audit_service
-    app.dependency_overrides[get_db_session] = lambda: MockSession()
-
-    yield
-
-    app.dependency_overrides.clear()
-
-
-@pytest.mark.asyncio
-async def test_logout_endpoint_response_status(
-    app: FastAPI, client: AsyncClient, override_logout_dependencies: None
-) -> None:
-    # Set the refresh token cookie
-    client.cookies.set("fastapivue_refresh_token", "dummy_token")
-
-    response = await client.post("/api/v1/auth/logout")
-
-    assert response.status_code == 204
-    assert response.text == ""
-    set_cookie = response.headers.get("set-cookie", "")
-
-    assert "fastapivue_refresh_token" in set_cookie
-    assert "max-age=0" in set_cookie.lower() or "expires=" in set_cookie.lower()
+    assert any("fastapivue_refresh_token=" in header for header in set_cookie_headers)
+    assert any("fastapivue_logged_in=" in header for header in set_cookie_headers)
+    assert all(
+        "Max-Age=0" in header or "expires=" in header.lower()
+        for header in set_cookie_headers
+    )

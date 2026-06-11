@@ -1023,6 +1023,26 @@ Lưu ý verify:
 - Compliance gates trong CI/CD.
 - Deploy/rollback/restore runbooks.
 
+Baseline đã được implement trong repo:
+
+- backend structured JSON logging với `request_id`
+- `/metrics` và `/ready`
+- OpenTelemetry instrumentation baseline cho FastAPI, HTTPX, SQLAlchemy
+- observability stack config tại `docker-compose.observability.yml`
+- Prometheus scrape config và alert rules
+- production env mẫu tại `.env.production.example`
+- secret-file support cho JWT, DB URL và MinIO credential
+- backup/restore scripts cho Postgres và MinIO
+- restore-drill helper script
+- compliance gate script cho production readiness
+- deploy/rollback/restore runbooks
+
+Lưu ý verify:
+
+- backend production-readiness tests cho metrics, readiness và secret-file loading đã pass
+- compliance script parse được production compose và observability compose
+- observability stack `up` thật, live alerting và restore thật vẫn cần verify ở môi trường runtime phù hợp
+
 ## Nguyên tắc không được vi phạm
 
 1. Không có chức năng public register.

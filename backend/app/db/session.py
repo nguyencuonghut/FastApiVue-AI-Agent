@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.core.config import get_settings
+from app.core.observability import instrument_sqlalchemy_engine
 
 _engine: AsyncEngine | None = None
 _sessionmaker: async_sessionmaker[AsyncSession] | None = None
@@ -18,6 +19,7 @@ def get_engine() -> AsyncEngine:
     if _engine is None:
         settings = get_settings()
         _engine = create_async_engine(settings.database_url, pool_pre_ping=True)
+        instrument_sqlalchemy_engine(_engine)
     return _engine
 
 

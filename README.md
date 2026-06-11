@@ -194,3 +194,27 @@ make backend-check UV_CACHE_DIR=/tmp/uv-cache
 - Không commit file `.env`
 - `vendor/` chỉ là thư mục reference local, không được track bởi Git
 - Agent phải đọc `AGENTS.md`, `docs/agent-rules.md` và `memory-bank/*` trước khi làm việc
+
+## Phase 6 Production Readiness baseline
+
+Repo hiện có baseline Phase 6:
+
+- backend structured JSON logging với `request_id`
+- `/metrics` và `/ready`
+- OpenTelemetry trace instrumentation baseline cho FastAPI, HTTPX, SQLAlchemy
+- observability stack config tại `docker-compose.observability.yml`
+- backup/restore scripts cho Postgres và MinIO
+- runbooks cho backup/restore và deploy/rollback/restore
+- compliance gate script:
+  - `bash scripts/compliance/check-production-readiness.sh`
+- production env mẫu:
+  - `.env.production.example`
+
+Lệnh hữu ích:
+
+```bash
+bash scripts/compliance/check-production-readiness.sh
+DRY_RUN=true bash scripts/ops/backup-postgres.sh
+DRY_RUN=true bash scripts/ops/backup-minio.sh
+docker compose -f docker-compose.observability.yml config
+```

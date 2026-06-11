@@ -5,11 +5,19 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
 from app.core.application import create_app
+from app.core.config import Settings
 
 
 @pytest.fixture
 def app() -> FastAPI:
-    return create_app()
+    settings = Settings.model_validate(
+        {
+            "app_env": "test",
+            "otel_enabled": False,
+            "otel_exporter_otlp_endpoint": None,
+        }
+    )
+    return create_app(settings=settings)
 
 
 @pytest.fixture

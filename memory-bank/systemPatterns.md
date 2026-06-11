@@ -304,3 +304,27 @@ Shared admin-shell responsiveness is not enough on its own. CRUD pages that cont
 - table card wrappers should use `overflow-x: auto` rather than clipping, so horizontal table content scrolls inside the card instead of stretching the whole page
 
 If page-level containers do not follow these rules, the entire page can overflow horizontally and make shared shell controls like the topbar toolbar appear missing off-screen.
+
+## Production Readiness Pattern
+
+Production-readiness in this repo is split into four layers:
+
+1. application runtime:
+   - structured logs
+   - request id propagation
+   - `/metrics`
+   - `/ready`
+   - optional OpenTelemetry exporter configuration
+2. observability stack assets:
+   - collector config
+   - Prometheus scrape config
+   - alert rules
+3. recovery assets:
+   - backup scripts
+   - restore scripts
+   - restore drill helper
+   - written runbooks
+4. compliance gate:
+   - a script that validates required assets exist and production compose files parse correctly
+
+The repo should not treat production readiness as "docs only". At minimum, each layer above must have either runnable code, executable scripts, or machine-checkable config committed in the repo.

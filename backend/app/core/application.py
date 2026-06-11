@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
+from app.core.observability import install_observability
 from app.core.rate_limit import InMemoryRateLimiter
 from app.core.request_id import RequestIDMiddleware
 from app.core.security_headers import apply_security_headers
@@ -15,7 +16,11 @@ from app.core.security_headers import apply_security_headers
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
-    configure_logging(settings.log_level)
+    configure_logging(
+        settings.log_level,
+        log_format=settings.log_format,
+        app_env=settings.app_env,
+    )
     app.state.settings = settings
     app.state.rate_limiter = InMemoryRateLimiter()
 
@@ -44,6 +49,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         version=app_settings.app_version,
         lifespan=lifespan,
     )
+    app.state.settings = app_settings
     app.state.rate_limiter = InMemoryRateLimiter()
     app.add_middleware(
         CORSMiddleware,
@@ -53,6 +59,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
     )
     app.add_middleware(RequestIDMiddleware)
+    install_observability(app, app_settings)
 
     @app.middleware("http")
     async def security_headers_middleware(request, call_next):  # type: ignore[no-untyped-def]

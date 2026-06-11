@@ -20,6 +20,9 @@ DOCKER_TEST_COMPOSE := docker compose -f docker-compose.test.yml
 	frontend-dependency-audit \
 	frontend-check \
 	security-check \
+	production-readiness-check \
+	backup-postgres-dry-run \
+	backup-minio-dry-run \
 	frontend-check-e2e \
 	check \
 	perf-users-list \
@@ -76,6 +79,15 @@ frontend-dependency-audit:
 frontend-check: frontend-lint frontend-format-check frontend-typecheck frontend-test-unit
 
 security-check: backend-security backend-dependency-audit frontend-dependency-audit
+
+production-readiness-check:
+	bash scripts/compliance/check-production-readiness.sh
+
+backup-postgres-dry-run:
+	DRY_RUN=true bash scripts/ops/backup-postgres.sh
+
+backup-minio-dry-run:
+	DRY_RUN=true bash scripts/ops/backup-minio.sh
 
 frontend-check-e2e: frontend-check frontend-test-e2e
 
