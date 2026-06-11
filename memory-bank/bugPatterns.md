@@ -231,6 +231,23 @@ That means agents must not assume there were no bugs. It means bug memory has no
 - Related files: `frontend/vite.config.ts`, `frontend/src/stores/auth.store.ts`, `frontend/src/api/runtime.ts`, `docker-compose.yml`, `docker-compose.test.yml`, `.env`, `.env.example`
 
 
+### 2026-06-11: Logout crashes with JSON parsing error or 502 Bad Gateway
+
+- Area: Backend API Response / Frontend HTTP Client
+- Trigger: Clicking the "Logout" button inside the admin layout.
+- Root cause: Two colliding problems caused this:
+  1. The backend `/auth/logout` endpoint was returning `Response` instance directly while decorated with `status_code=204`. This created an ASGI protocol collision between the 204 expectation and the default 200 response code, leading to connection drop (502 Bad Gateway).
+  2. The frontend HTTP client `apiRequest` parsed any response containing `content-type: application/json` directly with `response.json()`. Because FastAPI's default response serialization class still includes the `content-type: application/json` header even for 204 No Content responses, the client attempted to parse the empty body, causing `SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input`.
+- Fix:
+  1. Changed the backend `/logout` endpoint to return `None` (removing the return statement) and annotated the return type as `None`.
+  2. Enhanced the frontend `apiRequest` in `frontend/src/api/http.ts` to first read the body as text using `response.text()`, check if the string is non-empty before calling `JSON.parse`, and wrap it in a safe try-catch block falling back to `null` to avoid any crashes on empty/invalid response bodies.
+- Regression guard:
+  1. Ensure all backend endpoints returning `204 No Content` do not return the `response: Response` parameter directly and return `None` instead.
+  2. Ensure the frontend HTTP client reads bodies as text first and safely parses JSON only when the body is not empty.
+- Related files: `backend/app/api/v1/auth.py`, `frontend/src/api/http.ts`, `frontend/tests/unit/http.spec.ts`
+
+
 ## Usage Rule
 
 Before changing behavior in an area with prior bugs, read the relevant entries first and explicitly avoid repeating the same failure mode.
+

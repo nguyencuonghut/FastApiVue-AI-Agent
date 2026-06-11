@@ -139,4 +139,16 @@ Additionally, on any failed silent refresh (401/403 errors) or when logging out/
 
 To prevent database errors (such as `UndefinedTableError`) when client-side applications load and immediately hit backend endpoints on startup (e.g. during auto-refresh), all local Docker Compose and Docker Test backend targets must run database migrations (`alembic upgrade head`) and data seeding script (`seed_auth_rbac.py`) automatically in their container startup commands prior to launching the ASGI/Uvicorn server.
 
+## Rule 17: No Response Object Returns in 204 No Content Endpoints
+
+When designing endpoints in FastAPI that return `HTTP_204_NO_CONTENT` (or any status code with no response body), do not return the `response: Response` parameter directly. 
+
+Returning a `Response` instance (which defaults to a 200 OK status) causes an ASGI protocol collision between the route's 204 expectation and the returned object's 200 status. This results in connection drops and a `502 Bad Gateway` error in proxy configurations. Instead, modify cookies/headers on the injected `response` parameter directly and return `None` (or omit the return statement).
+
+## Rule 18: Safe Response Body Parsing in Frontend HTTP Client
+
+When consuming API endpoints on the frontend, do not automatically parse response bodies with `response.json()` directly without safety checks, even if the response `content-type` header is `application/json`. Various successful endpoints (e.g. 204 No Content, 205 Reset Content, or empty 200 OK responses) do not contain a body, which triggers `SyntaxError: Unexpected end of JSON input`. The frontend HTTP utility (`frontend/src/api/http.ts`) must read the body as text (`response.text()`) first, verify that the string is non-empty before calling `JSON.parse(...)`, and wrap the parsing operation inside a robust try-catch block falling back to `null` to ensure the application does not crash.
+
+
+
 

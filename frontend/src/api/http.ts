@@ -59,9 +59,19 @@ export async function apiRequest<T>(
     credentials: 'include',
   })
 
+  const hasNoBody = response.status === 204 || response.status === 205
   const contentType = response.headers.get('content-type') ?? ''
   const isJson = contentType.includes('application/json')
-  const payload = isJson ? ((await response.json()) as unknown) : null
+  let payload: any = null
+
+  if (isJson && !hasNoBody) {
+    try {
+      const text = await response.text()
+      payload = text ? JSON.parse(text) : null
+    } catch {
+      payload = null
+    }
+  }
 
   if (!response.ok) {
     throw new ApiError(

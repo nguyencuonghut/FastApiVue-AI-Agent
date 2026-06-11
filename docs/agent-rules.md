@@ -75,7 +75,15 @@ Trạng thái đăng nhập ở client-side phải được xác thực trực t
 15. Tự động chạy migrations và seeding trong Docker dev/test:
 Để tránh lỗi `UndefinedTableError` khi trình duyệt tự động gọi API (như silent refresh) ngay khi frontend khởi động trên một volume database rỗng, các dịch vụ backend chạy trong Docker dev (`docker-compose.yml`) hoặc test/E2E (`docker-compose.test.yml`) bắt buộc phải khai báo lệnh khởi động chạy tự động `alembic upgrade head` và file seeding dữ liệu trước khi chạy server Uvicorn.
 
+16. Không return đối tượng Response trực tiếp từ route 204 No Content trong FastAPI:
+Khi thiết kế API trả về mã `204 No Content`, tuyệt đối không được sử dụng lệnh `return response` (trả về đối tượng `fastapi.Response` được inject qua dependency). Hành động này sẽ dẫn đến xung đột giao thức ASGI (mã trạng thái 200 mặc định của đối tượng Response đối chọi với cấu hình 204 của decorator), gây crash kết nối và làm proxy (Vite dev proxy, Nginx) báo lỗi `502 Bad Gateway`. Nếu cần chỉnh sửa cookie hoặc header, hãy thay đổi trực tiếp trên đối tượng `response` được inject, nhưng hàm endpoint phải trả về `None` (hoặc không dùng `return`).
+
+17. Parse body response an toàn ở frontend:
+Khi nhận response từ API, không được tự động parse JSON trực tiếp bằng `response.json()` mà không kiểm tra độ dài hoặc cấu trúc body, kể cả khi header trả về là `application/json`. Nhiều trường hợp API trả về mã thành công (ví dụ 204, 205 hoặc 200 rỗng) nhưng không đi kèm nội dung body, dẫn đến lỗi `SyntaxError: Unexpected end of JSON input`. Client HTTP (`frontend/src/api/http.ts`) phải đọc body dưới dạng text (`response.text()`) và chỉ gọi `JSON.parse` khi text đó không rỗng, đồng thời bọc trong khối try-catch an toàn để tránh crash ứng dụng.
+
 ## Kết quả mong muốn
+
+
 
 
 Agent phải hành xử như một thành viên trong team có hệ thống ghi nhớ bằng văn bản, không phải như một chat model chỉ dựa vào context ngắn hạn.

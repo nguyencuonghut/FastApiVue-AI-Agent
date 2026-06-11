@@ -271,3 +271,13 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: dynamic-cookie-naming-customization
 - Tom tat: Exposed VITE_AUTH_LOGGED_IN_COOKIE_NAME as a dynamic environment variable in .env and .env.example, mapped it to backend settings, and consumed it dynamically in auth.store.ts. This decouples the boilerplate naming from fastapivue_logged_in and allows naming customization in future boilerplate forks.
+
+## 2026-06-11 02:35:39Z - gemini
+
+- Tieu de: fix-logout-204-bad-gateway-response
+- Tom tat: Changed backend /logout endpoint signature from returning Response to None (returning empty body). Returning the Response parameter directly in a route annotated with status_code=204 caused an ASGI protocol conflict (200 status inside response vs 204 decorator), resulting in connection drop (502 Bad Gateway) under Vite/Nginx proxies. Added Rule 17 to projectRules.md.
+
+## 2026-06-11 02:42:38Z - gemini
+
+- Tieu de: fix-logout-client-side-json-parse-crash
+- Tom tat: Enhanced frontend http client (apiRequest) in http.ts to read response body as text first and safely parse JSON in a try-catch block, preventing SyntaxError crashes on 204 No Content or empty 200 responses. Added Rule 18 to projectRules.md and Rule 17 to agent-rules.md, and verified clean logout behavior using interactive browser subagent.

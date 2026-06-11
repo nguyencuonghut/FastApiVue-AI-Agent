@@ -190,3 +190,5 @@ volumes:
   postgres_test_data:
   minio_test_data:
   redis_test_data:
+  backend_venv:
+

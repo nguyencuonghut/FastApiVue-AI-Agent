@@ -153,7 +153,7 @@ async def logout(
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
     audit_log_service: Annotated[AuditLogService, Depends(get_audit_log_service)],
     settings: Annotated[Settings, Depends(get_settings)],
-) -> Response:
+) -> None:
     refresh_token = request.cookies.get(settings.auth_refresh_cookie_name)
     revoked_user: User | None = None
     if refresh_token is not None:
@@ -174,7 +174,6 @@ async def logout(
         ),
     )
     await auth_service.session.commit()
-    return response
 
 
 @router.get("/me", response_model=CurrentUserResponse)
