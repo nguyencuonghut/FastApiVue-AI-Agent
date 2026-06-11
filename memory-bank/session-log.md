@@ -361,3 +361,8 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Dynamic SEO Title and Meta Description Updates
 - Tom tat: Extended RouteMeta interface with optional title and description fields, updated all routes with page-specific SEO parameters, and implemented a router.afterEach hook to update document.title and meta tags dynamically.
+
+## 2026-06-11 08:53:42Z - gemini
+
+- Tieu de: Sửa lỗi 422 limit roles query
+- Tom tat: Sửa lỗi 422 Unprocessable Entity khi listRolesLookup truy vấn limit=1000 vượt quá giới hạn le=100 của backend. Đã đổi limit thành 100 và ghi nhận bug memory.
