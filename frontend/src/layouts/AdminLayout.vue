@@ -146,11 +146,16 @@
 
       <footer class="admin-layout__footer">
         <p class="admin-layout__footer-copy">
-          © {{ currentYear }} {{ appName }}. Sakai-inspired admin shell.
+          © {{ currentYear }} {{ appName }}. Tất cả quyền được bảo lưu.
         </p>
-        <p class="admin-layout__footer-meta">
-          Timezone mặc định: {{ appTimezone }}
-        </p>
+        <div class="admin-layout__footer-meta">
+          <span :class="['admin-layout__footer-status', { 'admin-layout__footer-status--offline': !isOnline }]">
+            <span class="admin-layout__footer-status-dot" aria-hidden="true" />
+            {{ isOnline ? 'Hệ thống trực tuyến' : 'Hệ thống ngoại tuyến' }}
+          </span>
+          <span class="admin-layout__footer-divider" aria-hidden="true">|</span>
+          <span class="admin-layout__footer-version">v0.1.0</span>
+        </div>
       </footer>
     </div>
   </div>
@@ -184,6 +189,20 @@ const router = useRouter()
 const profileMenuRef = ref<InstanceType<typeof Menu> | null>(null)
 const appTimezone = import.meta.env.VITE_APP_TIMEZONE ?? 'Asia/Ho_Chi_Minh'
 const appName = import.meta.env.VITE_APP_NAME || 'FastApiVue'
+const isOnline = ref(true)
+let healthTimer: number | null = null
+
+async function checkSystemHealth() {
+  try {
+    const response = await window.fetch('/api/v1/health', {
+      method: 'GET',
+      cache: 'no-store',
+    })
+    isOnline.value = response.ok
+  } catch {
+    isOnline.value = false
+  }
+}
 const currentYear = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: appTimezone,
@@ -234,9 +253,14 @@ function handleViewportChange() {
 onMounted(() => {
   handleViewportChange()
   window.addEventListener('resize', handleViewportChange)
+  checkSystemHealth()
+  healthTimer = window.setInterval(checkSystemHealth, 15000)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleViewportChange)
+  if (healthTimer !== null) {
+    window.clearInterval(healthTimer)
+  }
 })
 </script>

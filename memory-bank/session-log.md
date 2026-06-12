@@ -396,3 +396,18 @@ Nhật ký append-only cho các lần đóng task của agent.
 
 - Tieu de: Tinh chinh Light Mode sang tone trang tinh khiet
 - Tom tat: Thay doi nen trang Light Mode ve trang tinh khiet (#ffffff), su dung sidebar mau xam nhe sieu sang (#f9fafb) va cac duong vien manh xam tinh te (#eaeaea) de xoa bo hoan toan cam giac nang ne cua tone xam am cu.
+
+## 2026-06-12 03:01:05Z - gemini
+
+- Tieu de: Sua footer chuyen nghiep hon
+- Tom tat: Da cap nhat footer trong AdminLayout de hien thi ban quyen tieng Viet sach se, kem cuom thong tin metadata ve version, timezone va mot nut trang thai he thong xanh la kieu SaaS cao cap.
+
+## 2026-06-12 03:02:30Z - gemini
+
+- Tieu de: Bo thong tin mui gio khoi footer
+- Tom tat: Da go bo truong du lieu timezone khoi thanh metadata duoi chan trang trong AdminLayout de giu giao dien don gian hon.
+
+## 2026-06-12 03:28:41Z - gemini
+
+- Tieu de: Dynamic he thong ngoai tuyen footer status
+- Tom tat: Da nang cap footer status tu chuoi tinh thanh ping dynamic den /api/v1/health moi 15s. Neu mat ket noi se tu dong cap nhat chuoi thong bao va hieu ung dot indicator sang mau do canh bao.
