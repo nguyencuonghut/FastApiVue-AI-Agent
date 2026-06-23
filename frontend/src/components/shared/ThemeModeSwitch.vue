@@ -7,8 +7,8 @@
     class="theme-switch"
     rounded
     severity="secondary"
+    text
     type="button"
-    variant="outlined"
     @click="themeStore.toggleMode"
   />
 </template>

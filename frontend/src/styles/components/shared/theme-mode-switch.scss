@@ -1,15 +1,29 @@
-.theme-switch {
+.theme-switch.p-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.7rem;
-  height: 2.7rem;
-  background: var(--app-surface-muted);
-  border: 1px solid var(--app-border-soft);
+  width: 2.45rem;
+  height: 2.45rem;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  border: 0;
   color: var(--app-text-secondary);
-  box-shadow: 0 0.3rem 0.85rem rgba(16, 25, 39, 0.08);
+  box-shadow: none;
+  overflow: hidden;
+
+  &:hover {
+    background: var(--app-surface-highlight);
+    color: var(--app-text-primary);
+    border-radius: 999px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--app-accent) 42%, transparent);
+    outline-offset: 2px;
+  }
 }
 
-.theme-switch .p-button-icon {
+.theme-switch.p-button .p-button-icon {
   font-size: 0.95rem;
 }

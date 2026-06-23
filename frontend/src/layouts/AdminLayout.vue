@@ -116,14 +116,19 @@
             type="button"
             @click="toggleProfileMenu"
           >
-            <img
-              v-if="authStore.currentUser.avatarUrl"
-              :src="authStore.currentUser.avatarUrl"
-              alt="Ảnh đại diện người dùng"
-              class="admin-layout__profile-avatar-image"
-            />
-            <span v-else class="admin-layout__profile-avatar-fallback">
-              {{ profileInitials }}
+            <span class="admin-layout__profile-avatar" aria-hidden="true">
+              <img
+                v-if="authStore.currentUser.avatarUrl"
+                :src="authStore.currentUser.avatarUrl"
+                alt=""
+                class="admin-layout__profile-avatar-image"
+              />
+              <span v-else class="admin-layout__profile-avatar-fallback">
+                {{ profileInitials }}
+              </span>
+            </span>
+            <span class="admin-layout__profile-copy">
+              <span class="admin-layout__profile-name">{{ displayUserName }}</span>
             </span>
           </button>
           <Menu
@@ -207,6 +212,14 @@ const currentYear = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: appTimezone,
 }).format(new Date())
+const displayUserName = computed(() => {
+  const fullName = authStore.currentUser?.fullName?.trim()
+  if (fullName) {
+    return fullName
+  }
+
+  return authStore.currentUser?.email?.trim() ?? 'Người dùng'
+})
 const profileInitials = computed(() => {
   const fullName = authStore.currentUser?.fullName?.trim()
   if (fullName) {
